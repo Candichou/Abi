@@ -5,7 +5,9 @@ import { nextCookies } from "better-auth/next-js";
 
 export const auth = betterAuth({
   database: drizzleAdapter(db, {
-    provider: "pg", // or "pg" or "mysql"
+    provider: "pg",
+    usePlural: true, // indication à betterAtuh que mes tables sont au pluriel
   }),
-  plugings: [nextCookies()], //permet de sauvegarder les cookies better-auth dans l'appli next
+  emailAndPassword: { enabled: true },
+  plugins: [nextCookies()], //permet de sauvegarder les cookies better-auth dans l'appli next
 });
