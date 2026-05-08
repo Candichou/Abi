@@ -8,6 +8,20 @@
       "when": 1778258920043,
       "tag": "0000_watery_mantis",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1778262929323,
+      "tag": "0001_crazy_gambit",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1778263195828,
+      "tag": "0002_secret_zuras",
+      "breakpoints": true
     }
   ]
 }

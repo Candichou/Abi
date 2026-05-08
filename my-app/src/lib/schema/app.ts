@@ -8,6 +8,7 @@ import {
   timestamp,
   integer,
   decimal,
+  uniqueIndex,
 } from "drizzle-orm/pg-core";
 import { users } from "./auth-schema";
 
@@ -109,6 +110,29 @@ export const practitionerTags = pgTable("practitioner_tags", {
     .references(() => tags.id, { onDelete: "cascade" }),
 });
 
+export const tagVotes = pgTable(
+  "tag_votes",
+  {
+    userId: text("user_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    practitionerId: uuid("practitioner_id")
+      .notNull()
+      .references(() => practitioners.id, { onDelete: "cascade" }),
+    tagId: uuid("tag_id")
+      .notNull()
+      .references(() => tags.id, { onDelete: "cascade" }),
+    votedAt: timestamp("voted_at").defaultNow().notNull(),
+  },
+  (table) => [
+    uniqueIndex("unique_tag_vote").on(
+      table.userId,
+      table.practitionerId,
+      table.tagId,
+    ),
+  ],
+);
+
 // ─── Practitioner ↔ Association ───────────────────────────────────────────────
 
 export const practitionerAssociations = pgTable("practitioner_associations", {
@@ -134,22 +158,6 @@ export const contributions = pgTable("contributions", {
     .references(() => users.id, { onDelete: "cascade" }),
   practitionerId: uuid("practitioner_id").references(() => practitioners.id),
   status: contributionStatusEnum("status").default("pending").notNull(),
-  createdAt: timestamp("created_at").defaultNow().notNull(),
-});
-
-// ─── Reviews ──────────────────────────────────────────────────────────────────
-
-export const reviews = pgTable("reviews", {
-  id: uuid("id").primaryKey().defaultRandom(),
-  userId: text("user_id")
-    .notNull()
-    .references(() => users.id, { onDelete: "cascade" }),
-  practitionerId: uuid("practitioner_id")
-    .notNull()
-    .references(() => practitioners.id, { onDelete: "cascade" }),
-  rating: integer("rating").notNull(), // 1 à 5
-  comment: text("comment"),
-  isVisible: boolean("is_visible").default(false).notNull(), // modéré avant affichage
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
