@@ -8,7 +8,6 @@ import {
   timestamp,
   integer,
   decimal,
-  jsonb,
 } from "drizzle-orm/pg-core";
 import { users } from "./auth-schema";
 
