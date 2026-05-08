@@ -6,11 +6,24 @@ import { admin } from "better-auth/plugins";
 import { Resend } from "resend";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
+
 export const auth = betterAuth({
   database: drizzleAdapter(db, {
     provider: "pg",
     usePlural: true, // indication à betterAtuh que mes tables sont au pluriel
   }),
-  emailAndPassword: { enabled: true },
+  emailAndPassword: { enabled: true, requireEmailVerification: true },
+  emailVerification: {
+    sendOnSignUp: true,
+    autoSignInAfterVerification: true,
+    sendVerificationEmail: async ({ user, url }) => {
+      await resend.emails.send({
+        from: "onboarding@resend.dev",
+        to: user.email,
+        subject: "Vérifiez votre adresse email — CareApp",
+        html: `<p>Bonjour,</p><a href="${url}">Vérifier mon email</a>`,
+      });
+    },
+  },
   plugins: [nextCookies(), admin()], //permet de sauvegarder les cookies better-auth dans l'appli next
 });
