@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 import { Open_Sans, Raleway } from "next/font/google";
+import Header from "@/components/layout/header";
 
 const raleway = Raleway({
   subsets: ["latin"],
@@ -30,6 +31,7 @@ export default function RootLayout({
       className={`${raleway.variable} ${openSans.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col bg-cream text-forest">
+        <Header />
         {children}
       </body>
     </html>

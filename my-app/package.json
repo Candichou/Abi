@@ -15,6 +15,7 @@
   },
   "dependencies": {
     "@better-auth/drizzle-adapter": "^1.6.9",
+    "@heroicons/react": "^2.2.0",
     "@neondatabase/serverless": "^1.1.0",
     "better-auth": "^1.6.9",
     "dotenv": "^17.4.2",
