@@ -96,3 +96,5 @@ export const accountsRelations = relations(accounts, ({ one }) => ({
     references: [users.id],
   }),
 }));
+
+export const schema = { users, sessions, accounts, verifications };
