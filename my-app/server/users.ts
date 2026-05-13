@@ -1,8 +1,6 @@
 "use server";
 
 import { auth } from "@/lib/auth";
-import { responseCookiesToRequestCookies } from "next/dist/server/web/spec-extension/adapters/request-cookies";
-
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 
