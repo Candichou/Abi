@@ -10,3 +10,8 @@ export const credentialsSchema = z.object({
     .regex(/[0-9]/, "Un chiffre requis")
     .regex(/[^a-zA-Z0-9]/, "Un symbole requis"),
 });
+
+export const signinSchema = z.object({
+  email: z.email("Email non connu").min(1),
+  password: z.string().min(12, "12 caractères minimum"),
+});

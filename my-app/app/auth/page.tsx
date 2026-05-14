@@ -29,8 +29,9 @@ export default function AuthPage() {
       )}
       {step === 2 && (
         <SignupCredentials
-          onNext={(credentials) => {
-            setData((prev) => ({ ...prev, ...credentials }));
+          role={data.role!}
+          disabled={(isLoading) => {
+            setData((prev) => ({ ...prev }));
             setStep(3);
           }}
           onBack={() => setStep(1)}

@@ -14,7 +14,7 @@ export const auth = betterAuth({
     schema, //import le schema auth db
     usePlural: true, // indication à betterAtuh que mes tables sont au pluriel
   }),
-  emailAndPassword: { enabled: true, requireEmailVerification: true },
+  emailAndPassword: { enabled: true, requireEmailVerification: false }, // TODO: passer à true avant demo day
   emailVerification: {
     sendOnSignUp: true,
     autoSignInAfterVerification: true,
@@ -26,6 +26,13 @@ export const auth = betterAuth({
         html: `<p>Bonjour,</p><a href="${url}">Vérifier mon email</a>`,
       });
     },
+  },
+  pages: {
+    signIn: "/auth",
+    signUp: "/auth",
+    verifyEmail: "/auth/verify",
+    afterSignIn: "/dashboard",
+    afterSignUp: "/auth/verify",
   },
   plugins: [nextCookies(), admin()], //permet de sauvegarder les cookies better-auth dans l'appli next
 });
