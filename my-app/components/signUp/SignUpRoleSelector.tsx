@@ -1,8 +1,9 @@
 "use client";
 
 import { UserCircleIcon, UserGroupIcon } from "@heroicons/react/24/solid";
-import Button from "./UI/Button";
+
 import { useState } from "react";
+import Button from "../UI/Button";
 
 type Role = "patient" | "association";
 

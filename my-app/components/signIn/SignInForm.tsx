@@ -4,9 +4,10 @@ import { authClient } from "@/lib/auth-client";
 import { signinSchema } from "@/lib/validations/auth";
 import { formatZodErrors } from "@/lib/validations/utils";
 import { EyeIcon, EyeSlashIcon } from "@heroicons/react/24/solid";
-import { router } from "better-auth/api";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
+import Button from "../UI/Button";
 
 export default function SignInForm() {
   const [email, setEmail] = useState("");
@@ -18,6 +19,8 @@ export default function SignInForm() {
     email?: string;
     password?: string;
   }>({});
+
+  const router = useRouter();
 
   function validate(): boolean {
     const result = signinSchema.safeParse({ email, password });
@@ -111,7 +114,7 @@ export default function SignInForm() {
           <input
             id="password"
             type={showPassword ? "text" : "password"}
-            autoComplete="new-password"
+            autoComplete="current-password"
             placeholder="••••••••••••"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
@@ -150,12 +153,17 @@ export default function SignInForm() {
       </div>
 
       {/* Actions */}
-      <Link
-        href="/"
-        className="bg-lavender text-forest font-heading font-bold rounded-full px-6 py-3 border border-forest/20 hover:opacity-90"
-      >
-        Retour à l'accueil
-      </Link>
+      <div className="flex justify-between gap-3 mt-2">
+        <Link
+          href="/signup"
+          className="bg-transparent border border-forest text-forest font-heading font-bold rounded-full px-6 py-3 min-h-11 hover:bg-forest hover:text-cream"
+        >
+          Créer un compte
+        </Link>
+        <Button type="submit" disabled={isLoading}>
+          {isLoading ? "Connexion…" : "Se connecter"}
+        </Button>
+      </div>
 
       {/* Footer éthique */}
       <p className="text-center font-body text-xs text-forest/50 mt-2">

@@ -1,0 +1,48 @@
+"use client";
+
+import { useState } from "react";
+
+import SignInForm from "@/components/signIn/SignInForm";
+import { SignUpRoleSelector } from "@/components/signUp/SignUpRoleSelector";
+import SignupCredentials from "@/components/signUp/SignupCredentials";
+
+type Role = "patient" | "association";
+
+type StepData = {
+  role?: Role;
+  name?: string;
+  email?: string;
+  password?: string;
+};
+
+export default function AuthPage() {
+  const [step, setStep] = useState(1);
+  const [data, setData] = useState<StepData>({});
+  const [mode, setMode] = useState<"signup" | "signin">("signup");
+  const [isLoading, setIsLoading] = useState(false);
+
+  return (
+    <main className="min-h-screen bg-cream flex flex-col">
+      {mode === "signin" && <SignInForm />}
+      {mode === "signup" && (
+        <>
+          {step === 1 && (
+            <SignUpRoleSelector
+              onNext={(role) => {
+                setData((prev) => ({ ...prev, role }));
+                setStep(2);
+              }}
+            />
+          )}
+          {step === 2 && (
+            <SignupCredentials
+              role={data.role!}
+              onBack={() => setStep(1)}
+              disabled={(loading) => setIsLoading(loading)}
+            />
+          )}
+        </>
+      )}
+    </main>
+  );
+}

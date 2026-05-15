@@ -6,7 +6,8 @@ import { authClient } from "@/lib/auth-client";
 import { EyeIcon, EyeSlashIcon } from "@heroicons/react/24/solid";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import Button from "./UI/Button";
+import Button from "../UI/Button";
+import Link from "next/link";
 
 interface SignupCredentialsProps {
   role: "patient" | "association";
@@ -216,7 +217,9 @@ export default function SignupCredentials({
           {isLoading ? "Création…" : "Créer mon compte"}
         </Button>
       </div>
-
+      <span>
+        Déjà un compte ? <Link href="/auth/signin">se connecter</Link>
+      </span>
       {/* Footer éthique */}
       <p className="text-center font-body text-xs text-forest/50 mt-2">
         Sans traceur · sans CAPTCHA visuel · données minimales · hébergement UE

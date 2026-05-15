@@ -13,7 +13,7 @@ export default function Header() {
           Abi.
         </Link>
         <Link
-          href="/auth"
+          href="/signin"
           className="bg-lavender text-forest rounded-full
             px-2
             py-2 md:px-4 flex items-center gap-2"
