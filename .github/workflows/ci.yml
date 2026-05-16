@@ -14,7 +14,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Setup pnpm # ← AJOUT : installe pnpm avant Node
+      - name: Setup pnpm
         uses: pnpm/action-setup@v4
         with:
           version: 10.27.0
@@ -23,13 +23,13 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 20
-          cache: "pnpm" # ← était "npm"
+          cache: "pnpm"
 
       - name: Install dependencies
-        run: pnpm install --frozen-lockfile # ← était "npm ci"
+        run: pnpm install --frozen-lockfile
 
       - name: Build
-        run: pnpm run build # ← était "npm run build"
+        run: pnpm run build
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
           BETTER_AUTH_SECRET: ${{ secrets.BETTER_AUTH_SECRET }}
