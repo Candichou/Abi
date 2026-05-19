@@ -11,53 +11,51 @@ Abi comble ce vide : les praticiens sont référencés et validés par des assoc
 ✨ Fonctionnalités
 MVP (en cours)
 
- Page d'accueil avec recherche par spécialité et localisation
- Schémas de base de données (Drizzle ORM)
- Authentification multi-rôles (BetterAuth) — routes signin/signup
- UI des formulaires d'inscription (en cours)
- Fiches praticiens avec floutage partiel pour non-connectés
- Workflow de contribution : patient propose → validation association → publication
- Seed de démonstration (praticiens, tags, utilisateurs fictifs)
+Page d'accueil avec recherche par spécialité et localisation
+Schémas de base de données (Drizzle ORM)
+Authentification multi-rôles (BetterAuth) — routes signin/signup
+UI des formulaires d'inscription (en cours)
+Fiches praticiens avec floutage partiel pour non-connectés
+Workflow de contribution : patient propose → validation association → publication
+Seed de démonstration (praticiens, tags, utilisateurs fictifs)
 
 Post-MVP (soutenance août 2026)
 
- Tableau de bord association (modération, validation)
- Interface d'administration
- Cartographie des praticiens
- Système d'avis patients
+Tableau de bord association (modération, validation)
+Interface d'administration
+Cartographie des praticiens
+Système d'avis patients
 
+🛠️ Stack technique:
 
-🛠️ Stack technique: 
-
-Framework: Next.js 15 => (App Router)SSR natif, routing file-based, 
+Framework: Next.js 15 => (App Router)SSR natif, routing file-based,
 Langage: TypeScript => Typage strict, maintenabilité.
 Base de données: PostgreSQL (Neon) => Relationnel, serverless-compatible
 ORM: Drizzle => Type-safe, léger, migrations versionnées
-Auth: BetterAuth => Multi-rôles natif, sessions sécurisées 
+Auth: BetterAuth => Multi-rôles natif, sessions sécurisées
 Styling: Tailwind CSSv4 => Mobile-first, tokens CSS personnalisés
 Déploiement: Vercel => CI/CD intégré, preview par PR
-Tests: Vitest => Unit + intégration 
+Tests: Vitest => Unit + intégration
 CI/CD: GitHub Actions => Lint, tests, déploiement automatisé
 
 🏗️ Architecture
 app/
-├── (auth)/              # Groupe de routes authentification
-│   ├── signup/          # Inscription multi-étapes
-│   └── signin/          # Connexion
-├── (public)/            # Routes accessibles sans connexion
-│   └── page.tsx         # Home — recherche praticiens
+├── (auth)/ # Groupe de routes authentification
+│ ├── signup/ # Inscription multi-étapes
+│ └── signin/ # Connexion
+├── (public)/ # Routes accessibles sans connexion
+│ └── page.tsx # Home — recherche praticiens
 ├── api/
-│   └── auth/            # BetterAuth handlers
+│ └── auth/ # BetterAuth handlers
 lib/
-├── db/                  # Drizzle schemas + connexion Neon
-├── validations/         # Schémas Zod (auth, contribution)
-└── utils/               # Helpers partagés
+├── db/ # Drizzle schemas + connexion Neon
+├── validations/ # Schémas Zod (auth, contribution)
+└── utils/ # Helpers partagés
 Architecture multicouche :
 
 Présentation : composants React (App Router)
 Métier : Server Actions + validation Zod
 Données : Drizzle ORM → PostgreSQL Neon
-
 
 🔐 Sécurité & conformité
 
@@ -67,7 +65,6 @@ Authentification : sessions httpOnly, CSRF protection, rate limiting (BetterAuth
 Anti-bot : Cloudflare Turnstile (sans CAPTCHA visuel — accessible)
 Mots de passe : 12 caractères minimum, complexité imposée côté client (Zod) et serveur
 OWASP : validation entrées, pas d'exposition de données sensibles aux non-connectés (floutage praticiens)
-
 
 ♿ Accessibilité
 Conformité RGAA (déclinaison française WCAG 2.1) — exigence explicite RNCP37873 :
@@ -79,13 +76,11 @@ Focus visible sur tous les éléments interactifs (RGAA 10.7)
 Touch targets ≥ 44×44px (WCAG 2.5.5)
 Pas de CAPTCHA visuel (Turnstile invisible)
 
-
 ## 📱 Screenshots
 
-| Home — Mobile | Home — Desktop | Signup |
-|---|---|---|
+| Home — Mobile                       | Home — Desktop                          | Signup |
+| ----------------------------------- | --------------------------------------- | ------ |
 | ![Home mobile](doc/home_mobile.png) | ![Signup étape 1](doc/signup_step1.png) |
-
 
 🚀 Installation locale
 bash# Prérequis : Node.js 20+, compte Neon, compte BetterAuth
@@ -95,19 +90,23 @@ cd abi
 pnpm install
 
 # Variables d'environnement
+
 cp .env.example .env.local
+
 # → Renseigner DATABASE_URL, BETTER_AUTH_SECRET, BETTER_AUTH_URL
 
 # Migrations
+
 pnpm drizzle-kit push
 
 # Démarrer
+
 pnpm run dev
 
 🗺️ Roadmap
-Semaine 1-2 (mai 2026)   ✅ Setup, Home UI, Auth routes, Schemas Drizzle
-Semaine 3-4 (mai 2026)   🔄 Auth UI, seed, fiches praticiens (floutage)
-Semaine 5-6 (juin 2026)  ⏳ Demo Day MVP — recherche fonctionnelle
+Semaine 1-2 (mai 2026) ✅ Setup, Home UI, Auth routes, Schemas Drizzle
+Semaine 3-4 (mai 2026) 🔄 Auth UI, seed, fiches praticiens (floutage)
+Semaine 5-6 (juin 2026) ⏳ Demo Day MVP — recherche fonctionnelle
 Semaine 7-12 (juin-août) ⏳ Dashboard association, admin, tests, déploiement
 
 🎓 Contexte académique
