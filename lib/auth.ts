@@ -14,7 +14,7 @@ export const auth = betterAuth({
     schema, //import le schema auth db
     usePlural: true, // indication à betterAtuh que mes tables sont au pluriel
   }),
-  emailAndPassword: { enabled: true, requireEmailVerification: false }, // TODO: passer à true avant demo day
+  emailAndPassword: { enabled: true, requireEmailVerification: true }, // TODO: passer à true avant demo day
   emailVerification: {
     sendOnSignUp: true,
     autoSignInAfterVerification: true,
@@ -22,8 +22,8 @@ export const auth = betterAuth({
       await resend.emails.send({
         from: "onboarding@resend.dev",
         to: user.email,
-        subject: "Vérifiez votre adresse email — CareApp",
-        html: `<p>Bonjour,</p><a href="${url}">Vérifier mon email</a>`,
+        subject: "Vérification de votre email",
+        html: `<p>Bonjour,</p><a href="${url}">Vérifier mon email</a>`, // TODO: faire un mail de vérification plus UX
       });
     },
   },
