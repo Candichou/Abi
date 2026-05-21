@@ -22,8 +22,8 @@ export const auth = betterAuth({
       await resend.emails.send({
         from: "onboarding@resend.dev",
         to: user.email,
-        subject: "Vérifiez votre adresse email — CareApp",
-        html: `<p>Bonjour,</p><a href="${url}">Vérifier mon email</a>`,
+        subject: "Vérification de votre email",
+        html: `<p>Bonjour,</p><a href="${url}">Vérifier mon email</a>`, // TODO: faire un mail de vérification plus UX
       });
     },
   },
