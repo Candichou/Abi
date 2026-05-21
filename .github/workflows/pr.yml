@@ -2,7 +2,7 @@ name: PR Validation
 
 on:
   pull_request:
-    branches: [main, develop]
+    branches: [main]
 
 jobs:
   lint-and-test:
@@ -12,6 +12,7 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: "20"
+          package-manager: "pnpm"
 
       - name: Install dependencies
         run: pnpm ci
