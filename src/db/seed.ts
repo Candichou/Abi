@@ -89,7 +89,7 @@ async function seed() {
   await db.insert(tags).values(insertTags).onConflictDoNothing();
   console.log("✅ Seed completed");
 
-  // 2. Associations
+  /*  // 2. Associations
   type AssoInsert = typeof associations.$inferInsert;
   const insertAssos: AssoInsert[] = [
     {
@@ -106,7 +106,7 @@ async function seed() {
   ];
 
   await db.insert(associations).values(insertAssos).onConflictDoNothing();
-  console.log("✅ Associations created");
+  console.log("✅ Associations created"); */
 
   // 3. Practitioners
   type PractitionerInsert = typeof practitioners.$inferInsert;
@@ -123,7 +123,6 @@ async function seed() {
       convention: "sector_1",
       status: "validated",
       isVisible: true,
-      proposedBy: null,
       validatedBy: ADMIN_ID,
     },
     {
@@ -137,7 +136,6 @@ async function seed() {
       convention: "sector_2",
       status: "validated",
       isVisible: true,
-      proposedBy: null,
       validatedBy: ADMIN_ID,
     },
     {
@@ -151,7 +149,6 @@ async function seed() {
       convention: "non_conventional",
       status: "validated",
       isVisible: true,
-      proposedBy: null,
       validatedBy: ADMIN_ID,
     },
     {
@@ -165,7 +162,6 @@ async function seed() {
       convention: "sector_1",
       status: "validated",
       isVisible: true,
-      proposedBy: null,
       validatedBy: ADMIN_ID,
     },
     {
@@ -179,7 +175,6 @@ async function seed() {
       convention: "sector_2",
       status: "validated",
       isVisible: true,
-      proposedBy: null,
       validatedBy: ADMIN_ID,
     },
     {
@@ -193,7 +188,6 @@ async function seed() {
       convention: "non_conventional",
       status: "validated",
       isVisible: true,
-      proposedBy: null,
       validatedBy: ADMIN_ID,
     },
     {
@@ -207,7 +201,6 @@ async function seed() {
       convention: "sector_1",
       status: "validated",
       isVisible: true,
-      proposedBy: null,
       validatedBy: ADMIN_ID,
     },
     {
@@ -221,7 +214,6 @@ async function seed() {
       convention: "non_conventional",
       status: "validated",
       isVisible: true,
-      proposedBy: null,
       validatedBy: ADMIN_ID,
     },
     {
@@ -235,7 +227,6 @@ async function seed() {
       convention: "sector_1",
       status: "validated",
       isVisible: true,
-      proposedBy: null,
       validatedBy: ADMIN_ID,
     },
     {
@@ -249,7 +240,6 @@ async function seed() {
       convention: "non_conventional",
       status: "validated",
       isVisible: true,
-      proposedBy: null,
       validatedBy: ADMIN_ID,
     },
 
@@ -265,7 +255,6 @@ async function seed() {
       convention: "non_conventional",
       status: "pending",
       isVisible: false,
-      proposedBy: null,
       validatedBy: null,
     },
     {
@@ -279,7 +268,6 @@ async function seed() {
       convention: "sector_2",
       status: "pending",
       isVisible: false,
-      proposedBy: null,
       validatedBy: null,
     },
 
@@ -295,7 +283,6 @@ async function seed() {
       convention: "non_conventional",
       status: "rejected",
       isVisible: false,
-      proposedBy: null,
       validatedBy: null,
     },
     {
@@ -309,7 +296,6 @@ async function seed() {
       convention: "non_conventional",
       status: "rejected",
       isVisible: false,
-      proposedBy: null,
       validatedBy: null,
     },
 
@@ -325,7 +311,6 @@ async function seed() {
       convention: "sector_2",
       status: "suspended",
       isVisible: false,
-      proposedBy: null,
       validatedBy: null,
     },
   ];
