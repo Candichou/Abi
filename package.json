@@ -13,7 +13,7 @@
     "db:up": "drizzle-kit up",
     "db:seed": "tsx src/db/seed.ts",
     "typecheck": "tsc --noEmit",
-    "test": "vitest run"
+    "test": "vitest run --passWithNoTests"
   },
   "dependencies": {
     "@better-auth/drizzle-adapter": "^1.6.9",
@@ -38,6 +38,7 @@
     "eslint-config-next": "16.2.5",
     "tailwindcss": "^4",
     "tsx": "^4.21.0",
-    "typescript": "^5"
+    "typescript": "^5",
+    "vitest": "^4.1.7"
   }
 }
