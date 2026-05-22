@@ -12,6 +12,7 @@
     "db:push": "drizzle-kit push",
     "db:up": "drizzle-kit up",
     "db:seed": "tsx src/db/seed.ts",
+    "db:reset": "tsx src/db/reset.ts",
     "typecheck": "tsc --noEmit",
     "test": "vitest run --passWithNoTests"
   },
