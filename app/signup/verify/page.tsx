@@ -15,7 +15,7 @@ export default function VerifyPage() {
           href="/"
           className="bg-lavender text-forest font-heading font-bold rounded-full px-6 py-3 border border-forest/20 hover:opacity-90"
         >
-          Retour à l'accueil
+          Retour à l&apos;accueil
         </Link>
       </div>
     </main>

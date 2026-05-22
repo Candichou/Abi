@@ -21,7 +21,6 @@ const PATIENT_2_ID = process.env.PATIENT_2_ID!;
 const ASSO_USER_ID = process.env.ASSO_USER_ID!;
 const ADMIN_ID = process.env.ADMIN_ID!;
 
-
 async function seed() {
   //1. Tags
   type TagInsert = typeof tags.$inferInsert;
@@ -87,12 +86,16 @@ async function seed() {
       category: "pratique",
     },
   ];
-const insertedTags = await db.insert(tags).values(insertTags).onConflictDoNothing().returning();
- const tagByLabel = Object.fromEntries(
-  insertedTags.map(tag => [tag.label, tag.id])
-);
+  const insertedTags = await db
+    .insert(tags)
+    .values(insertTags)
+    .onConflictDoNothing()
+    .returning();
+  const tagByLabel = Object.fromEntries(
+    insertedTags.map((tag) => [tag.label, tag.id]),
+  );
 
-console.log("✅ Tags created");
+  console.log("✅ Tags created");
 
   /*  // 2. Associations
   type AssoInsert = typeof associations.$inferInsert;
@@ -320,85 +323,103 @@ console.log("✅ Tags created");
     },
   ];
 
-const insertedPractitioners = await db
-  .insert(practitioners)
-  .values(insertPractitioners)
-  .onConflictDoNothing()
-  .returning();
+  const insertedPractitioners = await db
+    .insert(practitioners)
+    .values(insertPractitioners)
+    .onConflictDoNothing()
+    .returning();
 
-const practitionerByName = Object.fromEntries(
-  insertedPractitioners.map(practi => [`${practi.firstName} ${practi.lastName}`, practi.id])
-);
+  const practitionerByName = Object.fromEntries(
+    insertedPractitioners.map((practi) => [
+      `${practi.firstName} ${practi.lastName}`,
+      practi.id,
+    ]),
+  );
 
-console.log("✅ Practitioners created");
+  console.log("✅ Practitioners created");
 
   //4 . practitionerTags
-  type PractitionerTagsInsert = typeof practitionerTags.$inferInsert;
-  const insertPractitionerTags: PractitionerTagsInsert[] = [
-  {
-    name: "Sophie Moreau",
-    tags: ["Consentement éclairé", "LGBTQIA+ Friendly", "Respecte l'autonomie reproductive"],
-  },
-  {
-    name: "Karim Benali",
-    tags: ["Attentif·ve aux vécus traumatiques", "LGBTQIA+ Friendly", "Tiers payant accepté"],
-  },
-  {
-    name: "Linh Nguyen",
-    tags: ["Fibromyalgie", "Consentement éclairé", "Non-grossophobe"],
-  },
-  {
-    name: "Claire Lefebvre",
-    tags: ["Tiers payant accepté", "Accessible PMR", "Consentement éclairé"],
-  },
-  {
-    name: "Aminata Diallo",
-    tags: ["Non-grossophobe", "LGBTQIA+ Friendly"],
-  },
-  {
-    name: "Elena Torres",
-    tags: ["Attentif·ve aux vécus traumatiques", "Troubles alimentaires (TCA)", "LGBTQIA+ Friendly"],
-  },
-  {
-    name: "Marc Petit",
-    tags: ["Accessible PMR", "Consentement éclairé", "Fibromyalgie"],
-  },
-  {
-    name: "Isabelle Rousseau",
-    tags: ["Endométriose", "Consentement éclairé", "Tarif solidaire sur justificatif"],
-  },
-  {
-    name: "Julien Fabre",
-    tags: ["Tiers payant accepté", "Tarif solidaire sur justificatif", "Accessible PMR"],
-  },
-  {
-    name: "Nadia Lambert",
-    tags: ["Cancer & post-cancer", "Consentement éclairé", "LGBTQIA+ Friendly"],
-  },
-];
-
-const insertPractitionerTags = practitionerTags.flatMap(
-  ({ name, tags: tagLabels }) =>
-    tagLabels.map(label => ({
-      practitionerId: practitionerByName[name],
-      tagId: tagByLabel[label],
-    }))
-);
-
-await db
-  .insert(practitionerTags)
-  .values(insertPractitionerTags)
-  .onConflictDoNothing();
-
-console.log("✅ PractitionerTags created");
-
-
+  type PractitionerTagImport = { name: string; tags: string[] };
+  const practitionerTagsData: PractitionerTagImport[] = [
+    {
+      name: "Sophie Moreau",
+      tags: [
+        "Consentement éclairé",
+        "LGBTQIA+ Friendly",
+        "Respecte l'autonomie reproductive",
+      ],
+    },
+    {
+      name: "Karim Benali",
+      tags: [
+        "Attentif·ve aux vécus traumatiques",
+        "LGBTQIA+ Friendly",
+        "Tiers payant accepté",
+      ],
+    },
+    {
+      name: "Linh Nguyen",
+      tags: ["Fibromyalgie", "Consentement éclairé", "Non-grossophobe"],
+    },
+    {
+      name: "Claire Lefebvre",
+      tags: ["Tiers payant accepté", "Accessible PMR", "Consentement éclairé"],
+    },
+    {
+      name: "Aminata Diallo",
+      tags: ["Non-grossophobe", "LGBTQIA+ Friendly"],
+    },
+    {
+      name: "Elena Torres",
+      tags: [
+        "Attentif·ve aux vécus traumatiques",
+        "Troubles alimentaires (TCA)",
+        "LGBTQIA+ Friendly",
+      ],
+    },
+    {
+      name: "Marc Petit",
+      tags: ["Accessible PMR", "Consentement éclairé", "Fibromyalgie"],
+    },
+    {
+      name: "Isabelle Rousseau",
+      tags: [
+        "Endométriose",
+        "Consentement éclairé",
+        "Tarif solidaire sur justificatif",
+      ],
+    },
+    {
+      name: "Julien Fabre",
+      tags: [
+        "Tiers payant accepté",
+        "Tarif solidaire sur justificatif",
+        "Accessible PMR",
+      ],
+    },
+    {
+      name: "Nadia Lambert",
+      tags: [
+        "Cancer & post-cancer",
+        "Consentement éclairé",
+        "LGBTQIA+ Friendly",
+      ],
+    },
   ];
+
+  const insertPractitionerTags = practitionerTagsData.flatMap(
+    ({ name, tags: tagLabels }) =>
+      tagLabels.map((label) => ({
+        practitionerId: practitionerByName[name],
+        tagId: tagByLabel[label],
+      })),
+  );
 
   await db
     .insert(practitionerTags)
     .values(insertPractitionerTags)
     .onConflictDoNothing();
+
   console.log("✅ PractitionerTags created");
 }
 
