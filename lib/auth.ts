@@ -5,6 +5,7 @@ import { nextCookies } from "better-auth/next-js";
 import { admin } from "better-auth/plugins";
 import { Resend } from "resend";
 import * as schema from "@/src/db/schema/auth-schema";
+import { NextRequest } from "next/server";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
@@ -14,7 +15,7 @@ export const auth = betterAuth({
     schema, //import le schema auth db
     usePlural: true, // indication à betterAtuh que mes tables sont au pluriel
   }),
-  emailAndPassword: { enabled: true, requireEmailVerification: true }, // TODO: passer à true avant demo day
+  emailAndPassword: { enabled: true, requireEmailVerification: false }, // TODO: passer à true avant demo day
   emailVerification: {
     sendOnSignUp: true,
     autoSignInAfterVerification: true,
@@ -29,10 +30,25 @@ export const auth = betterAuth({
   },
   pages: {
     signIn: "/auth",
-    signUp: "/auth",
+    /*  signUp: "/auth",
     verifyEmail: "/auth/verify",
-    afterSignIn: "/dashboard",
-    afterSignUp: "/auth/verify",
+    afterSignIn: "/dashboard/userPatient",
+    afterSignUp: "/dashboard/userPatient", */
   },
   plugins: [nextCookies(), admin()], //permet de sauvegarder les cookies better-auth dans l'appli next
 });
+
+export async function getSessionFromRequest(request: NextRequest) {
+  try {
+    const token = request.cookies.get("better-auth.session_token")?.value;
+
+    if (!token) {
+      return null;
+    }
+
+    return { token };
+  } catch (error) {
+    console.error("Session retrieval error:", error);
+    return null;
+  }
+}

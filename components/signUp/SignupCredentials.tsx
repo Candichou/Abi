@@ -218,7 +218,7 @@ export default function SignupCredentials({
         </Button>
       </div>
       <span>
-        Déjà un compte ? <Link href="/auth/signin">se connecter</Link>
+        Déjà un compte ? <Link href="/signin">se connecter</Link>
       </span>
       {/* Footer éthique */}
       <p className="text-center font-body text-xs text-forest/50 mt-2">
