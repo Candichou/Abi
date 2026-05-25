@@ -39,7 +39,7 @@ export default function SignInForm() {
     const { error } = await authClient.signIn.email({
       email,
       password,
-      callbackURL: "/dashboard/userPatient",
+      callbackURL: "/dashboard",
     });
 
     if (error) {
@@ -48,7 +48,7 @@ export default function SignInForm() {
       return;
     }
 
-    router.push("/dashboard/userPatient");
+    router.push("/dashboard");
   }
 
   return (
