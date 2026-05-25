@@ -29,11 +29,11 @@ export const auth = betterAuth({
     },
   },
   pages: {
-    signIn: "/auth",
-    /*  signUp: "/auth",
-    verifyEmail: "/auth/verify",
-    afterSignIn: "/dashboard/userPatient",
-    afterSignUp: "/dashboard/userPatient", */
+    signIn: "/signin",
+    signUp: "/signup",
+    /*  verifyEmail: "/auth/verify", */ //todo: se décider si on garde resend pour demoday
+    afterSignIn: "/dashboard",
+    afterSignUp: "/dashboard",
   },
   plugins: [nextCookies(), admin()], //permet de sauvegarder les cookies better-auth dans l'appli next
 });

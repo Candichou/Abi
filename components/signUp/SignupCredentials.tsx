@@ -3,6 +3,7 @@
 import { credentialsSchema } from "@/lib/validations/auth";
 import { formatZodErrors } from "@/lib/validations/utils";
 import { authClient } from "@/lib/auth-client";
+import { setUserRole } from "@/app/actions/auth";
 import { EyeIcon, EyeSlashIcon } from "@heroicons/react/24/solid";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
@@ -59,6 +60,9 @@ export default function SignupCredentials({
       setIsLoading(false);
       return;
     }
+
+    const dbRole = role === "association" ? "asso" : "patient";
+    await setUserRole(dbRole);
 
     router.push("/dashboard");
   }
