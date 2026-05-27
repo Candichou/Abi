@@ -1,6 +1,7 @@
 import { PractitionerCard } from "@/components/UI/search/PractitionerCard";
-import { searchPractitioners } from "@/lib/practitioners";
+import { searchPractitioners, getSearchSuggestions } from "@/lib/practitioners-search";
 import { MagnifyingGlassIcon, MapPinIcon } from "@heroicons/react/24/outline";
+import { SearchCombobox } from "@/components/UI/search/SearchCombobox";
 import Link from "next/link";
 
 export default async function SearchPage({
@@ -9,7 +10,10 @@ export default async function SearchPage({
   searchParams: Promise<{ specialty?: string; city?: string }>;
 }) {
   const { specialty, city } = await searchParams;
-  const results = await searchPractitioners(specialty, city);
+  const [results, { specialties, cities }] = await Promise.all([
+    searchPractitioners(specialty, city),
+    getSearchSuggestions(),
+  ]);
 
   const hasFilters = specialty || city;
 
@@ -22,24 +26,20 @@ export default async function SearchPage({
           method="GET"
           className="max-w-7xl mx-auto flex flex-col sm:flex-row gap-2"
         >
-          <div className="relative flex-1">
-            <MagnifyingGlassIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-forest/50" />
-            <input
-              name="specialty"
-              defaultValue={specialty}
-              placeholder="Spécialité"
-              className="w-full bg-cream pl-9 pr-4 py-2.5 rounded-full text-sm border border-transparent outline-none focus:border-forest/20"
-            />
-          </div>
-          <div className="relative flex-1">
-            <MapPinIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-forest/50" />
-            <input
-              name="city"
-              defaultValue={city}
-              placeholder="Ville, code postal"
-              className="w-full bg-cream pl-9 pr-4 py-2.5 rounded-full text-sm border border-transparent outline-none focus:border-forest/20"
-            />
-          </div>
+          <SearchCombobox
+            name="specialty"
+            placeholder="Spécialité"
+            suggestions={specialties}
+            defaultValue={specialty}
+            icon={<MagnifyingGlassIcon className="w-4 h-4" />}
+          />
+          <SearchCombobox
+            name="city"
+            placeholder="Ville, code postal"
+            suggestions={cities}
+            defaultValue={city}
+            icon={<MapPinIcon className="w-4 h-4" />}
+          />
           <button
             type="submit"
             className="bg-lavender text-forest px-6 py-2.5 rounded-full text-sm font-body font-semibold hover:bg-lavender/80 transition-colors shrink-0"
