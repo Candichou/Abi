@@ -83,10 +83,16 @@ export default async function PractitionerPage({
 
           <div className="flex items-center gap-4">
             <div className="w-16 h-16 rounded-full bg-cream/10 flex items-center justify-center shrink-0">
-              <span className="text-cream font-heading font-bold text-xl">{initials}</span>
+              <span
+                className={`text-cream font-heading font-bold text-xl${!isLoggedIn ? " blur-sm select-none" : ""}`}
+              >
+                {initials}
+              </span>
             </div>
             <div>
-              <h1 className="text-cream font-heading font-bold text-2xl leading-tight">
+              <h1
+                className={`text-cream font-heading font-bold text-2xl leading-tight${!isLoggedIn ? " blur-sm select-none" : ""}`}
+              >
                 {firstName} {lastName}
               </h1>
               <p className="text-cream/70 text-sm mt-0.5">{specialty}</p>
@@ -169,7 +175,7 @@ export default async function PractitionerPage({
               <LockClosedIcon className="w-5 h-5 shrink-0" />
               <div>
                 <p className="text-sm text-forest/70 font-body">
-                  Connectez-vous pour voir l'adresse et le téléphone.
+                  Connectez-vous pour voir l&apos;adresse et le téléphone.
                 </p>
                 <Link
                   href="/signin"
