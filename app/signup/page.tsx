@@ -18,8 +18,8 @@ type StepData = {
 export default function AuthPage() {
   const [step, setStep] = useState(1);
   const [data, setData] = useState<StepData>({});
-  const [mode, setMode] = useState<"signup" | "signin">("signup");
-  const [isLoading, setIsLoading] = useState(false);
+  const [mode, _setMode] = useState<"signup" | "signin">("signup");
+  const [_isLoading, setIsLoading] = useState(false);
 
   return (
     <main className="min-h-screen bg-cream flex flex-col">

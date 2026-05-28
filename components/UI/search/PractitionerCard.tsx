@@ -2,9 +2,9 @@
 
 import { BookmarkIcon } from "@heroicons/react/24/outline";
 import { BookmarkIcon as BookmarkSolidIcon } from "@heroicons/react/24/solid";
-import Link from "next/link";
 import { useState } from "react";
 import type { PractitionerWithDetails } from "@/lib/practitioners-search";
+import { AuthGateModal } from "@/components/UI/AuthGateModal";
 
 const TAG_CATEGORY_STYLES: Record<string, string> = {
   pathologie: "bg-teal/20 text-forest border border-teal/40",
@@ -47,6 +47,7 @@ export function PractitionerCard({
   isHighlighted?: boolean;
 }) {
   const [saved, setSaved] = useState(false);
+  const [showAuthModal, setShowAuthModal] = useState(false);
   const {
     firstName,
     lastName,
@@ -63,6 +64,9 @@ export function PractitionerCard({
   const tagsByCategory = groupBy(officialTags, (tag) => tag.category);
 
   return (
+    <>
+      {showAuthModal && <AuthGateModal onClose={() => setShowAuthModal(false)} />}
+
     <article
       className={`bg-white rounded-3xl border-2 p-5 transition-shadow ${
         isHighlighted
@@ -75,12 +79,12 @@ export function PractitionerCard({
       {/* En-tête */}
       <div className="flex items-start gap-4 mb-4">
         <div className="w-14 h-14 rounded-full bg-forest flex items-center justify-center shrink-0">
-          <span className="text-cream font-heading font-bold text-lg">
+          <span className="text-cream font-heading font-bold text-lg blur-sm select-none">
             {initials}
           </span>
         </div>
         <div className="flex-1 min-w-0">
-          <h2 className="font-heading font-bold text-forest text-lg leading-tight">
+          <h2 className="font-heading font-bold text-forest text-lg leading-tight blur-sm select-none">
             {firstName} {lastName}
           </h2>
           <p className="text-forest/70 text-sm">{specialty}</p>
@@ -174,13 +178,14 @@ export function PractitionerCard({
             {saved ? "Sauvegardé" : "Sauvegarder"}
           </span>
         </button>
-        <Link
-          href={`/praticiens/${practitioner.id}`}
+        <button
+          onClick={() => setShowAuthModal(true)}
           className="bg-lavender text-forest text-sm font-body px-4 py-2 rounded-full hover:bg-lavender/80 transition-colors"
         >
           Voir le profil →
-        </Link>
+        </button>
       </div>
     </article>
+    </>
   );
 }
