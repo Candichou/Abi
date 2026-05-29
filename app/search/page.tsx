@@ -3,6 +3,8 @@ import { searchPractitioners, getSearchSuggestions } from "@/lib/practitioners-s
 import { MagnifyingGlassIcon, MapPinIcon } from "@heroicons/react/24/outline";
 import { SearchCombobox } from "@/components/UI/search/SearchCombobox";
 import Link from "next/link";
+import { auth } from "@/lib/auth";
+import { headers } from "next/headers";
 
 export default async function SearchPage({
   searchParams,
@@ -10,10 +12,12 @@ export default async function SearchPage({
   searchParams: Promise<{ specialty?: string; city?: string }>;
 }) {
   const { specialty, city } = await searchParams;
-  const [results, { specialties, cities }] = await Promise.all([
+  const [results, { specialties, cities }, session] = await Promise.all([
     searchPractitioners(specialty, city),
     getSearchSuggestions(),
+    auth.api.getSession({ headers: await headers() }),
   ]);
+  const isLoggedIn = !!session;
 
   const hasFilters = specialty || city;
 
@@ -81,7 +85,7 @@ export default async function SearchPage({
           {results.length > 0 ? (
             <div className="space-y-4 pb-8">
               {results.map((practitioner) => (
-                <PractitionerCard key={practitioner.id} practitioner={practitioner} />
+                <PractitionerCard key={practitioner.id} practitioner={practitioner} isLoggedIn={isLoggedIn} />
               ))}
             </div>
           ) : (

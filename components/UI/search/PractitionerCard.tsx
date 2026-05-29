@@ -3,6 +3,7 @@
 import { BookmarkIcon } from "@heroicons/react/24/outline";
 import { BookmarkIcon as BookmarkSolidIcon } from "@heroicons/react/24/solid";
 import { useState } from "react";
+import Link from "next/link";
 import type { PractitionerWithDetails } from "@/lib/practitioners-search";
 import { AuthGateModal } from "@/components/UI/AuthGateModal";
 
@@ -41,10 +42,12 @@ export function PractitionerCard({
   practitioner,
   onHover,
   isHighlighted,
+  isLoggedIn = false,
 }: {
   practitioner: PractitionerWithDetails;
   onHover?: (id: string | null) => void;
   isHighlighted?: boolean;
+  isLoggedIn?: boolean;
 }) {
   const [saved, setSaved] = useState(false);
   const [showAuthModal, setShowAuthModal] = useState(false);
@@ -79,12 +82,18 @@ export function PractitionerCard({
       {/* En-tête */}
       <div className="flex items-start gap-4 mb-4">
         <div className="w-14 h-14 rounded-full bg-forest flex items-center justify-center shrink-0">
-          <span className="text-cream font-heading font-bold text-lg blur-sm select-none">
+          <span
+            className={`text-cream font-heading font-bold text-lg ${!isLoggedIn ? "blur-sm select-none" : ""}`}
+            aria-hidden={!isLoggedIn}
+          >
             {initials}
           </span>
         </div>
         <div className="flex-1 min-w-0">
-          <h2 className="font-heading font-bold text-forest text-lg leading-tight blur-sm select-none">
+          <h2
+            className={`font-heading font-bold text-forest text-lg leading-tight ${!isLoggedIn ? "blur-sm select-none" : ""}`}
+            aria-label={!isLoggedIn ? "Nom masqué — connexion requise" : undefined}
+          >
             {firstName} {lastName}
           </h2>
           <p className="text-forest/70 text-sm">{specialty}</p>
@@ -178,12 +187,22 @@ export function PractitionerCard({
             {saved ? "Sauvegardé" : "Sauvegarder"}
           </span>
         </button>
-        <button
-          onClick={() => setShowAuthModal(true)}
-          className="bg-lavender text-forest text-sm font-body px-4 py-2 rounded-full hover:bg-lavender/80 transition-colors"
-        >
-          Voir le profil →
-        </button>
+        {isLoggedIn ? (
+          <Link
+            href={`/praticiens/${practitioner.id}`}
+            className="bg-lavender text-forest text-sm font-body px-4 py-2 rounded-full hover:bg-lavender/80 transition-colors"
+          >
+            Voir le profil →
+          </Link>
+        ) : (
+          <button
+            onClick={() => setShowAuthModal(true)}
+            className="bg-lavender text-forest text-sm font-body px-4 py-2 rounded-full hover:bg-lavender/80 transition-colors"
+            aria-label="Voir le profil — connexion requise"
+          >
+            Voir le profil →
+          </button>
+        )}
       </div>
     </article>
     </>
