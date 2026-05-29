@@ -35,6 +35,10 @@ export const auth = betterAuth({
     afterSignIn: "/dashboard",
     afterSignUp: "/dashboard",
   },
+  session: {
+    expiresIn: 60 * 60 * 24,
+    updateAge: 60 * 60,
+  },
   plugins: [nextCookies(), admin()], //permet de sauvegarder les cookies better-auth dans l'appli next
 });
 
