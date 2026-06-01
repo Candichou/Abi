@@ -53,10 +53,8 @@ export default async function SearchPage({
         </form>
       </div>
 
-      {/* Layout split */}
-      <div className="max-w-7xl mx-auto flex h-[calc(100vh-72px)]">
-        {/* Colonne liste */}
-        <div className="flex-1 overflow-y-auto px-4 py-6">
+      {/* Liste */}
+      <div className="max-w-7xl mx-auto h-[calc(100vh-72px)] overflow-y-auto px-4 py-6">
           {/* Résumé */}
           <div className="flex items-center justify-between mb-5">
             <div>
@@ -105,22 +103,6 @@ export default async function SearchPage({
               </Link>
             </div>
           )}
-        </div>
-
-        {/* Colonne carte — placeholder */}
-        <div className="hidden lg:flex w-[45%] shrink-0 sticky top-0 h-full bg-forest/5 items-center justify-center border-l border-forest/10">
-          <div className="text-center px-8">
-            <div className="w-16 h-16 rounded-full bg-teal/20 flex items-center justify-center mx-auto mb-4">
-              <MapPinIcon className="w-8 h-8 text-teal" />
-            </div>
-            <p className="font-heading font-bold text-forest text-lg mb-1">
-              Carte interactive
-            </p>
-            <p className="text-forest/50 text-sm">
-              La carte géographique sera disponible prochainement.
-            </p>
-          </div>
-        </div>
       </div>
     </main>
   );
