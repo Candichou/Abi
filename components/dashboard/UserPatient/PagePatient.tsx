@@ -46,18 +46,10 @@ export function PagePatient({ session }: { session: Session }) {
           </div>
 
           {/* Résumé stats */}
-          <div className="grid grid-cols-2 gap-4 pt-6 border-t border-forest/10">
+          <div className="pt-6 border-t border-forest/10">
             <div>
               <p className="text-xs text-forest/60 uppercase tracking-wide">
                 Praticiens sauvegardés
-              </p>
-              <p className="text-2xl font-heading font-bold text-forest mt-1">
-                0
-              </p>
-            </div>
-            <div>
-              <p className="text-xs text-forest/60 uppercase tracking-wide">
-                Avis publiés
               </p>
               <p className="text-2xl font-heading font-bold text-forest mt-1">
                 0
