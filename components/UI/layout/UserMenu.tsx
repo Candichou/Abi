@@ -34,11 +34,9 @@ export function UserMenu({ userName }: UserMenuProps) {
 
   const handleLogout = async () => {
     setOpen(false);
-    await authClient.signOut({
-      fetchOptions: {
-        onSuccess: () => router.push("/"),
-      },
-    });
+    await authClient.signOut();
+    router.push("/");
+    router.refresh();
   };
 
   return (
