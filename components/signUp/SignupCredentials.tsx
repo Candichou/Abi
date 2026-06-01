@@ -76,7 +76,8 @@ export default function SignupCredentials({
       }}
     >
       {/* Indicateur d'étape */}
-      <p className="font-body text-sm text-forest/60">étape 1 sur 2</p>
+      {/*    <p className="font-body text-sm text-forest/60">étape 1 sur 2</p> */}
+      {/*  //todo: quand la deuxième étape sera prête */}
 
       {/* En-tête */}
       <div className="flex flex-col gap-1">
