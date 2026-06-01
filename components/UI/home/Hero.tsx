@@ -4,7 +4,10 @@ import { getSearchSuggestions } from "@/lib/practitioners-search";
 import { SearchCombobox } from "@/components/UI/search/SearchCombobox";
 
 export default async function Hero() {
-  const { specialties, cities } = await getSearchSuggestions();
+  const { specialties, cities } = await getSearchSuggestions().catch(() => ({
+    specialties: [],
+    cities: [],
+  }));
 
   return (
     <section className="bg-forest py-3 px-4">
