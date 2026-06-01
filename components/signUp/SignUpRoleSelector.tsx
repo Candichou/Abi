@@ -18,7 +18,7 @@ export function SignUpRoleSelector({ onNext }: SignUpRoleSelectorProps) {
     if (selected) onNext(selected);
   }
   return (
-    <div className="flex flex-col gap-6">
+    <div className="flex flex-col gap-6 w-full max-w-md mx-auto px-4 py-8">
       <div>
         <h1 className="font-heading font-bold text-h2 text-forest">
           Créer un compte
