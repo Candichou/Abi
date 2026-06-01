@@ -35,6 +35,9 @@
     "type-check": "^0.4.0",
     "zod": "^4.4.3"
   },
+  "pnpm": {
+    "onlyBuiltDependencies": ["esbuild"]
+  },
   "devDependencies": {
     "@tailwindcss/postcss": "latest",
     "@types/node": "latest",
