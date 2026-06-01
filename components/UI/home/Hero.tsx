@@ -11,6 +11,7 @@ export default async function Hero() {
 
   return (
     <section className="bg-forest py-3 px-4">
+      <div className="max-w-7xl mx-auto w-full">
       <h1 className="text-cream text-h1 font-heading font-bold ">
         Recherche ton praticien{" "}
         <span className="text-yellow">Bienveillant</span>
@@ -41,6 +42,7 @@ export default async function Hero() {
           Rechercher
         </button>
       </form>
+      </div>
     </section>
   );
 }
