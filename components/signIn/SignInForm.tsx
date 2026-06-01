@@ -166,9 +166,9 @@ export default function SignInForm() {
       </div>
 
       {/* Footer éthique */}
-      <p className="text-center font-body text-xs text-forest/50 mt-2">
+      {/*      <p className="text-center font-body text-xs text-forest/50 mt-2">
         Sans traceur · sans CAPTCHA visuel · données minimales · hébergement UE
-      </p>
+      </p> */}
     </form>
   );
 }
