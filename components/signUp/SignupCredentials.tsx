@@ -82,7 +82,7 @@ export default function SignupCredentials({
       {/* En-tête */}
       <div className="flex flex-col gap-1">
         <h1 className="font-heading font-bold text-h2 text-forest">
-          git Votre compte
+          Votre compte
         </h1>
         <p className="font-body text-sm text-forest/70">
           Nous collectons le strict minimum — pseudonyme et e-mail uniquement.
