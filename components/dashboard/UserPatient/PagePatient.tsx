@@ -7,11 +7,14 @@ export function PagePatient({ session }: { session: Session }) {
   return (
     <main className="min-h-screen bg-cream">
       {/* Header dark — cohérent avec la marque */}
-      <div className="bg-forest text-cream px-4 py-6 md:px-8">
-        <h1 className="text-2xl md:text-3xl font-heading font-bold">
-          Bienvenue, <span className="text-yellow">{session.user.name}</span> !
-        </h1>
-        <p className="text-sm mt-1 opacity-80">Vous êtes connecté.e</p>
+      <div className="bg-forest text-cream px-4 py-6">
+        <div className="max-w-7xl mx-auto w-full">
+          <h1 className="text-2xl md:text-3xl font-heading font-bold">
+            Bienvenue, <span className="text-yellow">{session.user.name}</span>{" "}
+            !
+          </h1>
+          <p className="text-sm mt-1 opacity-80">Vous êtes connecté.e</p>
+        </div>
       </div>
 
       {/* Contenu principal */}
@@ -80,9 +83,9 @@ export function PagePatient({ session }: { session: Session }) {
         </section>
 
         {/* Info privacy */}
-        <p className="text-center text-xs text-forest/50 mt-12">
+        {/*      <p className="text-center text-xs text-forest/50 mt-12">
           Vos données sont chiffrées • Suppression à tout moment possible
-        </p>
+        </p> */}
       </div>
     </main>
   );
