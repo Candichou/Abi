@@ -33,6 +33,9 @@ export default function RootLayout({
       <body className="min-h-full flex flex-col bg-cream text-forest">
         <Header />
         {children}
+        <footer className="mt-auto bg-forest py-3 px-4 text-center text-sm text-cream/60">
+          © Abi avec Bienveillance et Inclusion
+        </footer>
       </body>
     </html>
   );
