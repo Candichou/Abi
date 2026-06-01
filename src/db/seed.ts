@@ -231,6 +231,72 @@ async function seed() {
         isVisible: true,
         validatedBy: ADMIN_ID,
       },
+      // ===== GYNÉCOLOGUES NON-GROSSOPHOBES (non validés par une association) (5) =====
+      {
+        lastName: "Aubert",
+        firstName: "Céline",
+        specialty: "Gynécologue",
+        city: "Lyon",
+        address: "18 rue de la République, 69002 Lyon",
+        phone: "04 72 41 55 66",
+        price: "95",
+        convention: "sector_1",
+        status: "validated",
+        isVisible: true,
+        validatedBy: ADMIN_ID,
+      },
+      {
+        lastName: "Marchand",
+        firstName: "Delphine",
+        specialty: "Gynécologue",
+        city: "Bordeaux",
+        address: "42 cours Victor Hugo, 33000 Bordeaux",
+        phone: "05 56 44 77 88",
+        price: "100",
+        convention: "sector_2",
+        status: "validated",
+        isVisible: true,
+        validatedBy: ADMIN_ID,
+      },
+      {
+        lastName: "Osei",
+        firstName: "Abena",
+        specialty: "Gynécologue",
+        city: "Marseille",
+        address: "7 boulevard Longchamp, 13001 Marseille",
+        phone: "04 91 33 22 11",
+        price: "85",
+        convention: "sector_1",
+        status: "validated",
+        isVisible: true,
+        validatedBy: ADMIN_ID,
+      },
+      {
+        lastName: "Chevalier",
+        firstName: "Pauline",
+        specialty: "Gynécologue",
+        city: "Nantes",
+        address: "3 place du Commerce, 44000 Nantes",
+        phone: "02 40 69 88 99",
+        price: "90",
+        convention: "sector_2",
+        status: "validated",
+        isVisible: true,
+        validatedBy: ADMIN_ID,
+      },
+      {
+        lastName: "Idrissi",
+        firstName: "Sara",
+        specialty: "Gynécologue",
+        city: "Toulouse",
+        address: "15 rue Alsace-Lorraine, 31000 Toulouse",
+        phone: "05 61 23 44 55",
+        price: "95",
+        convention: "sector_1",
+        status: "validated",
+        isVisible: true,
+        validatedBy: ADMIN_ID,
+      },
       // ===== PENDING (2) =====
       {
         lastName: "Chouaib",
@@ -378,6 +444,42 @@ async function seed() {
         "LGBTQIA+ Friendly",
       ],
     },
+    {
+      name: "Céline Aubert",
+      tagLabels: [
+        "Non-grossophobe",
+        "Consentement éclairé",
+        "Respecte l'autonomie reproductive",
+      ],
+    },
+    {
+      name: "Delphine Marchand",
+      tagLabels: ["Non-grossophobe", "LGBTQIA+ Friendly", "Endométriose"],
+    },
+    {
+      name: "Abena Osei",
+      tagLabels: [
+        "Non-grossophobe",
+        "Attentif·ve aux vécus traumatiques",
+        "Tiers payant accepté",
+      ],
+    },
+    {
+      name: "Pauline Chevalier",
+      tagLabels: [
+        "Non-grossophobe",
+        "Consentement éclairé",
+        "Tarif solidaire sur justificatif",
+      ],
+    },
+    {
+      name: "Sara Idrissi",
+      tagLabels: [
+        "Non-grossophobe",
+        "Respecte l'autonomie reproductive",
+        "LGBTQIA+ Friendly",
+      ],
+    },
   ];
 
   await db
@@ -405,6 +507,8 @@ async function seed() {
     "Isabelle Rousseau",
     "Julien Fabre",
     "Nadia Lambert",
+    "Sara Idrissi",
+    "Delphine Marchand",
   ];
 
   await db
