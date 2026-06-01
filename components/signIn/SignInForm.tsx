@@ -48,6 +48,7 @@ export default function SignInForm() {
       return;
     }
 
+    router.refresh();
     router.push("/dashboard");
   }
 
