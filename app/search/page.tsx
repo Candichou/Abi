@@ -1,9 +1,9 @@
-import { PractitionerCard } from "@/components/UI/search/PractitionerCard";
-import { searchPractitioners, getSearchSuggestions } from "@/lib/practitioners-search";
+import { PractitionerCard } from "@/components/practitioners/PractitionerCard";
+import { searchPractitioners, getSearchSuggestions } from "@/server/queries/practitioners";
 import { MagnifyingGlassIcon, MapPinIcon } from "@heroicons/react/24/outline";
-import { SearchCombobox } from "@/components/UI/search/SearchCombobox";
+import { SearchCombobox } from "@/components/practitioners/SearchCombobox";
 import Link from "next/link";
-import { auth } from "@/lib/auth";
+import { auth } from "@/lib/auth/config";
 import { headers } from "next/headers";
 
 export default async function SearchPage({

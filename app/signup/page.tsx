@@ -2,9 +2,9 @@
 
 import { useState } from "react";
 
-import SignInForm from "@/components/signIn/SignInForm";
-import { SignUpRoleSelector } from "@/components/signUp/SignUpRoleSelector";
-import SignupCredentials from "@/components/signUp/SignupCredentials";
+import SignInForm from "@/components/auth/SignInForm";
+import { SignUpRoleSelector } from "@/components/auth/SignUpRoleSelector";
+import SignupCredentials from "@/components/auth/SignupCredentials";
 
 type Role = "patient" | "association";
 
