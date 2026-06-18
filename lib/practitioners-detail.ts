@@ -70,11 +70,14 @@ export async function getPractitionerById(
     db
       .select({
         tagId: tagVotes.tagId,
+        label: tags.label,
+        category: tags.category,
         count: sql<number>`count(*)::int`,
       })
       .from(tagVotes)
+      .innerJoin(tags, eq(tagVotes.tagId, tags.id))
       .where(eq(tagVotes.practitionerId, id))
-      .groupBy(tagVotes.tagId),
+      .groupBy(tags.id, tags.label, tags.category),
 
     db
       .select({
@@ -107,15 +110,13 @@ export async function getPractitionerById(
   const communityTags = voteRows
     .filter((v) => !officialTagIds.has(v.tagId))
     .map((v) => {
-      const tag = tagRows.find((t) => t.tagId === v.tagId);
       return {
         id: v.tagId,
-        label: tag?.label ?? "",
-        category: tag?.category ?? "",
+        label: v.label,
+        category: v.category,
         voteCount: v.count,
       };
-    })
-    .filter((t) => t.label);
+    });
 
   return {
     id: practitioner.id,

@@ -90,12 +90,15 @@ export async function searchPractitioners(
     db
       .select({
         practitionerId: tagVotes.practitionerId,
-        tagId: tagVotes.tagId,
+        tagId: tags.id,
+        label: tags.label,
+        category: tags.category,
         count: sql<number>`count(*)::int`,
       })
       .from(tagVotes)
+      .innerJoin(tags, eq(tagVotes.tagId, tags.id))
       .where(inArray(tagVotes.practitionerId, ids))
-      .groupBy(tagVotes.practitionerId, tagVotes.tagId),
+      .groupBy(tagVotes.practitionerId, tags.id, tags.label, tags.category),
 
     db
       .select({
@@ -144,16 +147,12 @@ export async function searchPractitioners(
           vote.practitionerId === practitioner.id &&
           !officialTagIds.has(vote.tagId),
       )
-      .map((vote) => {
-        const tag = tagRows.find((tag) => tag.tagId === vote.tagId);
-        return {
-          id: vote.tagId,
-          label: tag?.label ?? "",
-          category: tag?.category ?? "",
-          voteCount: vote.count,
-        };
-      })
-      .filter((tag) => tag.label);
+      .map((vote) => ({
+        id: vote.tagId,
+        label: vote.label,
+        category: vote.category,
+        voteCount: vote.count,
+      }));
 
     return {
       id: practitioner.id,
