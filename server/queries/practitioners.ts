@@ -104,7 +104,7 @@ export async function getPractitionerById(
       .from(tagVotes)
       .innerJoin(tags, eq(tagVotes.tagId, tags.id))
       .where(eq(tagVotes.practitionerId, id))
-      .groupBy(tags.id, tags.label, tags.category),
+      .groupBy(tagVotes.tagId, tags.id, tags.label, tags.category),
 
     db
       .select({
@@ -172,11 +172,21 @@ export async function getSearchSuggestions(): Promise<{
     db
       .selectDistinct({ specialty: practitioners.specialty })
       .from(practitioners)
-      .where(and(eq(practitioners.status, "validated"), eq(practitioners.isVisible, true))),
+      .where(
+        and(
+          eq(practitioners.status, "validated"),
+          eq(practitioners.isVisible, true),
+        ),
+      ),
     db
       .selectDistinct({ city: practitioners.city })
       .from(practitioners)
-      .where(and(eq(practitioners.status, "validated"), eq(practitioners.isVisible, true))),
+      .where(
+        and(
+          eq(practitioners.status, "validated"),
+          eq(practitioners.isVisible, true),
+        ),
+      ),
   ]);
 
   return {

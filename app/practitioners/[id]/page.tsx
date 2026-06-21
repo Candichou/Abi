@@ -3,7 +3,14 @@ import { auth } from "@/lib/auth/config";
 import { headers } from "next/headers";
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import { ArrowLeftIcon, MapPinIcon, PhoneIcon, LockClosedIcon, GlobeAltIcon } from "@heroicons/react/24/outline";
+import {
+  ArrowLeftIcon,
+  MapPinIcon,
+  PhoneIcon,
+  LockClosedIcon,
+  GlobeAltIcon,
+} from "@heroicons/react/24/outline";
+import { maskPractitionerFull } from "@/lib/privacy";
 
 const TAG_CATEGORY_STYLES: Record<string, string> = {
   pathologie: "bg-teal/20 text-forest border border-teal/40",
@@ -48,7 +55,8 @@ export default async function PractitionerPage({
   ]);
 
   if (!practitioner) notFound();
-
+  const isLoggedIn = !!session;
+  const maskedPractitioner = maskPractitionerFull(practitioner, isLoggedIn);
   const {
     firstName,
     lastName,
@@ -62,11 +70,10 @@ export default async function PractitionerPage({
     communityTags,
     approvedAssos,
     createdAt,
-  } = practitioner;
+  } = maskedPractitioner;
 
   const initials = `${firstName.charAt(0)}${lastName.charAt(0)}`.toUpperCase();
   const tagsByCategory = groupBy(officialTags, (t) => t.category);
-  const isLoggedIn = !!session;
 
   return (
     <main className="min-h-screen bg-cream">
@@ -103,13 +110,14 @@ export default async function PractitionerPage({
       </div>
 
       <div className="max-w-2xl mx-auto px-4 py-6 space-y-5">
-
         {/* Badge validé par asso */}
         {approvedAssos.length > 0 && (
           <section className="bg-peach/30 border border-peach rounded-2xl px-5 py-4">
             <p className="text-forest text-sm font-body mb-2">
               <span className="text-yellow font-bold mr-1">✦</span>
-              <span className="font-semibold">Validé par une association partenaire</span>
+              <span className="font-semibold">
+                Validé par une association partenaire
+              </span>
             </p>
             {approvedAssos.map((asso) => (
               <div key={asso.id} className="flex items-center justify-between">
@@ -133,23 +141,29 @@ export default async function PractitionerPage({
         {/* Tarif & Convention */}
         {(price || convention) && (
           <section className="bg-white border-2 border-forest/10 rounded-2xl px-5 py-4">
-            <h2 className="font-heading font-bold text-forest text-base mb-3">Tarifs</h2>
+            <h2 className="font-heading font-bold text-forest text-base mb-3">
+              Tarifs
+            </h2>
             <div className="space-y-1.5 text-sm text-forest/70 font-body">
               {price && (
                 <p>
-                  💶 <span className="text-forest font-semibold">{parseFloat(price).toFixed(0)}€</span> par séance
+                  💶{" "}
+                  <span className="text-forest font-semibold">
+                    {parseFloat(price).toFixed(0)}€
+                  </span>{" "}
+                  par séance
                 </p>
               )}
-              {convention && (
-                <p>📋 {CONVENTION_LABELS[convention]}</p>
-              )}
+              {convention && <p>📋 {CONVENTION_LABELS[convention]}</p>}
             </div>
           </section>
         )}
 
         {/* Coordonnées */}
         <section className="bg-white border-2 border-forest/10 rounded-2xl px-5 py-4">
-          <h2 className="font-heading font-bold text-forest text-base mb-3">Coordonnées</h2>
+          <h2 className="font-heading font-bold text-forest text-base mb-3">
+            Coordonnées
+          </h2>
           {isLoggedIn ? (
             <div className="space-y-2 text-sm font-body">
               {address && (
@@ -161,13 +175,18 @@ export default async function PractitionerPage({
               {phone && (
                 <div className="flex items-center gap-2 text-forest/70">
                   <PhoneIcon className="w-4 h-4 shrink-0" />
-                  <a href={`tel:${phone}`} className="hover:text-forest transition-colors">
+                  <a
+                    href={`tel:${phone}`}
+                    className="hover:text-forest transition-colors"
+                  >
                     {phone}
                   </a>
                 </div>
               )}
               {!address && !phone && (
-                <p className="text-forest/40 text-xs">Aucune coordonnée renseignée.</p>
+                <p className="text-forest/40 text-xs">
+                  Aucune coordonnée renseignée.
+                </p>
               )}
             </div>
           ) : (
@@ -191,27 +210,32 @@ export default async function PractitionerPage({
         {/* Tags officiels */}
         {Object.keys(tagsByCategory).length > 0 && (
           <section className="bg-white border-2 border-forest/10 rounded-2xl px-5 py-4">
-            <h2 className="font-heading font-bold text-forest text-base mb-3">Caractéristiques</h2>
+            <h2 className="font-heading font-bold text-forest text-base mb-3">
+              Caractéristiques
+            </h2>
             <div className="space-y-3">
-              {Object.entries(tagsByCategory).map(([category, categoryTags]) => (
-                <div key={category}>
-                  <p className="text-xs text-forest/40 font-body uppercase tracking-wide mb-1.5">
-                    {TAG_CATEGORY_LABELS[category] ?? category}
-                  </p>
-                  <div className="flex flex-wrap gap-2">
-                    {categoryTags.map((tag) => (
-                      <span
-                        key={tag.id}
-                        className={`text-xs px-3 py-1.5 rounded-full font-body ${
-                          TAG_CATEGORY_STYLES[tag.category] ?? "bg-forest/5 text-forest/70"
-                        }`}
-                      >
-                        {tag.label}
-                      </span>
-                    ))}
+              {Object.entries(tagsByCategory).map(
+                ([category, categoryTags]) => (
+                  <div key={category}>
+                    <p className="text-xs text-forest/40 font-body uppercase tracking-wide mb-1.5">
+                      {TAG_CATEGORY_LABELS[category] ?? category}
+                    </p>
+                    <div className="flex flex-wrap gap-2">
+                      {categoryTags.map((tag) => (
+                        <span
+                          key={tag.id}
+                          className={`text-xs px-3 py-1.5 rounded-full font-body ${
+                            TAG_CATEGORY_STYLES[tag.category] ??
+                            "bg-forest/5 text-forest/70"
+                          }`}
+                        >
+                          {tag.label}
+                        </span>
+                      ))}
+                    </div>
                   </div>
-                </div>
-              ))}
+                ),
+              )}
             </div>
           </section>
         )}
