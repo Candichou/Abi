@@ -39,23 +39,49 @@ Tests: Vitest => Unit + intégration
 CI/CD: GitHub Actions => Lint, tests, déploiement automatisé
 
 🏗️ Architecture
-app/
-├── (auth)/ # Groupe de routes authentification
-│ ├── signup/ # Inscription multi-étapes
-│ └── signin/ # Connexion
-├── (public)/ # Routes accessibles sans connexion
-│ └── page.tsx # Home — recherche praticiens
-├── api/
-│ └── auth/ # BetterAuth handlers
-lib/
-├── db/ # Drizzle schemas + connexion Neon
-├── validations/ # Schémas Zod (auth, contribution)
-└── utils/ # Helpers partagés
-Architecture multicouche :
 
-Présentation : composants React (App Router)
-Métier : Server Actions + validation Zod
-Données : Drizzle ORM → PostgreSQL Neon
+Le projet suit une architecture en couches stricte (BC02) : chaque couche a une responsabilité unique et ne dépend jamais d'une couche au-dessus d'elle.
+
+```
+app/                          ← Couche présentation — routes Next.js
+├── api/auth/[...all]/        # BetterAuth handlers
+├── dashboard/                # Dashboard selon le rôle (patient / asso)
+├── practitioners/[id]/       # Fiche praticien détaillée
+├── search/                   # Résultats de recherche
+├── signin/ & signup/         # Authentification
+
+components/                   ← Couche présentation — composants React
+├── layout/                   # Header, HeaderAuth, UserMenu
+├── home/                     # Hero (page d'accueil)
+├── practitioners/            # PractitionerCard, SearchCombobox
+├── auth/                     # SignInForm, SignUpRoleSelector, SignupCredentials
+├── dashboard/
+│   ├── patient/              # PatientView
+│   └── association/          # AssociationView
+└── common/                   # Button, AuthGateModal (réutilisables partout)
+
+lib/                          ← Couche configuration & validation
+├── auth/
+│   ├── config.ts             # Configuration BetterAuth (server-only)
+│   └── client.ts             # authClient (navigateur)
+└── validations/              # Schémas Zod (auth, utils)
+
+server/                       ← Couche accès aux données (server-only)
+├── db/
+│   ├── index.ts              # Connexion Drizzle → Neon
+│   └── schema/
+│       ├── app.ts            # Tables métier (practitioners, tags, associations…)
+│       └── auth.ts           # Tables BetterAuth (users, sessions…)
+├── queries/
+│   └── practitioners.ts      # Requêtes DB : search, detail, suggestions
+└── actions/
+    └── auth.ts               # Server Actions : setUserRole
+```
+
+Règle de dépendance :
+- `components/` ne sait pas que la base de données existe
+- `server/queries/` ne sait pas que des composants React existent
+- `lib/` contient uniquement de la config et de la validation, sans accès DB direct
 
 🔐 Sécurité & conformité
 

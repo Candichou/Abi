@@ -1,8 +1,8 @@
 import { headers } from "next/headers";
-import { auth } from "@/lib/auth";
+import { auth } from "@/lib/auth/config";
 import { redirect } from "next/navigation";
-import { PagePatient } from "@/components/dashboard/UserPatient/PagePatient";
-import { PageAsso } from "@/components/dashboard/UserAsso/PageAsso";
+import { PagePatient } from "@/components/dashboard/patient/PatientView";
+import { PageAsso } from "@/components/dashboard/association/AssociationView";
 
 export default async function DashboardPage() {
   const session = await auth.api.getSession({ headers: await headers() });
