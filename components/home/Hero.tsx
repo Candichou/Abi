@@ -10,7 +10,7 @@ export default async function Hero() {
   }));
 
   return (
-    <section className="bg-forest py-3 px-4">
+    <section className="bg-forest py-3 px-4 min-h-svh flex flex-col justify-center">
       <div className="max-w-7xl mx-auto w-full">
         <h1 className="text-cream text-h1 font-heading font-bold ">
           Recherche ton praticien{" "}
@@ -25,14 +25,14 @@ export default async function Hero() {
             name="specialty"
             placeholder="Spécialité"
             suggestions={specialties}
-            icon={<MagnifyingGlassIcon className="w-5 h-5 text-gray-400" />}
+            icon={<MagnifyingGlassIcon className="w-5 h-5 text-gray-700" />}
             inputClassName="bg-cream w-full pl-10 py-3 rounded-full border border-forest/20 outline-none focus:border-forest"
           />
           <SearchCombobox
             name="city"
             placeholder="Ville, code postal"
             suggestions={cities}
-            icon={<MapPinIcon className="w-5 h-5 text-gray-400" />}
+            icon={<MapPinIcon className="w-5 h-5 text-gray-700" />}
             inputClassName="bg-cream w-full pl-10 py-3 rounded-full border border-forest/20 outline-none focus:border-forest"
           />
           <button
