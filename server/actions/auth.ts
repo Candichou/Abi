@@ -1,14 +1,18 @@
 "use server";
 
 import { auth } from "@/lib/auth/config";
-import { db } from "@/server/db/index";
-import { users } from "@/server/db/schema/auth";
-import { eq } from "drizzle-orm";
 import { headers } from "next/headers";
+import { updateUserRole } from "../queries/users";
 
-export async function setUserRole(role: "patient" | "asso") {
-  const session = await auth.api.getSession({ headers: await headers() });
-  if (!session?.user?.id) throw new Error("Not authenticated");
+export async function setUserRole(role: "patient" | "association") {
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  });
+  if (!session?.user?.id) throw new Error("Vous n'êtes pas connecté.e");
 
-  await db.update(users).set({ role }).where(eq(users.id, session.user.id));
+  const updated = await updateUserRole(session.user.id, role);
+  if (!updated)
+    throw new Error(
+      "Impossible de mettre à jour votre profil, veuillez vous reconnecter.",
+    );
 }
