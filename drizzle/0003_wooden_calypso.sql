@@ -1,0 +1,1 @@
+CREATE UNIQUE INDEX "unique_saved_practitioner" ON "saved_practitioners" USING btree ("user_id","practitioner_id");

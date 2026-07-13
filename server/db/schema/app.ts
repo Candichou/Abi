@@ -162,15 +162,25 @@ export const contributions = pgTable("contributions", {
 
 // ─── Saved practitioners (patients uniquement) ────────────────────────────────
 
-export const savedPractitioners = pgTable("saved_practitioners", {
-  userId: text("user_id")
-    .notNull()
-    .references(() => users.id, { onDelete: "cascade" }),
-  practitionerId: uuid("practitioner_id")
-    .notNull()
-    .references(() => practitioners.id, { onDelete: "cascade" }),
-  savedAt: timestamp("saved_at").defaultNow().notNull(),
-});
+export const savedPractitioners = pgTable(
+  "saved_practitioners",
+  {
+    userId: text("user_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    practitionerId: uuid("practitioner_id")
+      .notNull()
+      .references(() => practitioners.id, { onDelete: "cascade" }),
+    savedAt: timestamp("saved_at").defaultNow().notNull(),
+  },
+  (table) => [
+    // contrainte DB (pas juste applicative) : protège aussi contre un double-clic / race condition
+    uniqueIndex("unique_saved_practitioner").on(
+      table.userId,
+      table.practitionerId,
+    ),
+  ],
+);
 
 // ─── Reports ──────────────────────────────────────────────────────────────────
 
