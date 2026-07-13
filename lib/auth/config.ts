@@ -39,7 +39,7 @@ export const auth = betterAuth({
     expiresIn: 60 * 60 * 24,
     updateAge: 60 * 60,
   },
-  plugins: [nextCookies(), admin()], //permet de sauvegarder les cookies better-auth dans l'appli next
+  plugins: [admin(), nextCookies()], //permet de sauvegarder les cookies better-auth dans l'appli next
 });
 
 export async function getSessionFromRequest(request: NextRequest) {
