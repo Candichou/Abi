@@ -61,8 +61,7 @@ export default function SignupCredentials({
       return;
     }
 
-    const dbRole = role === "association" ? "asso" : "patient";
-    await setUserRole(dbRole);
+    await setUserRole(role);
 
     router.refresh(); // invalide le router cache pour que le Header re-fetch la session
     router.push("/dashboard");
