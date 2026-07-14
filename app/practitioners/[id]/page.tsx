@@ -11,6 +11,8 @@ import {
   GlobeAltIcon,
 } from "@heroicons/react/24/outline";
 import { maskPractitionerFull } from "@/lib/privacy";
+import { isPractitionerSaved } from "@/server/queries/savedPractitioners";
+import { SaveButton } from "@/components/practitioners/SaveButton";
 
 const TAG_CATEGORY_STYLES: Record<string, string> = {
   pathologie: "bg-teal/20 text-forest border border-teal/40",
@@ -56,6 +58,9 @@ export default async function PractitionerPage({
 
   if (!practitioner) notFound();
   const isLoggedIn = !!session;
+  const isSaved = isLoggedIn
+    ? await isPractitionerSaved(session.user.id, id)
+    : false;
   const maskedPractitioner = maskPractitionerFull(practitioner, isLoggedIn);
   const {
     firstName,
@@ -96,7 +101,7 @@ export default async function PractitionerPage({
                 {initials}
               </span>
             </div>
-            <div>
+            <div className="flex-1">
               <h1
                 className={`text-cream font-heading font-bold text-2xl leading-tight${!isLoggedIn ? " blur-sm select-none" : ""}`}
               >
@@ -105,6 +110,9 @@ export default async function PractitionerPage({
               <p className="text-cream/70 text-sm mt-0.5">{specialty}</p>
               <p className="text-cream/50 text-xs mt-0.5">📍 {city}</p>
             </div>
+            {isLoggedIn && (
+              <SaveButton practitionerId={id} initialSaved={isSaved} />
+            )}
           </div>
         </div>
       </div>
