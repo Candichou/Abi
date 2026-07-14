@@ -1,9 +1,13 @@
+import Link from "next/link";
 import { Logout } from "../Logout";
 import { auth } from "@/lib/auth/config";
+import { getSavedPractitioners } from "@/server/queries/savedPractitioners";
 
 type Session = NonNullable<Awaited<ReturnType<typeof auth.api.getSession>>>;
 
-export function PagePatient({ session }: { session: Session }) {
+export async function PagePatient({ session }: { session: Session }) {
+  const savedPractitioners = await getSavedPractitioners(session.user.id);
+
   return (
     <main className="min-h-screen bg-cream">
       {/* Header dark — cohérent avec la marque */}
@@ -55,10 +59,46 @@ export function PagePatient({ session }: { session: Session }) {
                 Praticiens sauvegardés
               </p>
               <p className="text-2xl font-heading font-bold text-forest mt-1">
-                0
+                {savedPractitioners.length}
               </p>
             </div>
           </div>
+        </section>
+
+        {/* Liste des praticiens sauvegardés */}
+        <section
+          className="mb-8"
+          aria-labelledby="saved-heading"
+        >
+          <h2
+            id="saved-heading"
+            className="text-sm font-heading font-bold text-forest uppercase tracking-wide mb-3"
+          >
+            Praticiens sauvegardés
+          </h2>
+          {savedPractitioners.length === 0 ? (
+            <p className="text-sm text-forest/60">
+              Aucun praticien sauvegardé pour le moment.
+            </p>
+          ) : (
+            <ul className="space-y-3">
+              {savedPractitioners.map((practitioner) => (
+                <li key={practitioner.id}>
+                  <Link
+                    href={`/practitioners/${practitioner.id}`}
+                    className="block bg-white border-2 border-forest/20 rounded-2xl px-5 py-4 hover:border-forest transition-colors"
+                  >
+                    <p className="font-heading font-bold text-forest">
+                      {practitioner.firstName} {practitioner.lastName}
+                    </p>
+                    <p className="text-sm text-forest/60">
+                      {practitioner.specialty}
+                    </p>
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          )}
         </section>
 
         {/* Actions */}
