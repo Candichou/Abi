@@ -2,6 +2,7 @@
 
 import { auth } from "@/lib/auth/config";
 import { headers } from "next/headers";
+import { revalidatePath } from "next/cache";
 import { unsavePractitioner as unsavePractitionerQuery } from "@/server/queries/savedPractitioners";
 import { savedPractitionerSchema } from "@/lib/validations/savedPractitioners";
 
@@ -16,4 +17,5 @@ export async function unsavePractitioner(practitionerId: string) {
   });
 
   await unsavePractitionerQuery(session.user.id, validatedId);
+  revalidatePath("/dashboard");
 }

@@ -12,7 +12,7 @@ import {
 } from "@heroicons/react/24/outline";
 import { maskPractitionerFull } from "@/lib/privacy";
 import { isPractitionerSaved } from "@/server/queries/savedPractitioners";
-import { SaveButton } from "@/components/practitioners/SaveButton";
+import { BookmarkButton } from "@/components/practitioners/BookmarkButton";
 
 const TAG_CATEGORY_STYLES: Record<string, string> = {
   pathologie: "bg-teal/20 text-forest border border-teal/40",
@@ -111,7 +111,11 @@ export default async function PractitionerPage({
               <p className="text-cream/50 text-xs mt-0.5">📍 {city}</p>
             </div>
             {isLoggedIn && (
-              <SaveButton practitionerId={id} initialSaved={isSaved} />
+              <BookmarkButton
+                practitionerId={id}
+                initialSaved={isSaved}
+                variant="dark"
+              />
             )}
           </div>
         </div>

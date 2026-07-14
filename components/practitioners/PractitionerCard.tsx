@@ -1,11 +1,10 @@
 "use client";
 
-import { BookmarkIcon } from "@heroicons/react/24/outline";
-import { BookmarkIcon as BookmarkSolidIcon } from "@heroicons/react/24/solid";
 import { useState } from "react";
 import Link from "next/link";
 import type { PractitionerWithDetails } from "@/server/queries/practitioners";
 import { AuthGateModal } from "@/components/common/AuthGateModal";
+import { BookmarkButton } from "@/components/practitioners/BookmarkButton";
 
 const TAG_CATEGORY_STYLES: Record<string, string> = {
   pathologie: "bg-teal/20 text-forest border border-teal/40",
@@ -43,13 +42,14 @@ export function PractitionerCard({
   onHover,
   isHighlighted,
   isLoggedIn = false,
+  isSaved = false,
 }: {
   practitioner: PractitionerWithDetails;
   onHover?: (id: string | null) => void;
   isHighlighted?: boolean;
   isLoggedIn?: boolean;
+  isSaved?: boolean;
 }) {
-  const [saved, setSaved] = useState(false);
   const [showAuthModal, setShowAuthModal] = useState(false);
   const {
     firstName,
@@ -178,22 +178,14 @@ export function PractitionerCard({
 
         {/* Actions */}
         <div className="flex items-center justify-between pt-3 border-t border-forest/10 mt-3">
-          <button
-            onClick={() => setSaved((save) => !save)}
-            className="flex items-center gap-1.5 text-sm text-forest/60 hover:text-forest transition-colors"
-            aria-label={
-              saved ? "Retirer des favoris" : "Sauvegarder ce praticien"
-            }
-          >
-            {saved ? (
-              <BookmarkSolidIcon className="w-4 h-4 text-forest" />
-            ) : (
-              <BookmarkIcon className="w-4 h-4" />
-            )}
-            <span className="font-body text-xs">
-              {saved ? "Sauvegardé" : "Sauvegarder"}
-            </span>
-          </button>
+          {isLoggedIn ? (
+            <BookmarkButton
+              practitionerId={practitioner.id}
+              initialSaved={isSaved}
+            />
+          ) : (
+            <span />
+          )}
           {isLoggedIn ? (
             <Link
               href={`/practitioners/${practitioner.id}`}

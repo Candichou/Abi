@@ -1,7 +1,7 @@
-import Link from "next/link";
 import { Logout } from "../Logout";
 import { auth } from "@/lib/auth/config";
 import { getSavedPractitioners } from "@/server/queries/savedPractitioners";
+import { SavedPractitionersList } from "./SavedPractitionersList";
 
 type Session = NonNullable<Awaited<ReturnType<typeof auth.api.getSession>>>;
 
@@ -66,39 +66,14 @@ export async function PagePatient({ session }: { session: Session }) {
         </section>
 
         {/* Liste des praticiens sauvegardés */}
-        <section
-          className="mb-8"
-          aria-labelledby="saved-heading"
-        >
+        <section className="mb-8" aria-labelledby="saved-heading">
           <h2
             id="saved-heading"
             className="text-sm font-heading font-bold text-forest uppercase tracking-wide mb-3"
           >
             Praticiens sauvegardés
           </h2>
-          {savedPractitioners.length === 0 ? (
-            <p className="text-sm text-forest/60">
-              Aucun praticien sauvegardé pour le moment.
-            </p>
-          ) : (
-            <ul className="space-y-3">
-              {savedPractitioners.map((practitioner) => (
-                <li key={practitioner.id}>
-                  <Link
-                    href={`/practitioners/${practitioner.id}`}
-                    className="block bg-white border-2 border-forest/20 rounded-2xl px-5 py-4 hover:border-forest transition-colors"
-                  >
-                    <p className="font-heading font-bold text-forest">
-                      {practitioner.firstName} {practitioner.lastName}
-                    </p>
-                    <p className="text-sm text-forest/60">
-                      {practitioner.specialty}
-                    </p>
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          )}
+          <SavedPractitionersList practitioners={savedPractitioners} />
         </section>
 
         {/* Actions */}
@@ -106,18 +81,7 @@ export async function PagePatient({ session }: { session: Session }) {
           <h2 id="actions-heading" className="sr-only">
             Actions disponibles
           </h2>
-          {/* Bouton principal — AJouter praticien DISABLED */}
-          <button
-            disabled
-            className="w-full py-4 px-6 rounded-full font-heading font-bold bg-lavender/50 text-forest/50 cursor-not-allowed border-2 border-lavender/30"
-            aria-label="Ajouter un praticien (À venir)"
-            title="Cette fonctionnalité arrive prochainement"
-          >
-            ➕ Ajouter un praticien
-            <span className="block text-xs mt-1 font-body font-normal">
-              À venir
-            </span>
-          </button>
+
           {/* Bouton déconnexion */}
           <Logout />
         </section>

@@ -9,6 +9,7 @@ import Link from "next/link";
 import { auth } from "@/lib/auth/config";
 import { headers } from "next/headers";
 import { maskPractitioner } from "@/lib/privacy";
+import { getSavedPractitionerIds } from "@/server/queries/savedPractitioners";
 
 export default async function SearchPage({
   searchParams,
@@ -22,6 +23,9 @@ export default async function SearchPage({
     auth.api.getSession({ headers: await headers() }),
   ]);
   const isLoggedIn = !!session;
+  const savedIds = isLoggedIn
+    ? new Set(await getSavedPractitionerIds(session.user.id))
+    : new Set<string>();
 
   const maskedResults = results.map((practitioner) =>
     maskPractitioner(practitioner, isLoggedIn),
@@ -95,6 +99,7 @@ export default async function SearchPage({
                 key={practitioner.id}
                 practitioner={practitioner}
                 isLoggedIn={isLoggedIn}
+                isSaved={savedIds.has(practitioner.id)}
               />
             ))}
           </div>
