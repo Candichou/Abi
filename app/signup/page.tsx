@@ -5,8 +5,7 @@ import { useState } from "react";
 import SignInForm from "@/components/auth/SignInForm";
 import { SignUpRoleSelector } from "@/components/auth/SignUpRoleSelector";
 import SignupCredentials from "@/components/auth/SignupCredentials";
-
-type Role = "patient" | "association";
+import type { Role } from "@/lib/validations/role";
 
 type StepData = {
   role?: Role;

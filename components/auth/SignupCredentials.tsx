@@ -9,9 +9,10 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Button from "@/components/common/Button";
 import Link from "next/link";
+import type { Role } from "@/lib/validations/role";
 
 interface SignupCredentialsProps {
-  role: "patient" | "association";
+  role: Role;
   onBack: () => void;
   disabled: (isLoading: boolean) => void;
 }

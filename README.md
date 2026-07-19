@@ -1,12 +1,12 @@
 Abi — Application Bienveillante et Inclusive
 
-Annuaire de spécialistes de santé validés bienveillants, inclusifs et ethique, par des associations de patients et les patients eux-même.
+Annuaire de spécialistes de santé bienveillants, inclusifs et éthiques, recommandés et badgés de confiance par des associations de patients et les patients eux-même.
 
 Statut : en développement actif — Demo Day prévu le 2 juin 2026 · Soutenance RNCP6 mi-août 2026
 
 🎯 Le problème
 Trouver un professionnel de santé compétent ne suffit pas pour les personnes en situation de vulnérabilité (maladies chroniques, handicap, publics LGBTQIA+, personnes racisées, femmes…). Il n'existe pas d'annuaire structuré autour de critères éthiques validés par des associations de terrain.
-Abi comble ce vide : les praticiens sont référencés et validés par des associations partenaires sur des critères transparents (consentement éclairé, inclusivité, accessibilité).
+Abi comble ce vide : les praticiens sont référencés et recommandés par des associations partenaires sur des critères transparents (consentement éclairé, inclusivité, accessibilité), puis publiés après validation de l'administrateur.
 
 ✨ Fonctionnalités
 MVP (en cours)
@@ -16,11 +16,22 @@ Schémas de base de données (Drizzle ORM)
 Authentification multi-rôles (BetterAuth) — routes signin/signup
 UI des formulaires d'inscription (en cours)
 Fiches praticiens avec floutage partiel pour non-connectés
-Workflow de contribution : patient propose → validation association → publication
+Workflow de contribution : patient propose → validation par l'administrateur → publication
 Seed de démonstration (praticiens, tags, utilisateurs fictifs)
 
-Post-MVP (soutenance août 2026)
+**Scope V1 : parcours Patient uniquement.** Le sélecteur de rôle à l'inscription
+affiche toujours l'option Association (elle fait partie du pitch produit — « praticiens
+validés par des associations de patients »), mais elle est désactivée (grisée, badge
+« Bientôt disponible », non sélectionnable) et refusée côté serveur si on tente de
+contourner l'UI. Raison : construire ce parcours en entier (formulaire de profil
+association, workflow de validation `pending/active/suspended`, interface de modération)
+est un chantier à part entière, disproportionné pour le temps restant avant la
+soutenance. L'architecture est prête (tables `associations` et
+`practitionerAssociations` dans `server/db/schema/app.ts`) pour une implémentation V2.
 
+Post-MVP (V2)
+
+Parcours d'inscription Association complet (formulaire de profil, validation par un administrateur)
 Tableau de bord association (modération, validation)
 Interface d'administration
 Cartographie des praticiens
@@ -113,7 +124,7 @@ Schéma défini avec Drizzle ORM dans `server/db/schema/` (`app.ts` : tables mé
 
 | Table | Fonctionnalité prévue |
 |---|---|
-| `associations`, `practitionerAssociations` | Une association valide un praticien (confiance patient) et suit dans son dashboard les praticiens qu'elle connaît |
+| `associations`, `practitionerAssociations` | Une association recommande/badge un praticien qu'elle connaît (confiance patient) et suit ces praticiens dans son dashboard — la publication reste décidée par l'administrateur |
 | `tagVotes` | Vote patient sur les tags d'un praticien — classement par nombre de votes (le classement affiché en MVP vient du seed, pas encore de votes réels) |
 | `reports` | Signalement d'une fiche praticien/association erronée ou d'un problème éthique — modération humaine uniquement, jamais d'action automatique (masquage, blacklist), pour limiter le risque légal (diffamation, responsabilité de plateforme) |
 | `practitionerConsentRequests`, `consentLogs` | Demande de consentement RGPD envoyée au praticien avant publication de sa fiche (`practitioners.isVisible`) — process manuel (email) en MVP, ces tables modélisent l'automatisation future (lien à usage unique, traçabilité IP/version CGU) |
@@ -195,7 +206,9 @@ pnpm run dev
 Semaine 1-2 (mai 2026) ✅ Setup, Home UI, Auth routes, Schemas Drizzle
 Semaine 3-4 (mai 2026) 🔄 Auth UI, seed, fiches praticiens (floutage)
 Semaine 5-6 (juin 2026) ⏳ Demo Day MVP — recherche fonctionnelle
-Semaine 7-12 (juin-août) ⏳ Dashboard association, admin, tests, déploiement
+Semaine 7-12 (juin-août) ⏳ Tests, déploiement, documentation
+
+V2 (hors soutenance) Parcours d'inscription association complet, dashboard association, admin
 
 🎓 Contexte académique
 Projet de soutenance Titre Pro CDA RNCP6 — RNCP37873 couvrant les blocs :
