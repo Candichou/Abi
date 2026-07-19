@@ -3,7 +3,7 @@ import { auth } from "@/lib/auth/config";
 
 type Session = NonNullable<Awaited<ReturnType<typeof auth.api.getSession>>>;
 
-export function PageAsso({ session }: { session: Session }) {
+export function PageAssociation({ session }: { session: Session }) {
   return (
     <main className="min-h-screen bg-cream">
       <div className="bg-forest text-cream px-4 py-6 md:px-8">
