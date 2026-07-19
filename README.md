@@ -72,16 +72,23 @@ server/                       ← Couche accès aux données (server-only)
 │   └── schema/
 │       ├── app.ts            # Tables métier (practitioners, tags, associations…)
 │       └── auth.ts           # Tables BetterAuth (users, sessions…)
+├── auth/
+│   └── getCurrentUser.ts     # Seul point qui parle à BetterAuth + next/headers pour la session
 ├── queries/
-│   └── practitioners.ts      # Requêtes DB : search, detail, suggestions
+│   ├── practitioners.ts      # Requêtes DB : search, detail, suggestions
+│   ├── savedPractitioners.ts # Requêtes DB : praticiens sauvegardés par un patient
+│   └── users.ts              # Requêtes DB : mise à jour du rôle utilisateur
 └── actions/
-    └── auth.ts               # Server Actions : setUserRole
+    ├── auth.ts                # Server Action : setUserRole
+    ├── savePractitioner.ts    # Server Action : sauvegarder un praticien
+    └── unsavePractitioner.ts  # Server Action : retirer un praticien sauvegardé
 ```
 
 Règle de dépendance :
 - `components/` ne sait pas que la base de données existe
 - `server/queries/` ne sait pas que des composants React existent
 - `lib/` contient uniquement de la config et de la validation, sans accès DB direct
+- `server/actions/` ne connaît jamais BetterAuth ni `next/headers` directement : chaque Server Action appelle `server/auth/getCurrentUser.ts`, seul point du projet couplé au provider d'authentification. Si BetterAuth est remplacé un jour, seul ce fichier change — les actions restent intactes.
 
 🔐 Sécurité & conformité
 
