@@ -64,7 +64,12 @@ lib/                          ← Couche configuration & validation
 ├── auth/
 │   ├── config.ts             # Configuration BetterAuth (server-only)
 │   └── client.ts             # authClient (navigateur)
-└── validations/              # Schémas Zod (auth, utils)
+├── privacy.ts                 # Masquage des données praticien pour les non-connectés
+└── validations/               # Schémas Zod — source unique de vérité pour la validation ET le typage
+    ├── auth.ts                # credentialsSchema, signinSchema
+    ├── role.ts                # roleSchema + type Role ("patient" | "association"), réutilisé partout
+    ├── savedPractitioners.ts  # savedPractitionerSchema
+    └── utils.ts                # formatZodErrors (formatte les erreurs Zod pour l'UI)
 
 server/                       ← Couche accès aux données (server-only)
 ├── db/
@@ -89,6 +94,56 @@ Règle de dépendance :
 - `server/queries/` ne sait pas que des composants React existent
 - `lib/` contient uniquement de la config et de la validation, sans accès DB direct
 - `server/actions/` ne connaît jamais BetterAuth ni `next/headers` directement : chaque Server Action appelle `server/auth/getCurrentUser.ts`, seul point du projet couplé au provider d'authentification. Si BetterAuth est remplacé un jour, seul ce fichier change — les actions restent intactes.
+- Les valeurs métier à choix limité (ex. le rôle utilisateur) sont définies une seule fois comme schéma Zod dans `lib/validations/`, jamais retapées en type TS local dans plusieurs fichiers (voir section Zod ci-dessous).
+
+## 🗄️ Base de données
+
+Schéma défini avec Drizzle ORM dans `server/db/schema/` (`app.ts` : tables métier · `auth.ts` : tables BetterAuth), migrations versionnées dans `drizzle/`.
+
+**Tables actives (MVP)**
+
+| Table | Rôle |
+|---|---|
+| `practitioners` | Fiche praticien — statut de modération (`pending/validated/rejected/suspended`), visibilité, praticien proposé/validé par (`proposedBy`/`validatedBy`, alimenté par seed en MVP) |
+| `tags`, `practitionerTags` | Tags catégorisés attachés aux praticiens (accessibilité, inclusivité…) — contenu curé en MVP |
+| `savedPractitioners` | Praticiens sauvegardés par un patient (lecture + écriture complètes) |
+| `users`, `sessions`, `accounts`, `verifications` | Auth (BetterAuth) |
+
+**Tables modélisées, V2 assumée** — présentes dans le schéma pour documenter des fonctionnalités prévues mais volontairement non branchées avant la soutenance, pour ne pas livrer de parcours inachevé :
+
+| Table | Fonctionnalité prévue |
+|---|---|
+| `associations`, `practitionerAssociations` | Une association valide un praticien (confiance patient) et suit dans son dashboard les praticiens qu'elle connaît |
+| `tagVotes` | Vote patient sur les tags d'un praticien — classement par nombre de votes (le classement affiché en MVP vient du seed, pas encore de votes réels) |
+| `reports` | Signalement d'une fiche praticien/association erronée ou d'un problème éthique — modération humaine uniquement, jamais d'action automatique (masquage, blacklist), pour limiter le risque légal (diffamation, responsabilité de plateforme) |
+| `practitionerConsentRequests`, `consentLogs` | Demande de consentement RGPD envoyée au praticien avant publication de sa fiche (`practitioners.isVisible`) — process manuel (email) en MVP, ces tables modélisent l'automatisation future (lien à usage unique, traçabilité IP/version CGU) |
+
+## 🧩 Zod dans le projet
+
+Zod (v4) a deux rôles dans Abi, qui se recoupent :
+
+1. **Validation à l'exécution** — vérifier qu'une donnée reçue (formulaire, argument de Server Action) respecte bien les règles métier avant d'aller plus loin (ex. `credentialsSchema` impose 12 caractères minimum + majuscule + chiffre + symbole pour un mot de passe).
+2. **Source unique de vérité pour le typage TypeScript** — au lieu de définir un type à la main (`type Role = "patient" | "association"`) puis un schéma Zod séparé qui répète la même liste de valeurs, on ne définit le schéma qu'une fois et on en déduit le type avec `z.infer` :
+
+   ```ts
+   // lib/validations/role.ts
+   export const roleSchema = z.enum(["patient", "association"]);
+   export type Role = z.infer<typeof roleSchema>;
+   ```
+
+   Tout le reste du projet (`server/queries/users.ts`, `server/actions/auth.ts`, `SignUpRoleSelector.tsx`, `SignupCredentials.tsx`, `app/signup/page.tsx`) importe ce type `Role` au lieu d'en retaper un — un seul endroit à modifier si un rôle est ajouté un jour, et TypeScript signale partout où un cas manquerait d'être traité.
+
+Schémas actuels :
+
+| Schéma | Fichier | Utilisé par |
+|---|---|---|
+| `credentialsSchema`, `signinSchema` | `lib/validations/auth.ts` | Formulaires signin/signup (validation client + serveur) |
+| `roleSchema` | `lib/validations/role.ts` | `setUserRole`, `updateUserRole`, sélecteur de rôle à l'inscription |
+| `savedPractitionerSchema` | `lib/validations/savedPractitioners.ts` | `savePractitioner`, `unsavePractitioner` |
+
+**Règle** : toute donnée qui entre dans une Server Action (venant du client, donc non fiable) est validée par un schéma Zod avant d'être utilisée — jamais de confiance aveugle dans un type TS côté client, qui ne protège qu'à la compilation et pas à l'exécution.
+
+⚠️ Note DB : les valeurs comme `role` restent stockées en `text` libre côté PostgreSQL (colonne gérée par BetterAuth) — Zod garantit la cohérence côté application, mais n'empêche pas une valeur invalide d'être insérée par un autre chemin que le code TS (script, admin SQL direct). Un `pgEnum` Drizzle apporterait une garantie supplémentaire au niveau base si besoin.
 
 🔐 Sécurité & conformité
 
