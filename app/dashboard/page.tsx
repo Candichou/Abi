@@ -10,7 +10,7 @@ export default async function DashboardPage() {
   if (!session) redirect("/signin");
 
   if (session.user.role === "patient") return <PagePatient session={session} />;
-  if (session.user.role === "asso") return <PageAsso session={session} />;
+  if (session.user.role === "assocition") return <PageAsso session={session} />;
 
   redirect("/");
 }
