@@ -37,6 +37,11 @@ Interface d'administration
 Cartographie des praticiens
 Système d'avis patients
 
+**Note technique V2 — rôle admin (BetterAuth)** : le plugin `admin()` de BetterAuth (`lib/auth/config.ts`) réutilise la colonne `role` de la table `users` pour distinguer les administrateurs (valeur par défaut `"admin"`), la même colonne que celle utilisée par l'app pour `"patient"`/`"association"` (`lib/validations/role.ts`). Le nom du champ n'est pas configurable côté plugin (vérifié dans `admin.d.mts` — seules les *valeurs* `defaultRole`/`adminRoles` le sont), mais il est protégé en écriture côté formulaire public (`input: false` dans le schéma du plugin — un utilisateur ne peut pas se l'auto-attribuer via l'inscription). Avant de créer le premier compte admin, prévoir :
+- Configurer explicitement `admin({ adminRoles: ["admin"] })`
+- Étendre `roleSchema` (`lib/validations/role.ts`) pour inclure `"admin"` comme valeur reconnue
+- Ajouter le cas `role === "admin"` dans le routing (`app/dashboard/page.tsx` ou une future page `/admin`), qui aujourd'hui tomberait silencieusement sur `redirect("/")`
+
 🛠️ Stack technique:
 
 Framework: Next.js 16 => (App Router)SSR natif, routing file-based,
