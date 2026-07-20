@@ -48,12 +48,6 @@ jobs:
 
       - name: Build
         run: pnpm run build
-        env:
-          DATABASE_URL: ${{ secrets.DATABASE_URL }}
-          RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
 
       - name: Tests
         run: pnpm run test
-        env:
-          DATABASE_URL: ${{ secrets.DATABASE_URL }}
-          RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
