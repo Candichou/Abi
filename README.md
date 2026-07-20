@@ -39,7 +39,7 @@ Système d'avis patients
 
 🛠️ Stack technique:
 
-Framework: Next.js 15 => (App Router)SSR natif, routing file-based,
+Framework: Next.js 16 => (App Router)SSR natif, routing file-based,
 Langage: TypeScript => Typage strict, maintenabilité.
 Base de données: PostgreSQL (Neon) => Relationnel, serverless-compatible
 ORM: Drizzle => Type-safe, léger, migrations versionnées
@@ -174,6 +174,30 @@ aria-label sur tous les boutons icône · aria-hidden sur icônes décoratives
 Focus visible sur tous les éléments interactifs (RGAA 10.7)
 Touch targets ≥ 44×44px (WCAG 2.5.5)
 Pas de CAPTCHA visuel (Turnstile invisible)
+
+## ⚙️ CI/CD
+
+Le workflow `.github/workflows/pr.yml` valide le code avant merge : lint (ESLint), typecheck (`tsc --noEmit`), build (`next build`), tests (Vitest).
+
+**Déclenchement** :
+- Automatique à l'ouverture ou la mise à jour d'une Pull Request vers `main`
+- Manuel via `workflow_dispatch` — utile pour vérifier l'état d'une branche (ex. `develop`) sans ouvrir de PR :
+  - Interface GitHub : onglet **Actions** → "PR Validation" → bouton **Run workflow** → choisir la branche
+  - CLI : `gh workflow run pr.yml --ref <branche>`
+
+Il n'y a volontairement pas de déclenchement sur `push` direct (hors PR) pour éviter de multiplier les runs sur des commits intermédiaires — la CI manuelle (`workflow_dispatch`) couvre ce besoin ponctuel en cours de dev.
+
+**Secrets requis** (Settings → Secrets and variables → Actions du repo GitHub), mêmes clés que `.env` local sans les guillemets :
+
+| Secret | Rôle |
+|---|---|
+| `DATABASE_URL` | Connexion Neon — nécessaire car `server/db/index.ts` instancie le client au chargement du module, importé transitivement par la route `/api/auth/[...all]` que Next.js analyse au build |
+| `RESEND_API_KEY` | Instanciation du client Resend dans `lib/auth/config.ts` |
+| `BETTER_AUTH_SECRET` | Lu en interne par `betterAuth()` |
+| `BETTER_AUTH_URL` | Lu en interne par `betterAuth()` |
+| `NEXT_PUBLIC_APP_URL` | Utilisée par `authClient` dans `lib/auth/client.ts` |
+
+Ces valeurs ne déclenchent aucun appel réseau réel pendant le build (`neon()` et `betterAuth()` sont instanciés de façon paresseuse) — une valeur syntaxiquement correcte suffit, y compris `http://localhost:3000` pour les URLs.
 
 ## 📱 Screenshots
 
