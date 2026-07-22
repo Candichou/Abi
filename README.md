@@ -212,12 +212,6 @@ Il n'y a volontairement pas de déclenchement sur `push` direct (hors PR) pour �
 
 Ces valeurs ne déclenchent aucun appel réseau réel pendant le build (`neon()` et `betterAuth()` sont instanciés de façon paresseuse) — une valeur syntaxiquement correcte suffit, y compris `http://localhost:3000` pour les URLs.
 
-## 📱 Screenshots
-
-| Home — Mobile                       | Home — Desktop                          | Signup |
-| ----------------------------------- | --------------------------------------- | ------ |
-| ![Home mobile](doc/home_mobile.png) | ![Signup étape 1](doc/signup_step1.png) |
-
 🚀 Installation locale
 bash# Prérequis : Node.js 20+, compte Neon, compte BetterAuth
 

@@ -36,8 +36,7 @@ yarn-error.log*
 # vercel
 .vercel
 
-# internal docs 
-/doc
+# internal docs
 /docs
 CLAUDE.md
 

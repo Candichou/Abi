@@ -5,7 +5,7 @@ import { SavedPractitionersList } from "./SavedPractitionersList";
 
 type Session = NonNullable<Awaited<ReturnType<typeof auth.api.getSession>>>;
 
-export async function PagePatient({ session }: { session: Session }) {
+export async function PatientView({ session }: { session: Session }) {
   const savedPractitioners = await getSavedPractitioners(session.user.id);
 
   return (
