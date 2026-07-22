@@ -1,8 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect } from "react";
 import Link from "next/link";
 import { BookmarkButton } from "@/components/practitioners/BookmarkButton";
+import { useSavedPractitionersStore } from "@/store/savedPractitionersStore";
 import type { SavedPractitioner } from "@/server/queries/savedPractitioners";
 
 export function SavedPractitionersList({
@@ -10,11 +11,15 @@ export function SavedPractitionersList({
 }: {
   practitioners: SavedPractitioner[];
 }) {
-  const [list, setList] = useState(practitioners);
+  const savedIds = useSavedPractitionersStore((state) => state.savedIds);
+  const hydrate = useSavedPractitionersStore((state) => state.hydrate);
 
-  function handleUnsave(practitionerId: string) {
-    setList((current) => current.filter((p) => p.id !== practitionerId));
-  }
+  useEffect(() => {
+    hydrate(practitioners.map((p) => p.id));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const list = practitioners.filter((p) => savedIds.has(p.id));
 
   if (list.length === 0) {
     return (
@@ -40,11 +45,7 @@ export function SavedPractitionersList({
             </p>
             <p className="text-sm text-forest/60">{practitioner.specialty}</p>
           </Link>
-          <BookmarkButton
-            practitionerId={practitioner.id}
-            initialSaved
-            onUnsave={handleUnsave}
-          />
+          <BookmarkButton practitionerId={practitioner.id} initialSaved />
         </li>
       ))}
     </ul>

@@ -2,9 +2,10 @@
 
 import { BookmarkIcon } from "@heroicons/react/24/outline";
 import { BookmarkIcon as BookmarkSolidIcon } from "@heroicons/react/24/solid";
-import { useState, useTransition } from "react";
+import { useEffect, useTransition } from "react";
 import { savePractitioner } from "@/server/actions/savePractitioner";
 import { unsavePractitioner } from "@/server/actions/unsavePractitioner";
+import { useSavedPractitionersStore } from "@/store/savedPractitionersStore";
 
 export function BookmarkButton({
   practitionerId,
@@ -17,18 +18,30 @@ export function BookmarkButton({
   variant?: "light" | "dark";
   onUnsave?: (practitionerId: string) => void;
 }) {
-  const [isSaved, setIsSaved] = useState(initialSaved);
+  const isSaved = useSavedPractitionersStore((state) =>
+    state.savedIds.has(practitionerId),
+  );
+  const save = useSavedPractitionersStore((state) => state.save);
+  const unsave = useSavedPractitionersStore((state) => state.unsave);
   const [isPending, startTransition] = useTransition();
+
+  useEffect(() => {
+    if (initialSaved) {
+      save(practitionerId);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [practitionerId, initialSaved]);
 
   function handleClick() {
     startTransition(async () => {
       if (isSaved) {
         await unsavePractitioner(practitionerId);
+        unsave(practitionerId);
         onUnsave?.(practitionerId);
       } else {
         await savePractitioner(practitionerId);
+        save(practitionerId);
       }
-      setIsSaved(!isSaved);
     });
   }
 

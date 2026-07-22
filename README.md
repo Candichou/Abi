@@ -59,6 +59,7 @@ Styling: Tailwind CSSv4 => Mobile-first, tokens CSS personnalisés
 Déploiement: Vercel => CI/CD intégré, preview par PR
 Tests: Vitest => Unit + intégration
 CI/CD: GitHub Actions => Lint, tests, déploiement automatisé
+État partagé client: Zustand => Store léger pour l'état partagé entre composants (ex. praticiens sauvegardés)
 
 📐 Convention — types métier
 
@@ -90,6 +91,9 @@ components/                   ← Couche présentation — composants React
 │   ├── patient/              # PatientView
 │   └── association/          # AssociationView
 └── common/                   # Button, AuthGateModal (réutilisables partout)
+
+store/                        ← État client partagé entre composants
+└── savedPractitionersStore.ts # Praticiens sauvegardés (Zustand) — voir section dédiée ci-dessous
 
 lib/                          ← Couche configuration & validation
 ├── auth/
@@ -175,6 +179,24 @@ Schémas actuels :
 **Règle** : toute donnée qui entre dans une Server Action (venant du client, donc non fiable) est validée par un schéma Zod avant d'être utilisée — jamais de confiance aveugle dans un type TS côté client, qui ne protège qu'à la compilation et pas à l'exécution.
 
 ⚠️ Note DB : les valeurs comme `role` restent stockées en `text` libre côté PostgreSQL (colonne gérée par BetterAuth) — Zod garantit la cohérence côté application, mais n'empêche pas une valeur invalide d'être insérée par un autre chemin que le code TS (script, admin SQL direct). Un `pgEnum` Drizzle apporterait une garantie supplémentaire au niveau base si besoin.
+
+## 🗂️ Zustand — état client partagé
+
+**Le problème que ça résout** : plusieurs composants React ont besoin de connaître et de modifier la *même* information (ex. « ce praticien est-il dans mes favoris ? »), sans lien parent-enfant direct entre eux. Avec un simple `useState` local à chaque composant, chacun garde sa propre copie de l'info — si l'un la change, les autres ne le savent pas et affichent un état obsolète.
+
+**Ce qu'un store Zustand est** : un état global, accessible depuis n'importe quel composant client, qui existe en dehors de l'arbre React (pas besoin de le faire descendre par props ou remonter par callbacks). Un composant qui lit une valeur du store se re-render automatiquement quand elle change ailleurs.
+
+**Règle d'usage dans Abi** : un store Zustand n'est justifié que si une donnée est lue/modifiée par au moins deux composants sans relation parent-enfant directe. Sinon, un `useState` local reste la solution la plus simple — pas de store pour de l'état purement local (ouverture d'un menu, valeur d'un champ de formulaire, affichage d'une modale).
+
+Store actuel :
+
+| Store | Fichier | Contient | Utilisé par |
+|---|---|---|---|
+| `useSavedPractitionersStore` | `store/savedPractitionersStore.ts` | `savedIds: Set<string>` — les praticiens sauvegardés par l'utilisateur courant | `BookmarkButton` (lit/écrit à chaque clic sauvegarder/retirer), `SavedPractitionersList` (hydrate depuis les données serveur et affiche la liste filtrée) |
+
+Ainsi, retirer un favori depuis `BookmarkButton` met à jour `SavedPractitionersList` (et tout autre bouton du même praticien affiché ailleurs sur la page) sans callback manuel entre les deux.
+
+⚠️ Zustand gère l'état **côté client uniquement** — la source de vérité reste la base de données (`server/queries/savedPractitioners.ts`). Le store n'est qu'un cache synchronisé par les Server Actions (`savePractitioner`/`unsavePractitioner`) ; il est réhydraté à chaque chargement de page depuis les données serveur, jamais persisté entre sessions.
 
 🔐 Sécurité & conformité
 
