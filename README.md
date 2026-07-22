@@ -60,6 +60,13 @@ Déploiement: Vercel => CI/CD intégré, preview par PR
 Tests: Vitest => Unit + intégration
 CI/CD: GitHub Actions => Lint, tests, déploiement automatisé
 
+📐 Convention — types métier
+
+Une donnée qui rentre → Zod. Une donnée qui sort → type simple.
+
+- Ce qu'un utilisateur tape dans un formulaire (avant de rentrer en base) : Zod (`z.infer`), parce qu'il faut vérifier que c'est valide. Exemple : `Role` dans `lib/validations/role.ts`.
+- Ce qui revient d'une requête à la base de données (après jointures/agrégations) : un simple `type`, parce que c'est déjà garanti correct par la requête — rien à valider, juste à nommer sa forme pour TypeScript. Exemples : `PractitionerFull`, `SavedPractitioner` dans `server/queries/`.
+
 🏗️ Architecture
 
 Le projet suit une architecture en couches stricte (BC02) : chaque couche a une responsabilité unique et ne dépend jamais d'une couche au-dessus d'elle.
