@@ -3,11 +3,8 @@ import { drizzleAdapter } from "@better-auth/drizzle-adapter";
 import { db } from "@/server/db/index";
 import { nextCookies } from "better-auth/next-js";
 import { admin } from "better-auth/plugins";
-import { Resend } from "resend";
 import * as schema from "@/server/db/schema/auth";
 import { NextRequest } from "next/server";
-
-const resend = new Resend(process.env.RESEND_API_KEY);
 
 export const auth = betterAuth({
   database: drizzleAdapter(db, {
@@ -15,23 +12,10 @@ export const auth = betterAuth({
     schema, //import le schema auth db
     usePlural: true, // indication à betterAtuh que mes tables sont au pluriel
   }),
-  emailAndPassword: { enabled: true, requireEmailVerification: false }, // TODO: passer à true avant demo day
-  emailVerification: {
-    sendOnSignUp: true,
-    autoSignInAfterVerification: true,
-    sendVerificationEmail: async ({ user, url }) => {
-      await resend.emails.send({
-        from: "onboarding@resend.dev",
-        to: user.email,
-        subject: "Vérification de votre email",
-        html: `<p>Bonjour,</p><a href="${url}">Vérifier mon email</a>`, // TODO: faire un mail de vérification plus UX
-      });
-    },
-  },
+  emailAndPassword: { enabled: true },
   pages: {
     signIn: "/signin",
     signUp: "/signup",
-    /*  verifyEmail: "/auth/verify", */ //todo: se décider si on garde resend pour demoday
     afterSignIn: "/dashboard",
     afterSignUp: "/dashboard",
   },

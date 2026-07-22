@@ -36,6 +36,14 @@ Tableau de bord association (modération, validation)
 Interface d'administration
 Cartographie des praticiens
 Système d'avis patients
+Vérification d'email à l'inscription
+
+**Note technique V2 — vérification email** : la vérification d'email à l'inscription
+a été retirée du scope V1 (composant `app/(auth)/signup/verify/`, config
+`emailVerification` et dépendance `resend` supprimés). Raison : Resend nécessite une
+clé API et un domaine vérifié non présentables en l'état devant le jury en démo. Pour
+V2, prévoir soit Resend en production, soit Mailpit en local pour tester le flux sans
+dépendre d'un service externe.
 
 **Note technique V2 — rôle admin (BetterAuth)** : le plugin `admin()` de BetterAuth (`lib/auth/config.ts`) réutilise la colonne `role` de la table `users` pour distinguer les administrateurs (valeur par défaut `"admin"`), la même colonne que celle utilisée par l'app pour `"patient"`/`"association"` (`lib/validations/role.ts`). Le nom du champ n'est pas configurable côté plugin, mais il est protégé en écriture côté formulaire public (`input: false` dans le schéma du plugin — un utilisateur ne peut pas se l'auto-attribuer via l'inscription). Avant de créer le premier compte admin, prévoir :
 - Ajouter le cas `role === "admin"` dans le routing (`app/dashboard/page.tsx` ou une future page `/admin`), qui aujourd'hui tomberait silencieusement sur `redirect("/")`
