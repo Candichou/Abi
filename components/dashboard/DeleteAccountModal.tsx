@@ -1,0 +1,56 @@
+"use client";
+
+import { useState } from "react";
+import { authClient } from "@/lib/auth/client";
+import { useRouter } from "next/navigation";
+
+export function DeleteAccountModal({ onClose }: { onClose: () => void }) {
+  const [isLoading, setIsLoading] = useState(false);
+  const router = useRouter();
+
+  async function handleDelete() {
+    setIsLoading(true);
+    // TODO: Appeler endpoint DELETE /api/users/[id]
+    // Pour v1: juste logout
+    await authClient.signOut();
+    router.push("/");
+  }
+
+  return (
+    <div className="fixed inset-0 z-50 bg-forest/60 backdrop-blur-sm flex items-center justify-center p-4">
+      <div className="bg-cream rounded-3xl shadow-2xl max-w-sm p-6 relative">
+        <button
+          onClick={onClose}
+          className="absolute top-4 right-4 text-forest/50 hover:text-forest"
+          aria-label="Fermer"
+        >
+          ✕
+        </button>
+
+        <h2 className="text-lg font-heading font-bold text-forest mb-2">
+          Êtes-vous sûr.e?
+        </h2>
+        <p className="text-sm text-forest/70 mb-6">
+          La suppression de votre compte est irréversible. Toutes vos données
+          seront définitivement supprimées.
+        </p>
+
+        <div className="flex gap-3">
+          <button
+            onClick={onClose}
+            className="flex-1 py-2 px-4 rounded-full border-2 border-forest text-forest hover:bg-forest/5 transition-colors font-heading font-bold text-sm"
+          >
+            Annuler
+          </button>
+          <button
+            onClick={handleDelete}
+            disabled={isLoading}
+            className="flex-1 py-2 px-4 rounded-full bg-red-600 text-cream hover:bg-red-700 transition-colors font-heading font-bold text-sm disabled:opacity-50"
+          >
+            {isLoading ? "Suppression…" : "Supprimer"}
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}

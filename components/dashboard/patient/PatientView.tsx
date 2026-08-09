@@ -2,6 +2,7 @@ import { Logout } from "../Logout";
 import { auth } from "@/lib/auth/config";
 import { getSavedPractitioners } from "@/server/queries/savedPractitioners";
 import { SavedPractitionersList } from "./SavedPractitionersList";
+import { DeleteAccountButton } from "../DeleteAccountButton";
 
 type Session = NonNullable<Awaited<ReturnType<typeof auth.api.getSession>>>;
 
@@ -41,12 +42,12 @@ export async function PatientView({ session }: { session: Session }) {
             </div>
 
             <div className="flex-1 min-w-0">
-              <p className="text-sm text-forest/60 mb-1">Pseudonyme</p>
+              <p className="text-sm text-forest/60 mb-1">Profil</p>
               <p className="text-lg md:text-xl font-heading font-bold text-forest break-all">
                 {session.user.name}
               </p>
               <p className="text-xs text-forest/50 mt-2">
-                Membre depuis{" "}
+                Vous êtes membre depuis{" "}
                 {new Date(session.user.createdAt).toLocaleDateString("fr-FR")}
               </p>
             </div>
@@ -56,7 +57,7 @@ export async function PatientView({ session }: { session: Session }) {
           <div className="pt-6 border-t border-forest/10">
             <div>
               <p className="text-xs text-forest/60 uppercase tracking-wide">
-                Praticiens sauvegardés
+                Vos praticiens sauvegardé.e.s
               </p>
               <p className="text-2xl font-heading font-bold text-forest mt-1">
                 {savedPractitioners.length}
@@ -71,7 +72,7 @@ export async function PatientView({ session }: { session: Session }) {
             id="saved-heading"
             className="text-sm font-heading font-bold text-forest uppercase tracking-wide mb-3"
           >
-            Praticiens sauvegardés
+            Praticiens sauvegardé.e.s
           </h2>
           <SavedPractitionersList practitioners={savedPractitioners} />
         </section>
@@ -81,6 +82,25 @@ export async function PatientView({ session }: { session: Session }) {
           <h2 id="actions-heading" className="sr-only">
             Actions disponibles
           </h2>
+
+          {/* Bouton recherche */}
+          <a
+            href="/search"
+            className="w-full py-3 px-6 rounded-full font-heading font-bold text-cream bg-lavender hover:bg-lavender/80 transition-colors text-center"
+          >
+            Chercher d'autres praticiens
+          </a>
+
+          {/* Bouton modifier profil */}
+          <a
+            href="/dashboard/edit"
+            className="w-full py-3 px-6 rounded-full font-heading font-bold text-forest bg-white border-2 border-forest hover:bg-forest/5 transition-colors text-center"
+          >
+            Modifier mes informations
+          </a>
+
+          {/* Bouton supprimer compte */}
+          <DeleteAccountButton />
 
           {/* Bouton déconnexion */}
           <Logout />
