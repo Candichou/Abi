@@ -72,8 +72,8 @@ export default async function SearchPage({
           <div>
             <p className="font-heading font-bold text-forest text-lg">
               {results.length > 0
-                ? `${results.length} praticien${results.length > 1 ? "s" : ""} trouvé${results.length > 1 ? "s" : ""}`
-                : "Aucun praticien trouvé"}
+                ? `${results.length} praticien${results.length > 1 ? "s" : ""} trouvé${results.length > 1 ? ".e.s" : ".e"}`
+                : "Aucun praticien trouvé.e"}
             </p>
             {hasFilters && (
               <p className="text-forest/50 text-xs mt-0.5">

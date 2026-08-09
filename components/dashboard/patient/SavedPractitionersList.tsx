@@ -24,7 +24,7 @@ export function SavedPractitionersList({
   if (list.length === 0) {
     return (
       <p className="text-sm text-forest/60">
-        Aucun praticien sauvegardé pour le moment.
+        Aucun praticien sauvegardé.e pour le moment.
       </p>
     );
   }

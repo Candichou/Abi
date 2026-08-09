@@ -6,9 +6,9 @@ export function AboutSection() {
           Trouvez un praticien bienveillant
         </h2>
         <p className="text-forest/70 leading-relaxed mb-6">
-          Recommandés par d&apos;autres patients, validés par des associations.
+          Recommandé.e.s par d&apos;autres patients, validé.e.s par des associations.
           Partagez vos praticiens de confiance et aidez d&apos;autres à trouver
-          des professionnels alignés avec leurs valeurs.
+          des professionnels aligné.e.s avec leurs valeurs.
         </p>
         <p className="text-sm text-forest/50 font-semibold tracking-wide">
           Simple • Transparent • Communautaire

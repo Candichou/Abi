@@ -18,7 +18,7 @@ const openSans = Open_Sans({
 
 export const metadata: Metadata = {
   title: "Abi, Trouve ton praticien bienveillant",
-  description: "Annuaire de praticiens de santé validés éthiquement.",
+  description: "Annuaire de praticiens de santé validé.e.s éthiquement.",
 };
 
 export default function RootLayout({

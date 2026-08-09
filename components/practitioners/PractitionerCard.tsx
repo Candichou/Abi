@@ -120,7 +120,7 @@ export function PractitionerCard({
           <div className="bg-peach/30 border border-peach rounded-xl px-4 py-2.5 mb-4">
             <p className="text-forest text-sm font-body">
               <span className="text-yellow font-bold mr-1">✦</span>
-              Validé par :{" "}
+              Validé.e par :{" "}
               <span className="font-semibold">
                 {approvedAssos.map((asso) => asso.name).join(", ")}
               </span>

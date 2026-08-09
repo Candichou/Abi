@@ -128,7 +128,7 @@ export default async function PractitionerPage({
             <p className="text-forest text-sm font-body mb-2">
               <span className="text-yellow font-bold mr-1">✦</span>
               <span className="font-semibold">
-                Validé par une association partenaire
+                Validé.e par une association partenaire
               </span>
             </p>
             {approvedAssos.map((asso) => (

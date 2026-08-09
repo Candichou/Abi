@@ -28,7 +28,7 @@ export function AuthGateModal({ onClose }: { onClose: () => void }) {
 
           <div>
             <h2 className="font-heading font-bold text-forest text-xl mb-2">
-              Profil réservé aux membres
+              Profil réservé.e aux membres
             </h2>
             <p className="text-forest/70 text-sm font-body leading-relaxed">
               Pour accéder à l&apos;identité et aux coordonnées des praticiens,
