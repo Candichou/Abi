@@ -2,6 +2,7 @@
 
 import { credentialsSchema } from "@/lib/validations/auth";
 import { formatZodErrors } from "@/lib/validations/utils";
+import { checkPasswordStrength } from "@/lib/validations/passwordStrength";
 import { authClient } from "@/lib/auth/client";
 import { setUserRole } from "@/server/actions/auth";
 import { EyeIcon, EyeSlashIcon } from "@heroicons/react/24/solid";
@@ -9,6 +10,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Button from "@/components/common/Button";
 import Link from "next/link";
+import { PasswordCheck } from "./PasswordCheck";
 import type { Role } from "@/lib/validations/role";
 
 interface SignupCredentialsProps {
@@ -90,11 +92,18 @@ export default function SignupCredentials({
         </p>
       </div>
 
-      {/* Erreur serveur */}
-      {serverError && (
-        <p role="alert" className="text-sm text-red-600 font-body">
-          {serverError}
-        </p>
+      {/* Afficher TOUTES les erreurs */}
+      {(serverError || Object.keys(errors).length > 0) && (
+        <div role="alert" className="bg-red-50 border border-red-200 rounded-xl p-4 mb-4">
+          {serverError && (
+            <p className="text-sm text-red-600 font-body mb-2">{serverError}</p>
+          )}
+          {Object.values(errors).map((error, idx) => (
+            <p key={idx} className="text-sm text-red-600 font-body">
+              • {error}
+            </p>
+          ))}
+        </div>
       )}
 
       {/* Pseudonyme */}
@@ -212,6 +221,28 @@ export default function SignupCredentials({
             {errors.password}
           </p>
         )}
+
+        {/* Validation checklist */}
+        {password && (
+          <div className="mt-3 space-y-2">
+            <PasswordCheck
+              met={checkPasswordStrength(password).minLength}
+              label="12 caractères minimum"
+            />
+            <PasswordCheck
+              met={checkPasswordStrength(password).hasUpperCase}
+              label="Une majuscule"
+            />
+            <PasswordCheck
+              met={checkPasswordStrength(password).hasDigit}
+              label="Un chiffre"
+            />
+            <PasswordCheck
+              met={checkPasswordStrength(password).hasSymbol}
+              label="Un symbole"
+            />
+          </div>
+        )}
       </div>
 
       {/* Actions */}
@@ -224,7 +255,7 @@ export default function SignupCredentials({
         </Button>
       </div>
       <span>
-        Déjà un compte ? <Link href="/signin">se connecter</Link>
+        Déjà un compte ? <Link href="/signin">Se connecter</Link>
       </span>
       {/* Footer éthique */}
       {/*     <p className="text-center font-body text-xs text-forest/50 mt-2">
