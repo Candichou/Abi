@@ -33,3 +33,11 @@ body {
   color: var(--color-forest);
   font-family: var(--font-body);
 }
+
+/* Normalize input elements */
+input[type="text"],
+input[type="email"],
+input[type="password"] {
+  -webkit-appearance: none;
+  appearance: none;
+}
