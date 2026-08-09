@@ -5,6 +5,12 @@ import Link from "next/link";
 import type { PractitionerWithDetails } from "@/server/queries/practitioners";
 import { AuthGateModal } from "@/components/common/AuthGateModal";
 import { BookmarkButton } from "@/components/practitioners/BookmarkButton";
+import {
+  MapPinIcon,
+  CurrencyEuroIcon,
+  StarIcon,
+  HandThumbUpIcon,
+} from "@heroicons/react/24/solid";
 
 const TAG_CATEGORY_STYLES: Record<string, string> = {
   pathologie: "bg-teal/20 text-forest border border-teal/40",
@@ -101,28 +107,34 @@ export function PractitionerCard({
               {firstName} {lastName}
             </h2>
             <p className="text-forest/70 text-sm">{specialty}</p>
-            <p className="text-forest/50 text-xs mt-0.5">📍 {city}</p>
+            <div className="flex items-center gap-1 text-forest/50 text-xs mt-0.5">
+              <MapPinIcon className="w-3.5 h-3.5" />
+              <span>{city}</span>
+            </div>
             {price && (
-              <p className="text-forest/60 text-xs mt-0.5">
-                💶 {parseFloat(price).toFixed(0)}€/séance
+              <div className="flex items-center gap-1 text-forest/60 text-xs mt-0.5">
+                <CurrencyEuroIcon className="w-3.5 h-3.5" />
+                <span>{parseFloat(price).toFixed(0)}€/séance</span>
                 {convention && (
-                  <span className="ml-1 text-forest/40">
+                  <span className="text-forest/40">
                     · {CONVENTION_LABELS[convention]}
                   </span>
                 )}
-              </p>
+              </div>
             )}
           </div>
         </div>
 
         {/* Badge validé par asso */}
         {approvedAssos.length > 0 && (
-          <div className="bg-peach/30 border border-peach rounded-xl px-4 py-2.5 mb-4">
-            <p className="text-forest text-sm font-body">
-              <span className="text-yellow font-bold mr-1">✦</span>
-              Validé.e par :{" "}
-              <span className="font-semibold">
-                {approvedAssos.map((asso) => asso.name).join(", ")}
+          <div className="bg-teal/20 border border-teal/40 rounded-xl px-4 py-2.5 mb-4">
+            <p className="text-forest text-sm font-body flex items-center gap-1">
+              <StarIcon className="w-4 h-4 text-yellow" aria-hidden="true" />
+              <span>
+                Validé.e par :{" "}
+                <span className="font-semibold">
+                  {approvedAssos.map((asso) => asso.name).join(", ")}
+                </span>
               </span>
             </p>
           </div>
@@ -167,9 +179,10 @@ export function PractitionerCard({
               {communityTags.map((tag) => (
                 <span
                   key={tag.id}
-                  className="text-xs px-2.5 py-1 rounded-full bg-forest/5 text-forest/70 border border-forest/15 font-body"
+                  className="text-xs px-2.5 py-1 rounded-full bg-forest/5 text-forest/70 border border-forest/15 font-body flex items-center gap-1"
                 >
-                  👍 {tag.label} ×{tag.voteCount}
+                  <HandThumbUpIcon className="w-3 h-3" aria-hidden="true" />
+                  <span>{tag.label} ×{tag.voteCount}</span>
                 </span>
               ))}
             </div>

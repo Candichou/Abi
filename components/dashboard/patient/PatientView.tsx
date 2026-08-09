@@ -11,19 +11,20 @@ export async function PatientView({ session }: { session: Session }) {
 
   return (
     <main className="min-h-screen bg-cream">
-      {/* Header dark — cohérent avec la marque */}
-      <div className="bg-forest text-cream px-4 py-6">
-        <div className="max-w-7xl mx-auto w-full">
-          <h1 className="text-2xl md:text-3xl font-heading font-bold">
-            Bienvenue, <span className="text-yellow">{session.user.name}</span>{" "}
-            !
-          </h1>
-          <p className="text-sm mt-1 opacity-80">Vous êtes connecté.e</p>
-        </div>
-      </div>
-
       {/* Contenu principal */}
       <div className="max-w-2xl mx-auto px-4 md:px-8 py-8">
+        {/* Bandeau de bienvenue — distinct du header/nav */}
+        <div className="bg-teal/20 border border-teal/40 rounded-3xl px-6 py-5 mb-8">
+          <h1 className="text-2xl md:text-3xl font-heading font-bold text-forest">
+            Bienvenue,{" "}
+            <span className="text-forest underline decoration-yellow decoration-4">
+              {session.user.name}
+            </span>{" "}
+            !
+          </h1>
+          <p className="text-sm mt-1 text-forest/70">Vous êtes connecté.e</p>
+        </div>
+
         {/* Carte Profil */}
         <section
           className="bg-white border-2 border-forest rounded-3xl p-6 md:p-8 mb-8"
@@ -33,23 +34,35 @@ export async function PatientView({ session }: { session: Session }) {
             Votre profil
           </h2>
 
-          {/* Avatar symbolique + infos */}
-          <div className="flex items-start gap-4 md:gap-6 mb-6">
-            <div className="w-16 h-16 md:w-20 md:h-20 rounded-full bg-forest flex items-center justify-center shrink-0">
-              <span className="text-cream text-2xl md:text-3xl font-heading font-bold">
-                {session.user.name.charAt(0).toUpperCase()}
-              </span>
+          {/* Avatar symbolique + infos + actions */}
+          <div className="flex items-start justify-between gap-4 mb-6">
+            <div className="flex items-start gap-4 md:gap-6">
+              <div className="w-16 h-16 md:w-20 md:h-20 rounded-full bg-forest flex items-center justify-center shrink-0">
+                <span className="text-cream text-2xl md:text-3xl font-heading font-bold">
+                  {session.user.name.charAt(0).toUpperCase()}
+                </span>
+              </div>
+
+              <div className="flex-1 min-w-0">
+                <p className="text-sm text-forest/60 mb-1">Profil</p>
+                <p className="text-lg md:text-xl font-heading font-bold text-forest break-all">
+                  {session.user.name}
+                </p>
+                <p className="text-xs text-forest/50 mt-2">
+                  Vous êtes membre depuis{" "}
+                  {new Date(session.user.createdAt).toLocaleDateString("fr-FR")}
+                </p>
+              </div>
             </div>
 
-            <div className="flex-1 min-w-0">
-              <p className="text-sm text-forest/60 mb-1">Profil</p>
-              <p className="text-lg md:text-xl font-heading font-bold text-forest break-all">
-                {session.user.name}
-              </p>
-              <p className="text-xs text-forest/50 mt-2">
-                Vous êtes membre depuis{" "}
-                {new Date(session.user.createdAt).toLocaleDateString("fr-FR")}
-              </p>
+            <div className="flex flex-col items-end gap-2 shrink-0">
+              <a
+                href="/dashboard/edit"
+                className="py-2 px-4 rounded-full font-heading font-bold text-sm text-forest bg-teal/20 border border-teal/40 hover:bg-teal/30 transition-colors whitespace-nowrap"
+              >
+                Modifier mes informations
+              </a>
+              <DeleteAccountButton compact />
             </div>
           </div>
 
@@ -67,7 +80,7 @@ export async function PatientView({ session }: { session: Session }) {
         </section>
 
         {/* Liste des praticiens sauvegardés */}
-        <section className="mb-8" aria-labelledby="saved-heading">
+        <section className="mb-4" aria-labelledby="saved-heading">
           <h2
             id="saved-heading"
             className="text-sm font-heading font-bold text-forest uppercase tracking-wide mb-3"
@@ -77,30 +90,19 @@ export async function PatientView({ session }: { session: Session }) {
           <SavedPractitionersList practitioners={savedPractitioners} />
         </section>
 
+        {/* Bouton recherche — proche de la liste sauvegardée */}
+        <a
+          href="/search"
+          className="w-full py-4 px-6 rounded-full font-heading font-bold text-forest bg-lavender hover:bg-lavender/80 transition-colors text-center block mb-10"
+        >
+          Chercher d'autres praticiens
+        </a>
+
         {/* Actions */}
         <section className="space-y-4" aria-labelledby="actions-heading">
           <h2 id="actions-heading" className="sr-only">
             Actions disponibles
           </h2>
-
-          {/* Bouton recherche */}
-          <a
-            href="/search"
-            className="w-full py-3 px-6 rounded-full font-heading font-bold text-cream bg-lavender hover:bg-lavender/80 transition-colors text-center"
-          >
-            Chercher d'autres praticiens
-          </a>
-
-          {/* Bouton modifier profil */}
-          <a
-            href="/dashboard/edit"
-            className="w-full py-3 px-6 rounded-full font-heading font-bold text-forest bg-white border-2 border-forest hover:bg-forest/5 transition-colors text-center"
-          >
-            Modifier mes informations
-          </a>
-
-          {/* Bouton supprimer compte */}
-          <DeleteAccountButton />
 
           {/* Bouton déconnexion */}
           <Logout />

@@ -9,7 +9,10 @@ import {
   PhoneIcon,
   LockClosedIcon,
   GlobeAltIcon,
+  CurrencyEuroIcon,
+  DocumentIcon,
 } from "@heroicons/react/24/outline";
+import { StarIcon, HandThumbUpIcon } from "@heroicons/react/24/solid";
 import { maskPractitionerFull } from "@/lib/privacy";
 import { isPractitionerSaved } from "@/server/queries/savedPractitioners";
 import { BookmarkButton } from "@/components/practitioners/BookmarkButton";
@@ -108,7 +111,10 @@ export default async function PractitionerPage({
                 {firstName} {lastName}
               </h1>
               <p className="text-cream/70 text-sm mt-0.5">{specialty}</p>
-              <p className="text-cream/50 text-xs mt-0.5">📍 {city}</p>
+              <div className="flex items-center gap-1 text-cream/50 text-xs mt-0.5">
+                <MapPinIcon className="w-3.5 h-3.5" />
+                <span>{city}</span>
+              </div>
             </div>
             {isLoggedIn && (
               <BookmarkButton
@@ -124,9 +130,9 @@ export default async function PractitionerPage({
       <div className="max-w-2xl mx-auto px-4 py-6 space-y-5">
         {/* Badge validé par asso */}
         {approvedAssos.length > 0 && (
-          <section className="bg-peach/30 border border-peach rounded-2xl px-5 py-4">
-            <p className="text-forest text-sm font-body mb-2">
-              <span className="text-yellow font-bold mr-1">✦</span>
+          <section className="bg-teal/20 border border-teal/40 rounded-2xl px-5 py-4">
+            <p className="text-forest text-sm font-body mb-2 flex items-center gap-1">
+              <StarIcon className="w-4 h-4 text-yellow" aria-hidden="true" />
               <span className="font-semibold">
                 Validé.e par une association partenaire
               </span>
@@ -158,15 +164,22 @@ export default async function PractitionerPage({
             </h2>
             <div className="space-y-1.5 text-sm text-forest/70 font-body">
               {price && (
-                <p>
-                  💶{" "}
-                  <span className="text-forest font-semibold">
-                    {parseFloat(price).toFixed(0)}€
-                  </span>{" "}
-                  par séance
-                </p>
+                <div className="flex items-center gap-2">
+                  <CurrencyEuroIcon className="w-4 h-4" />
+                  <span>
+                    <span className="text-forest font-semibold">
+                      {parseFloat(price).toFixed(0)}€
+                    </span>{" "}
+                    par séance
+                  </span>
+                </div>
               )}
-              {convention && <p>📋 {CONVENTION_LABELS[convention]}</p>}
+              {convention && (
+                <div className="flex items-center gap-2">
+                  <DocumentIcon className="w-4 h-4" />
+                  <span>{CONVENTION_LABELS[convention]}</span>
+                </div>
+              )}
             </div>
           </section>
         )}
@@ -265,9 +278,10 @@ export default async function PractitionerPage({
               {communityTags.map((tag) => (
                 <span
                   key={tag.id}
-                  className="text-xs px-3 py-1.5 rounded-full bg-forest/5 text-forest/70 border border-forest/15 font-body"
+                  className="text-xs px-3 py-1.5 rounded-full bg-forest/5 text-forest/70 border border-forest/15 font-body flex items-center gap-1"
                 >
-                  👍 {tag.label} ×{tag.voteCount}
+                  <HandThumbUpIcon className="w-3 h-3" aria-hidden="true" />
+                  <span>{tag.label} ×{tag.voteCount}</span>
                 </span>
               ))}
             </div>
