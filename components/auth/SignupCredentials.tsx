@@ -126,6 +126,7 @@ export default function SignupCredentials({
           id="pseudonyme"
           type="text"
           autoComplete="username"
+          required
           placeholder="ex. colibri432"
           value={name}
           onChange={(e) => setName(e.target.value)}
@@ -158,6 +159,7 @@ export default function SignupCredentials({
           id="email"
           type="email"
           autoComplete="email"
+          required
           placeholder="vous@exemple.fr"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
@@ -191,6 +193,7 @@ export default function SignupCredentials({
             id="password"
             type={showPassword ? "text" : "password"}
             autoComplete="new-password"
+            required
             placeholder="••••••••••••"
             value={password}
             onChange={(e) => setPassword(e.target.value)}

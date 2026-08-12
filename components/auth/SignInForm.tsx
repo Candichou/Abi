@@ -86,6 +86,7 @@ export default function SignInForm() {
           id="email"
           type="email"
           autoComplete="email"
+          required
           placeholder="vous@exemple.fr"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
@@ -116,6 +117,7 @@ export default function SignInForm() {
             id="password"
             type={showPassword ? "text" : "password"}
             autoComplete="current-password"
+            required
             placeholder="••••••••••••"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
