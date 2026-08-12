@@ -7,7 +7,7 @@ import {
   associations,
   tagVotes,
 } from "@/server/db/schema/app";
-import { eq, and, ilike, sql, inArray } from "drizzle-orm";
+import { eq, and, or, ilike, sql, inArray } from "drizzle-orm";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -205,8 +205,16 @@ export async function searchPractitioners(
   ] as ReturnType<typeof eq>[];
 
   if (specialty)
-    conditions.push(ilike(practitioners.specialty, `%${specialty}%`));
-  if (city) conditions.push(ilike(practitioners.city, `%${city}%`));
+    conditions.push(
+      sql`unaccent(${practitioners.specialty}) ILIKE unaccent(${`%${specialty}%`})`,
+    );
+  if (city)
+    conditions.push(
+      or(
+        sql`unaccent(${practitioners.city}) ILIKE unaccent(${`%${city}%`})`,
+        ilike(practitioners.postalCode, `%${city}%`),
+      )!,
+    );
 
   const practitionerList = await db
     .select()

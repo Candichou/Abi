@@ -83,6 +83,7 @@ export const practitioners = pgTable("practitioners", {
   firstName: varchar("first_name", { length: 255 }).notNull(),
   specialty: varchar("specialty", { length: 255 }).notNull(),
   city: varchar("city", { length: 255 }).notNull(),
+  postalCode: varchar("postal_code", { length: 10 }),
   address: text("address"), // masqué pour non-connectés
   phone: varchar("phone", { length: 20 }), // masqué pour non-connectés
   price: decimal("price", { precision: 10, scale: 2 }),

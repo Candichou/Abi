@@ -20,8 +20,15 @@ export function SearchCombobox({
   const [value, setValue] = useState(defaultValue ?? "");
   const [open, setOpen] = useState(false);
 
+  const normalize = (s: string) =>
+    s
+      .normalize("NFD")
+      .replace(new RegExp("[̀-ͯ]", "g"), "")
+      .toLowerCase();
+
+  const normalizedValue = normalize(value);
   const filtered = suggestions.filter((s) =>
-    s.toLowerCase().includes(value.toLowerCase())
+    normalize(s).startsWith(normalizedValue)
   );
 
   const showList = open && value.length >= 1 && filtered.length > 0;

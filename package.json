@@ -11,7 +11,7 @@
     "db:migrate": "drizzle-kit migrate",
     "db:push": "drizzle-kit push",
     "db:up": "drizzle-kit up",
-    "db:seed": "tsx src/db/seed.ts",
+    "db:seed": "tsx server/db/seed.ts",
     "db:reset": "tsx server/db/reset.ts",
     "typecheck": "tsc --noEmit",
     "test": "vitest run --passWithNoTests"

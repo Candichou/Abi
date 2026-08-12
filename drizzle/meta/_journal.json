@@ -43,6 +43,13 @@
       "when": 1786446453096,
       "tag": "0005_fat_arachne",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1786544726451,
+      "tag": "0006_even_marvex",
+      "breakpoints": true
     }
   ]
 }
