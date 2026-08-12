@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 export default function RGPDPage() {
   return (
     <main className="min-h-screen bg-cream">
@@ -43,12 +45,12 @@ export default function RGPDPage() {
           </section>
         </div>
 
-        <a
+        <Link
           href="/"
           className="inline-block mt-8 text-forest/60 hover:text-forest underline"
         >
           ← Retour à l&apos;accueil
-        </a>
+        </Link>
       </div>
     </main>
   );

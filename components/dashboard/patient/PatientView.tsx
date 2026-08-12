@@ -3,6 +3,7 @@ import { auth } from "@/lib/auth/config";
 import { getSavedPractitioners } from "@/server/queries/savedPractitioners";
 import { SavedPractitionersList } from "./SavedPractitionersList";
 import { DeleteAccountButton } from "../DeleteAccountButton";
+import Link from "next/link";
 
 type Session = NonNullable<Awaited<ReturnType<typeof auth.api.getSession>>>;
 
@@ -91,12 +92,12 @@ export async function PatientView({ session }: { session: Session }) {
         </section>
 
         {/* Bouton recherche — proche de la liste sauvegardée */}
-        <a
+        <Link
           href="/search"
           className="w-full py-4 px-6 rounded-full font-heading font-bold text-forest bg-lavender hover:bg-lavender/80 transition-colors text-center block mb-10"
         >
           Chercher d'autres praticiens
-        </a>
+        </Link>
 
         {/* Actions */}
         <section className="space-y-4" aria-labelledby="actions-heading">
