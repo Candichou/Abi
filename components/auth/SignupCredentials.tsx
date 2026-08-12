@@ -59,7 +59,12 @@ export default function SignupCredentials({
     });
 
     if (error) {
-      setServerError("Une erreur est survenue. Vérifie tes informations.");
+      setServerError(
+        error.code === "USER_ALREADY_EXISTS_USE_ANOTHER_EMAIL" ||
+          error.code === "USER_ALREADY_EXISTS"
+          ? "Impossible de créer le compte avec ces informations. Si vous avez déjà un compte, vous pouvez vous connecter."
+          : "Une erreur est survenue. Vérifie tes informations.",
+      );
       setIsLoading(false);
       return;
     }
