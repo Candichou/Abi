@@ -96,7 +96,7 @@ export async function PatientView({ session }: { session: Session }) {
           href="/search"
           className="w-full py-4 px-6 rounded-full font-heading font-bold text-forest bg-lavender hover:bg-lavender/80 transition-colors text-center block mb-10"
         >
-          Chercher d'autres praticiens
+          Chercher d&apos;autres praticiens
         </Link>
 
         {/* Actions */}
