@@ -1,7 +1,7 @@
 "use server";
 
 import { getCurrentUserId } from "@/server/auth/getCurrentUser";
-import { updateUserRole } from "../queries/users";
+import { updateUserRole, deleteUser } from "../queries/users";
 import { roleSchema, type Role } from "@/lib/validations/role";
 
 export async function setUserRole(role: Role) {
@@ -21,5 +21,17 @@ export async function setUserRole(role: Role) {
   if (!updated)
     throw new Error(
       "Impossible de mettre à jour votre profil, veuillez vous reconnecter.",
+    );
+}
+
+// RGPD : suppression du compte et de toutes les données liées (cascade en DB
+// via onDelete: "cascade" sur chaque table référençant users.id). Le
+// désabonnement des sessions est géré par better-auth côté client après coup.
+export async function deleteAccount() {
+  const userId = await getCurrentUserId();
+  const deleted = await deleteUser(userId);
+  if (!deleted)
+    throw new Error(
+      "Impossible de supprimer votre compte, veuillez réessayer.",
     );
 }

@@ -16,6 +16,14 @@ export type UsersAll = {
   banReason: string | null;
   banExpires: Date | null;
 };
+export async function deleteUser(userId: string): Promise<boolean> {
+  const [deleted] = await db
+    .delete(users)
+    .where(eq(users.id, userId))
+    .returning({ id: users.id });
+  return !!deleted;
+}
+
 export async function updateUserRole(
   userId: string,
   role: Role,

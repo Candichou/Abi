@@ -89,8 +89,12 @@ export const practitioners = pgTable("practitioners", {
   convention: conventionEnum("convention"),
   status: practitionerStatusEnum("status").default("pending").notNull(),
   isVisible: boolean("is_visible").default(false).notNull(),
-  proposedBy: text("proposed_by").references(() => users.id),
-  validatedBy: text("validated_by").references(() => users.id),
+  proposedBy: text("proposed_by").references(() => users.id, {
+    onDelete: "set null",
+  }),
+  validatedBy: text("validated_by").references(() => users.id, {
+    onDelete: "set null",
+  }),
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });
@@ -153,7 +157,9 @@ export const practitionerAssociations = pgTable("practitioner_associations", {
     .default("pending")
     .notNull(),
   validatedAt: timestamp("validated_at"),
-  validatedBy: text("validated_by").references(() => users.id),
+  validatedBy: text("validated_by").references(() => users.id, {
+    onDelete: "set null",
+  }),
 });
 
 // ─── Saved practitioners (patients uniquement) ────────────────────────────────
@@ -211,9 +217,9 @@ export const practitionerConsentRequests = pgTable(
       .notNull()
       .references(() => practitioners.id, { onDelete: "cascade" }),
     sentAt: timestamp("sent_at").defaultNow().notNull(),
-    sentBy: text("sent_by")
-      .notNull()
-      .references(() => users.id),
+    sentBy: text("sent_by").references(() => users.id, {
+      onDelete: "set null",
+    }),
     status: consentRequestStatusEnum("status").default("pending").notNull(),
   },
 );

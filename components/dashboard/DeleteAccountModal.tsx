@@ -3,17 +3,28 @@
 import { useState } from "react";
 import { authClient } from "@/lib/auth/client";
 import { useRouter } from "next/navigation";
+import { deleteAccount } from "@/server/actions/auth";
 
 export function DeleteAccountModal({ onClose }: { onClose: () => void }) {
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const router = useRouter();
 
   async function handleDelete() {
     setIsLoading(true);
-    // TODO: Appeler endpoint DELETE /api/users/[id]
-    // Pour v1: juste logout
-    await authClient.signOut();
-    router.push("/");
+    setError(null);
+    try {
+      await deleteAccount();
+      await authClient.signOut();
+      router.push("/");
+    } catch (err) {
+      setError(
+        err instanceof Error
+          ? err.message
+          : "Impossible de supprimer votre compte, veuillez réessayer.",
+      );
+      setIsLoading(false);
+    }
   }
 
   return (
@@ -34,6 +45,12 @@ export function DeleteAccountModal({ onClose }: { onClose: () => void }) {
           La suppression de votre compte est irréversible. Toutes vos données
           seront définitivement supprimées.
         </p>
+
+        {error && (
+          <p className="text-sm text-red-600 mb-4" role="alert">
+            {error}
+          </p>
+        )}
 
         <div className="flex gap-3">
           <button
