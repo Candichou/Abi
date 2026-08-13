@@ -3,6 +3,7 @@ import { auth } from "@/lib/auth/config";
 import { headers } from "next/headers";
 import { notFound } from "next/navigation";
 import Link from "next/link";
+import { z } from "zod";
 import {
   ArrowLeftIcon,
   MapPinIcon,
@@ -54,6 +55,8 @@ export default async function PractitionerPage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
+  if (!z.uuid().safeParse(id).success) notFound();
+
   const [practitioner, session] = await Promise.all([
     getPractitionerById(id),
     auth.api.getSession({ headers: await headers() }),
