@@ -12,6 +12,9 @@ export const credentialsSchema = z.object({
 });
 
 export const signinSchema = z.object({
-  email: z.email("Email non connu").min(1),
-  password: z.string().min(12, "12 caractères minimum"),
+  email: z
+    .string()
+    .min(1, "Adresse e-mail requise.")
+    .email("Adresse e-mail invalide."),
+  password: z.string().min(1, "Mot de passe requis."),
 });

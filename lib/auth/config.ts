@@ -23,6 +23,14 @@ export const auth = betterAuth({
     expiresIn: 60 * 60 * 24,
     updateAge: 60 * 60,
   },
+  rateLimit: {
+    // better-auth désactive le rate limit par défaut en dev (actif seulement si NODE_ENV=production),
+    // car le stockage en mémoire ne survit pas au hot-reload. On force enabled: true pour pouvoir
+    // tester/démontrer la protection en local sans attendre un déploiement.
+    enabled: true,
+    window: 60, // fenêtre de 60 secondes
+    max: 5, // 5 tentatives max par fenêtre (protection anti-bruteforce sur le login)
+  },
   plugins: [admin(), nextCookies()], //permet de sauvegarder les cookies better-auth dans l'appli next
 });
 

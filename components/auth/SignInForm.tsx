@@ -43,7 +43,11 @@ export default function SignInForm() {
     });
 
     if (error) {
-      setServerError("Compte ou mot de passe incorrectes");
+      if (error.status === 429) {
+        setServerError("Trop de tentatives. Veuillez réessayer dans une minute.");
+      } else {
+        setServerError("Adresse e-mail ou mot de passe incorrect.");
+      }
       setIsLoading(false);
       return;
     }
