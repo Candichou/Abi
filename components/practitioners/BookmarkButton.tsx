@@ -2,7 +2,7 @@
 
 import { BookmarkIcon } from "@heroicons/react/24/outline";
 import { BookmarkIcon as BookmarkSolidIcon } from "@heroicons/react/24/solid";
-import { useEffect, useTransition } from "react";
+import { useEffect, useState, useTransition } from "react";
 import { savePractitioner } from "@/server/actions/savePractitioner";
 import { unsavePractitioner } from "@/server/actions/unsavePractitioner";
 import { useSavedPractitionersStore } from "@/store/savedPractitionersStore";
@@ -24,6 +24,7 @@ export function BookmarkButton({
   const save = useSavedPractitionersStore((state) => state.save);
   const unsave = useSavedPractitionersStore((state) => state.unsave);
   const [isPending, startTransition] = useTransition();
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     if (initialSaved) {
@@ -33,14 +34,23 @@ export function BookmarkButton({
   }, [practitionerId, initialSaved]);
 
   function handleClick() {
+    setError(null);
     startTransition(async () => {
       if (isSaved) {
-        await unsavePractitioner(practitionerId);
-        unsave(practitionerId);
-        onUnsave?.(practitionerId);
+        const result = await unsavePractitioner(practitionerId);
+        if (result.success) {
+          unsave(practitionerId);
+          onUnsave?.(practitionerId);
+        } else {
+          setError(result.error);
+        }
       } else {
-        await savePractitioner(practitionerId);
-        save(practitionerId);
+        const result = await savePractitioner(practitionerId);
+        if (result.success) {
+          save(practitionerId);
+        } else {
+          setError(result.error);
+        }
       }
     });
   }
@@ -48,28 +58,37 @@ export function BookmarkButton({
   const isDark = variant === "dark";
 
   return (
-    <button
-      type="button"
-      onClick={handleClick}
-      disabled={isPending}
-      className={`flex items-center gap-1.5 text-sm transition-colors disabled:opacity-50 ${
-        isDark
-          ? "text-cream/60 hover:text-cream"
-          : "text-forest/60 hover:text-forest"
-      }`}
-      aria-label={isSaved ? "Retirer des favoris" : "Sauvegarder ce praticien"}
-      aria-pressed={isSaved}
-    >
-      {isSaved ? (
-        <BookmarkSolidIcon
-          className={`w-5 h-5 ${isDark ? "text-cream" : "text-forest"}`}
-        />
-      ) : (
-        <BookmarkIcon className="w-5 h-5" />
+    <div className="flex flex-col gap-1">
+      <button
+        type="button"
+        onClick={handleClick}
+        disabled={isPending}
+        className={`flex items-center gap-1.5 text-sm transition-colors disabled:opacity-50 ${
+          isDark
+            ? "text-cream/60 hover:text-cream"
+            : "text-forest/60 hover:text-forest"
+        }`}
+        aria-label={
+          isSaved ? "Retirer des favoris" : "Sauvegarder ce praticien"
+        }
+        aria-pressed={isSaved}
+      >
+        {isSaved ? (
+          <BookmarkSolidIcon
+            className={`w-5 h-5 ${isDark ? "text-cream" : "text-forest"}`}
+          />
+        ) : (
+          <BookmarkIcon className="w-5 h-5" />
+        )}
+        <span className="font-body text-xs">
+          {isSaved ? "Sauvegardé" : "Sauvegarder"}
+        </span>
+      </button>
+      {error && (
+        <p role="alert" className="text-sm text-red-600 font-body">
+          {error}
+        </p>
       )}
-      <span className="font-body text-xs">
-        {isSaved ? "Sauvegardé" : "Sauvegarder"}
-      </span>
-    </button>
+    </div>
   );
 }

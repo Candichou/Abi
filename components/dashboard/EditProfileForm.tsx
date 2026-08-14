@@ -1,8 +1,11 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
 import Button from "@/components/common/Button";
+import { updatePseudoSchema } from "@/lib/validations/user";
+import { updatePseudo } from "@/server/actions/updatePseudo";
 
 interface EditProfileFormProps {
   session: {
@@ -14,39 +17,48 @@ interface EditProfileFormProps {
 }
 
 export default function EditProfileForm({ session }: EditProfileFormProps) {
+  const router = useRouter();
   const [name, setName] = useState(session.user.name);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
-  const [success, setSuccess] = useState("");
 
-  async function handleSubmit(e: React.FormEvent) {
+  const trimmedName = name.trim();
+  const validation = updatePseudoSchema.safeParse({ name });
+  const isUnchanged = trimmedName === session.user.name.trim();
+  const isDisabled = !validation.success || isUnchanged || isLoading;
+
+  async function handleSubmit(e: React.SubmitEvent) {
     e.preventDefault();
+    if (!validation.success || isUnchanged) return;
+
     setIsLoading(true);
     setError("");
-    setSuccess("");
 
-    // TODO: Implémenter update user endpoint
-    // Pour v1, afficher message "à venir"
-    setError("Modification de profil — à implémenter en v2");
-    setIsLoading(false);
+    const result = await updatePseudo(validation.data.name);
+
+    if (!result.success) {
+      setError(result.error);
+      setIsLoading(false);
+      return;
+    }
+
+    router.push("/dashboard");
+    router.refresh();
   }
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6 max-w-md">
+      <p className="text-sm text-forest/70">
+        Le pseudonyme est la seule information de profil modifiable dans la
+        version actuelle.
+      </p>
+
       {error && (
         <div
           role="alert"
           className="bg-red-50 border border-red-200 rounded-xl p-4 text-sm text-red-600"
         >
           {error}
-        </div>
-      )}
-      {success && (
-        <div
-          role="status"
-          className="bg-teal/20 border border-teal rounded-xl p-4 text-sm text-teal"
-        >
-          {success}
         </div>
       )}
 
@@ -62,39 +74,27 @@ export default function EditProfileForm({ session }: EditProfileFormProps) {
           type="text"
           value={name}
           onChange={(e) => setName(e.target.value)}
+          aria-invalid={!validation.success}
+          aria-describedby={!validation.success ? "name-error" : undefined}
           className="w-full rounded-full px-4 py-3 bg-cream border border-forest/20 font-body text-sm text-forest placeholder:text-forest/40 focus:outline-none focus-visible:ring-2 focus-visible:ring-forest"
         />
-      </div>
-
-      <div>
-        <label
-          htmlFor="email"
-          className="block text-sm font-heading font-bold text-forest mb-2"
-        >
-          Email
-        </label>
-        <input
-          id="email"
-          type="email"
-          value={session.user.email}
-          disabled
-          className="w-full rounded-full px-4 py-3 bg-cream/50 border border-forest/20 font-body text-sm text-forest/50 cursor-not-allowed"
-        />
-        <p className="text-xs text-forest/50 mt-1">
-          Modification email non disponible pour v1
-        </p>
+        {!validation.success && (
+          <p id="name-error" role="alert" className="text-xs text-red-600 mt-1">
+            {validation.error.issues[0].message}
+          </p>
+        )}
       </div>
 
       <div className="flex gap-3">
-        <Button type="submit" disabled={isLoading}>
-          {isLoading ? "Mise à jour…" : "Mettre à jour"}
-        </Button>
         <Link
           href="/dashboard"
           className="inline-flex items-center justify-center px-6 py-3 rounded-full border-2 border-forest text-forest hover:bg-forest/5 transition-colors font-heading font-bold"
         >
-          Annuler
+          Retour
         </Link>
+        <Button type="submit" disabled={isDisabled}>
+          {isLoading ? "Enregistrement…" : "Enregistrer les modifications"}
+        </Button>
       </div>
     </form>
   );

@@ -12,7 +12,7 @@ export default async function EditProfilePage() {
       <div className="bg-forest text-cream px-4 py-6">
         <div className="max-w-2xl mx-auto">
           <h1 className="text-2xl md:text-3xl font-heading font-bold">
-            Modifier mes informations
+            Modifier mon pseudonyme
           </h1>
         </div>
       </div>

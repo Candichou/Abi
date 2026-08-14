@@ -24,6 +24,19 @@ export async function deleteUser(userId: string): Promise<boolean> {
   return !!deleted;
 }
 
+export async function updateUserName(
+  userId: string,
+  name: string,
+): Promise<UsersAll | null> {
+  const [user] = await db
+    .update(users)
+    .set({ name })
+    .where(eq(users.id, userId))
+    .returning();
+  if (!user) return null;
+  return { ...user, role: user.role as Role | null };
+}
+
 export async function updateUserRole(
   userId: string,
   role: Role,
