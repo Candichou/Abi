@@ -32,7 +32,7 @@ export function DeleteAccountModal({ onClose }: { onClose: () => void }) {
       <div className="bg-cream rounded-3xl shadow-2xl max-w-sm p-6 relative">
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 text-forest/50 hover:text-forest"
+          className="absolute top-4 right-4 text-forest/70 hover:text-forest"
           aria-label="Fermer"
         >
           ✕

@@ -76,7 +76,7 @@ export default function EditProfileForm({ session }: EditProfileFormProps) {
           onChange={(e) => setName(e.target.value)}
           aria-invalid={!validation.success}
           aria-describedby={!validation.success ? "name-error" : undefined}
-          className="w-full rounded-full px-4 py-3 bg-cream border border-forest/20 font-body text-sm text-forest placeholder:text-forest/40 focus:outline-none focus-visible:ring-2 focus-visible:ring-forest"
+          className="w-full rounded-full px-4 py-3 bg-cream border border-forest/20 font-body text-sm text-forest placeholder:text-forest/70 focus:outline-none focus-visible:ring-2 focus-visible:ring-forest"
         />
         {!validation.success && (
           <p id="name-error" role="alert" className="text-xs text-red-600 mt-1">

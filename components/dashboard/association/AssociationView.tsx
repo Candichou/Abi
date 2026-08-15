@@ -30,11 +30,11 @@ export function AssociationView({ session }: { session: Session }) {
             </div>
 
             <div className="flex-1 min-w-0">
-              <p className="text-sm text-forest/60 mb-1">Association</p>
+              <p className="text-sm text-forest/70 mb-1">Association</p>
               <p className="text-lg md:text-xl font-heading font-bold text-forest break-all">
                 {session.user.name}
               </p>
-              <p className="text-xs text-forest/50 mt-2">
+              <p className="text-xs text-forest/70 mt-2">
                 Membre depuis{" "}
                 {new Date(session.user.createdAt).toLocaleDateString("fr-FR")}
               </p>
@@ -48,7 +48,7 @@ export function AssociationView({ session }: { session: Session }) {
           </h2>
           <button
             disabled
-            className="w-full py-4 px-6 rounded-full font-heading font-bold bg-lavender/50 text-forest/50 cursor-not-allowed border-2 border-lavender/30"
+            className="w-full py-4 px-6 rounded-full font-heading font-bold bg-lavender/50 text-forest/70 cursor-not-allowed border-2 border-lavender/30"
             aria-label="Gérer les praticiens (À venir)"
             title="Cette fonctionnalité arrive prochainement"
           >
@@ -60,7 +60,7 @@ export function AssociationView({ session }: { session: Session }) {
           <Logout />
         </section>
 
-        <p className="text-center text-xs text-forest/50 mt-12">
+        <p className="text-center text-xs text-forest/70 mt-12">
           Vos données sont chiffrées • Suppression à tout moment possible
         </p>
       </div>

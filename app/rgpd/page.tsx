@@ -47,7 +47,7 @@ export default function RGPDPage() {
 
         <Link
           href="/"
-          className="inline-block mt-8 text-forest/60 hover:text-forest underline"
+          className="inline-block mt-8 text-forest/70 hover:text-forest underline"
         >
           ← Retour à l&apos;accueil
         </Link>

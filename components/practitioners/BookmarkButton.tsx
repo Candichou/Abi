@@ -66,7 +66,7 @@ export function BookmarkButton({
         className={`flex items-center gap-1.5 text-sm transition-colors disabled:opacity-50 ${
           isDark
             ? "text-cream/60 hover:text-cream"
-            : "text-forest/60 hover:text-forest"
+            : "text-forest/70 hover:text-forest"
         }`}
         aria-label={
           isSaved ? "Retirer des favoris" : "Sauvegarder ce praticien"

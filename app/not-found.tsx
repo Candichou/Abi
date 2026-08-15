@@ -3,7 +3,7 @@ import { MapPinIcon, HomeIcon } from "@heroicons/react/24/outline";
 
 export default function NotFound() {
   return (
-    <main className="min-h-screen bg-cream flex flex-col">
+    <div className="min-h-screen bg-cream flex flex-col">
       <div className="bg-forest px-4 py-6">
         <div className="max-w-2xl mx-auto">
           <span className="text-cream font-heading font-bold text-lg">
@@ -25,7 +25,7 @@ export default function NotFound() {
             <p className="font-heading font-bold text-forest text-h3">
               Cette page n&apos;existe pas
             </p>
-            <p className="text-forest/60 text-sm font-body">
+            <p className="text-forest/70 text-sm font-body">
               La fiche ou la page que vous cherchez a été déplacée, supprimée,
               ou n&apos;a jamais existé.
             </p>
@@ -40,6 +40,6 @@ export default function NotFound() {
           </Link>
         </div>
       </div>
-    </main>
+    </div>
   );
 }

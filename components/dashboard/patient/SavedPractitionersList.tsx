@@ -23,7 +23,7 @@ export function SavedPractitionersList({
 
   if (list.length === 0) {
     return (
-      <p className="text-sm text-forest/60">
+      <p className="text-sm text-forest/70">
         Aucun praticien sauvegardé.e pour le moment.
       </p>
     );
@@ -43,7 +43,7 @@ export function SavedPractitionersList({
             <p className="font-heading font-bold text-forest">
               {practitioner.firstName} {practitioner.lastName}
             </p>
-            <p className="text-sm text-forest/60">{practitioner.specialty}</p>
+            <p className="text-sm text-forest/70">{practitioner.specialty}</p>
           </Link>
           <BookmarkButton practitionerId={practitioner.id} initialSaved />
         </li>

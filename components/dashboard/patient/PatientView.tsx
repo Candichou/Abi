@@ -45,11 +45,11 @@ export async function PatientView({ session }: { session: Session }) {
               </div>
 
               <div className="flex-1 min-w-0">
-                <p className="text-sm text-forest/60 mb-1">Profil</p>
+                <p className="text-sm text-forest/70 mb-1">Profil</p>
                 <p className="text-lg md:text-xl font-heading font-bold text-forest break-all">
                   {session.user.name}
                 </p>
-                <p className="text-xs text-forest/50 mt-2">
+                <p className="text-xs text-forest/70 mt-2">
                   Vous êtes membre depuis{" "}
                   {new Date(session.user.createdAt).toLocaleDateString("fr-FR")}
                 </p>
@@ -70,7 +70,7 @@ export async function PatientView({ session }: { session: Session }) {
           {/* Résumé stats */}
           <div className="pt-6 border-t border-forest/10">
             <div>
-              <p className="text-xs text-forest/60 uppercase tracking-wide">
+              <p className="text-xs text-forest/70 uppercase tracking-wide">
                 Vos praticiens sauvegardé.e.s
               </p>
               <p className="text-2xl font-heading font-bold text-forest mt-1">
@@ -110,7 +110,7 @@ export async function PatientView({ session }: { session: Session }) {
         </section>
 
         {/* Info privacy */}
-        {/*      <p className="text-center text-xs text-forest/50 mt-12">
+        {/*      <p className="text-center text-xs text-forest/70 mt-12">
           Vos données sont chiffrées • Suppression à tout moment possible
         </p> */}
       </div>

@@ -114,7 +114,7 @@ export default async function PractitionerPage({
                 {firstName} {lastName}
               </h1>
               <p className="text-cream/70 text-sm mt-0.5">{specialty}</p>
-              <div className="flex items-center gap-1 text-cream/50 text-xs mt-0.5">
+              <div className="flex items-center gap-1 text-cream/60 text-xs mt-0.5">
                 <MapPinIcon className="w-3.5 h-3.5" />
                 <span>{city}</span>
               </div>
@@ -148,7 +148,7 @@ export default async function PractitionerPage({
                     href={asso.website}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex items-center gap-1 text-xs text-forest/50 hover:text-forest transition-colors"
+                    className="flex items-center gap-1 text-xs text-forest/70 hover:text-forest transition-colors"
                   >
                     <GlobeAltIcon className="w-3.5 h-3.5" />
                     Site web
@@ -212,13 +212,13 @@ export default async function PractitionerPage({
                 </div>
               )}
               {!address && !phone && (
-                <p className="text-forest/40 text-xs">
+                <p className="text-forest/70 text-xs">
                   Aucune coordonnée renseignée.
                 </p>
               )}
             </div>
           ) : (
-            <div className="flex items-center gap-3 text-forest/50">
+            <div className="flex items-center gap-3 text-forest/70">
               <LockClosedIcon className="w-5 h-5 shrink-0" />
               <div>
                 <p className="text-sm text-forest/70 font-body">
@@ -245,7 +245,7 @@ export default async function PractitionerPage({
               {Object.entries(tagsByCategory).map(
                 ([category, categoryTags]) => (
                   <div key={category}>
-                    <p className="text-xs text-forest/40 font-body uppercase tracking-wide mb-1.5">
+                    <p className="text-xs text-forest/70 font-body uppercase tracking-wide mb-1.5">
                       {TAG_CATEGORY_LABELS[category] ?? category}
                     </p>
                     <div className="flex flex-wrap gap-2">
@@ -274,7 +274,7 @@ export default async function PractitionerPage({
             <h2 className="font-heading font-bold text-forest text-base mb-1">
               Retours de la communauté
             </h2>
-            <p className="text-xs text-forest/40 font-body mb-3">
+            <p className="text-xs text-forest/70 font-body mb-3">
               Tags ajoutés et votés par les patients
             </p>
             <div className="flex flex-wrap gap-2">
@@ -292,7 +292,7 @@ export default async function PractitionerPage({
         )}
 
         {/* Footer discret */}
-        <p className="text-center text-xs text-forest/30 pb-8">
+        <p className="text-center text-xs text-forest/70 pb-8">
           Fiche créée le {new Date(createdAt).toLocaleDateString("fr-FR")}
         </p>
       </div>

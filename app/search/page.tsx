@@ -83,7 +83,7 @@ export default async function SearchPage({
                 : "Aucun praticien trouvé.e"}
             </p>
             {hasFilters && (
-              <p className="text-forest/50 text-xs mt-0.5">
+              <p className="text-forest/70 text-xs mt-0.5">
                 {[specialty, city].filter(Boolean).join(" · ")}
               </p>
             )}
@@ -118,7 +118,7 @@ export default async function SearchPage({
                 >
                   ← Précédent
                 </Link>
-                <span className="text-sm text-forest/60 font-body">
+                <span className="text-sm text-forest/70 font-body">
                   Page {page}/{totalPages}
                 </span>
                 <Link
@@ -136,7 +136,7 @@ export default async function SearchPage({
             )}
           </>
         ) : (
-          <div className="text-center py-20 text-forest/50">
+          <div className="text-center py-20 text-forest/70">
             <p className="text-4xl mb-4">🔍</p>
             <p className="font-heading font-semibold text-forest mb-1">
               Aucun résultat

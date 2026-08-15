@@ -15,7 +15,7 @@ export function AuthGateModal({ onClose }: { onClose: () => void }) {
       <div className="relative bg-cream rounded-3xl shadow-2xl max-w-sm w-full p-8 z-10">
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 text-forest/40 hover:text-forest transition-colors"
+          className="absolute top-4 right-4 text-forest/70 hover:text-forest transition-colors"
           aria-label="Fermer"
         >
           <XMarkIcon className="w-5 h-5" />
@@ -51,7 +51,7 @@ export function AuthGateModal({ onClose }: { onClose: () => void }) {
             </Link>
           </div>
 
-          <p className="text-xs text-forest/40 font-body">
+          <p className="text-xs text-forest/70 font-body">
             C&apos;est gratuit et sans engagement
           </p>
         </div>

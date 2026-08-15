@@ -28,8 +28,14 @@ export const auth = betterAuth({
     // car le stockage en mémoire ne survit pas au hot-reload. On force enabled: true pour pouvoir
     // tester/démontrer la protection en local sans attendre un déploiement.
     enabled: true,
-    window: 60, // fenêtre de 60 secondes
-    max: 5, // 5 tentatives max par fenêtre (protection anti-bruteforce sur le login)
+    window: 60, // fenêtre par défaut (routes hors règles spécifiques ci-dessous)
+    max: 5, // limite par défaut (routes hors règles spécifiques ci-dessous)
+    // Sur /sign-in, better-auth applique nativement une règle plus stricte (3 tentatives / 10s)
+    // qui écraserait silencieusement les valeurs ci-dessus. On la déclare explicitement ici pour
+    // que la politique anti-bruteforce du login soit documentée dans le code, pas implicite dans le framework.
+    customRules: {
+      "/sign-in/*": { window: 10, max: 3 },
+    },
   },
   plugins: [admin(), nextCookies()], //permet de sauvegarder les cookies better-auth dans l'appli next
 });

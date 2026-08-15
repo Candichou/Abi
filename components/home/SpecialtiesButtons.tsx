@@ -11,7 +11,7 @@ export function SpecialtiesButtons() {
   return (
     <section className="bg-cream py-12 px-4">
       <div className="max-w-2xl mx-auto">
-        <p className="text-center text-sm text-forest/60 mb-6 uppercase tracking-wide">
+        <p className="text-center text-sm text-forest/70 mb-6 uppercase tracking-wide">
           Chercher par spécialité
         </p>
         <div className="flex flex-wrap gap-3 justify-center">

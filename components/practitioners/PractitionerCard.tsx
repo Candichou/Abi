@@ -107,16 +107,16 @@ export function PractitionerCard({
               {firstName} {lastName}
             </h2>
             <p className="text-forest/70 text-sm">{specialty}</p>
-            <div className="flex items-center gap-1 text-forest/50 text-xs mt-0.5">
+            <div className="flex items-center gap-1 text-forest/70 text-xs mt-0.5">
               <MapPinIcon className="w-3.5 h-3.5" />
               <span>{city}</span>
             </div>
             {price && (
-              <div className="flex items-center gap-1 text-forest/60 text-xs mt-0.5">
+              <div className="flex items-center gap-1 text-forest/70 text-xs mt-0.5">
                 <CurrencyEuroIcon className="w-3.5 h-3.5" />
                 <span>{parseFloat(price).toFixed(0)}€/séance</span>
                 {convention && (
-                  <span className="text-forest/40">
+                  <span className="text-forest/70">
                     · {CONVENTION_LABELS[convention]}
                   </span>
                 )}
@@ -148,7 +148,7 @@ export function PractitionerCard({
                 key={category}
                 className="flex flex-wrap items-center gap-1.5"
               >
-                <span className="text-xs text-forest/40 font-body w-20 shrink-0 capitalize">
+                <span className="text-xs text-forest/70 font-body w-20 shrink-0 capitalize">
                   {TAG_CATEGORY_LABELS[category] ?? category}
                 </span>
                 <div className="flex flex-wrap gap-1.5">
@@ -172,7 +172,7 @@ export function PractitionerCard({
         {/* Tags communauté */}
         {communityTags.length > 0 && (
           <div className="flex flex-wrap items-center gap-1.5 mb-3">
-            <span className="text-xs text-forest/40 font-body w-20 shrink-0">
+            <span className="text-xs text-forest/70 font-body w-20 shrink-0">
               Communauté
             </span>
             <div className="flex flex-wrap gap-1.5">

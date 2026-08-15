@@ -10,7 +10,7 @@ export function AboutSection() {
           Partagez vos praticiens de confiance et aidez d&apos;autres à trouver
           des professionnels aligné.e.s avec leurs valeurs.
         </p>
-        <p className="text-sm text-forest/50 font-semibold tracking-wide">
+        <p className="text-sm text-forest/70 font-semibold tracking-wide">
           Simple • Transparent • Communautaire
         </p>
       </div>

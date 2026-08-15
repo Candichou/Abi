@@ -84,7 +84,7 @@ export default function SignupCredentials({
       }}
     >
       {/* Indicateur d'étape */}
-      {/*    <p className="font-body text-sm text-forest/60">étape 1 sur 2</p> */}
+      {/*    <p className="font-body text-sm text-forest/70">étape 1 sur 2</p> */}
       {/*  //todo: quand la deuxième étape sera prête */}
 
       {/* En-tête */}
@@ -119,7 +119,7 @@ export default function SignupCredentials({
         >
           Pseudonyme <span aria-hidden="true">*</span>
         </label>
-        <p className="font-body text-sm text-forest/60">
+        <p className="font-body text-sm text-forest/70">
           Aucun nom réel requis. Affiché publiquement.
         </p>
         <input
@@ -131,7 +131,7 @@ export default function SignupCredentials({
           value={name}
           onChange={(e) => setName(e.target.value)}
           aria-describedby={errors.name ? "pseudonyme-error" : undefined}
-          className="w-full rounded-full px-4 py-3 bg-cream border border-forest/20 font-body text-sm text-forest placeholder:text-forest/40 focus:outline-none focus-visible:ring-2 focus-visible:ring-forest"
+          className="w-full rounded-full px-4 py-3 bg-cream border border-forest/20 font-body text-sm text-forest placeholder:text-forest/70 focus:outline-none focus-visible:ring-2 focus-visible:ring-forest"
         />
         {errors.name && (
           <p
@@ -152,7 +152,7 @@ export default function SignupCredentials({
         >
           Adresse e-mail <span aria-hidden="true">*</span>
         </label>
-        <p className="font-body text-sm text-forest/60">
+        <p className="font-body text-sm text-forest/70">
           Pour la connexion uniquement. Non visible des autres utilisateurs.
         </p>
         <input
@@ -164,7 +164,7 @@ export default function SignupCredentials({
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           aria-describedby={errors.email ? "email-error" : undefined}
-          className="w-full rounded-full px-4 py-3 bg-cream border border-forest/20 font-body text-sm text-forest placeholder:text-forest/40 focus:outline-none focus-visible:ring-2 focus-visible:ring-forest"
+          className="w-full rounded-full px-4 py-3 bg-cream border border-forest/20 font-body text-sm text-forest placeholder:text-forest/70 focus:outline-none focus-visible:ring-2 focus-visible:ring-forest"
         />
         {errors.email && (
           <p
@@ -185,7 +185,7 @@ export default function SignupCredentials({
         >
           Mot de passe <span aria-hidden="true">*</span>
         </label>
-        <p className="font-body text-sm text-forest/60">
+        <p className="font-body text-sm text-forest/70">
           12 caractères minimum, majuscule + chiffre + symbole.
         </p>
         <div className="relative">
@@ -198,7 +198,7 @@ export default function SignupCredentials({
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             aria-describedby={errors.password ? "password-error" : undefined}
-            className="w-full rounded-full px-4 py-3 pr-12 bg-cream border border-forest/20 font-body text-sm text-forest placeholder:text-forest/40 focus:outline-none focus-visible:ring-2 focus-visible:ring-forest"
+            className="w-full rounded-full px-4 py-3 pr-14 bg-cream border border-forest/20 font-body text-sm text-forest placeholder:text-forest/70 focus:outline-none focus-visible:ring-2 focus-visible:ring-forest"
           />
           <button
             type="button"
@@ -208,15 +208,15 @@ export default function SignupCredentials({
                 ? "Masquer le mot de passe"
                 : "Afficher le mot de passe"
             }
-            className="absolute right-3 top-1/2 -translate-y-1/2 p-1 focus:outline-none focus-visible:ring-2 focus-visible:ring-forest rounded-full"
+            className="absolute right-1 top-1/2 -translate-y-1/2 min-h-11 min-w-11 flex items-center justify-center focus:outline-none focus-visible:ring-2 focus-visible:ring-forest rounded-full"
           >
             {showPassword ? (
               <EyeSlashIcon
-                className="w-5 h-5 text-forest/50"
+                className="w-5 h-5 text-forest/70"
                 aria-hidden="true"
               />
             ) : (
-              <EyeIcon className="w-5 h-5 text-forest/50" aria-hidden="true" />
+              <EyeIcon className="w-5 h-5 text-forest/70" aria-hidden="true" />
             )}
           </button>
         </div>
@@ -266,7 +266,7 @@ export default function SignupCredentials({
         Déjà un compte ? <Link href="/signin">Se connecter</Link>
       </span>
       {/* Footer éthique */}
-      {/*     <p className="text-center font-body text-xs text-forest/50 mt-2">
+      {/*     <p className="text-center font-body text-xs text-forest/70 mt-2">
         Sans traceur · sans CAPTCHA visuel · données minimales · hébergement UE
       </p> */}
     </form>

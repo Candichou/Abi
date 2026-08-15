@@ -101,14 +101,14 @@ function RoleCard({
         }
       `}
     >
-      <span className={`shrink-0 ${disabled ? "text-forest/40" : "text-forest"}`}>
+      <span className={`shrink-0 ${disabled ? "text-forest/70" : "text-forest"}`}>
         {icon}
       </span>
       <span className="flex flex-col gap-1">
         <span className="flex items-center gap-2">
           <span
             className={`font-heading font-bold text-[16px] ${
-              disabled ? "text-forest/40" : "text-forest"
+              disabled ? "text-forest/70" : "text-forest"
             }`}
           >
             {title}
@@ -121,7 +121,7 @@ function RoleCard({
         </span>
         <span
           className={`font-body text-[14px] ${
-            disabled ? "text-forest/40" : "text-forest/70"
+            disabled ? "text-forest/70" : "text-forest/70"
           }`}
         >
           {description}

@@ -36,7 +36,7 @@ export function SearchCombobox({
   return (
     <div className="relative flex-1">
       {/* Icône */}
-      <div className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-forest/50 pointer-events-none">
+      <div className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-forest/70 pointer-events-none">
         {icon}
       </div>
 

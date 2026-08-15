@@ -6,7 +6,7 @@ export function Footer() {
       <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8">
         {/* Contact */}
         <div>
-          <h3 className="font-heading font-bold mb-2 text-sm uppercase">Contact</h3>
+          <h2 className="font-heading font-bold mb-2 text-sm uppercase">Contact</h2>
           <a
             href="mailto:contact@abi.fr"
             className="text-cream/70 hover:text-cream transition-colors text-sm"
@@ -17,7 +17,7 @@ export function Footer() {
 
         {/* Légal */}
         <div>
-          <h3 className="font-heading font-bold mb-2 text-sm uppercase">Légal</h3>
+          <h2 className="font-heading font-bold mb-2 text-sm uppercase">Légal</h2>
           <Link
             href="/rgpd"
             className="text-cream/70 hover:text-cream transition-colors text-sm"
