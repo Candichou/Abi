@@ -57,12 +57,12 @@ export async function PatientView({ session }: { session: Session }) {
             </div>
 
             <div className="flex flex-col items-end gap-2 shrink-0">
-              <a
+              <Link
                 href="/dashboard/edit"
                 className="py-2 px-4 rounded-full font-heading font-bold text-sm text-forest bg-teal/20 border border-teal/40 hover:bg-teal/30 transition-colors whitespace-nowrap"
               >
                 Modifier mes informations
-              </a>
+              </Link>
               <DeleteAccountButton compact />
             </div>
           </div>

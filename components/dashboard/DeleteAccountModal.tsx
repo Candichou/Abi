@@ -4,11 +4,13 @@ import { useState } from "react";
 import { authClient } from "@/lib/auth/client";
 import { useRouter } from "next/navigation";
 import { deleteAccount } from "@/server/actions/auth";
+import { useModalA11y } from "@/lib/hooks/useModalA11y";
 
 export function DeleteAccountModal({ onClose }: { onClose: () => void }) {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
+  const containerRef = useModalA11y(onClose);
 
   async function handleDelete() {
     setIsLoading(true);
@@ -29,7 +31,13 @@ export function DeleteAccountModal({ onClose }: { onClose: () => void }) {
 
   return (
     <div className="fixed inset-0 z-50 bg-forest/60 backdrop-blur-sm flex items-center justify-center p-4">
-      <div className="bg-cream rounded-3xl shadow-2xl max-w-sm p-6 relative">
+      <div
+        ref={containerRef}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="delete-account-title"
+        className="bg-cream rounded-3xl shadow-2xl max-w-sm p-6 relative"
+      >
         <button
           onClick={onClose}
           className="absolute top-4 right-4 text-forest/70 hover:text-forest"
@@ -38,7 +46,10 @@ export function DeleteAccountModal({ onClose }: { onClose: () => void }) {
           ✕
         </button>
 
-        <h2 className="text-lg font-heading font-bold text-forest mb-2">
+        <h2
+          id="delete-account-title"
+          className="text-lg font-heading font-bold text-forest mb-2"
+        >
           Êtes-vous sûr.e?
         </h2>
         <p className="text-sm text-forest/70 mb-6">
