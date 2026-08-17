@@ -16,7 +16,6 @@ import type { Role } from "@/lib/validations/role";
 interface SignupCredentialsProps {
   role: Role;
   onBack: () => void;
-  disabled: (isLoading: boolean) => void;
 }
 
 export default function SignupCredentials({
@@ -255,7 +254,12 @@ export default function SignupCredentials({
 
       {/* Actions */}
       <div className="flex justify-between gap-3 mt-2">
-        <Button type="button" variant="ghost" onClick={onBack}>
+        <Button
+          type="button"
+          variant="ghost"
+          onClick={onBack}
+          disabled={isLoading}
+        >
           Retour
         </Button>
         <Button type="submit" disabled={isLoading}>

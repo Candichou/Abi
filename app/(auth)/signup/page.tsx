@@ -16,7 +16,6 @@ type StepData = {
 export default function AuthPage() {
   const [step, setStep] = useState(1);
   const [data, setData] = useState<StepData>({});
-  const [_isLoading, setIsLoading] = useState(false);
 
   return (
     <main className="min-h-screen bg-cream flex flex-col">
@@ -29,11 +28,7 @@ export default function AuthPage() {
         />
       )}
       {step === 2 && (
-        <SignupCredentials
-          role={data.role!}
-          onBack={() => setStep(1)}
-          disabled={(loading) => setIsLoading(loading)}
-        />
+        <SignupCredentials role={data.role!} onBack={() => setStep(1)} />
       )}
     </main>
   );
