@@ -29,6 +29,17 @@ export async function getSavedPractitioners(
   return rows;
 }
 
+export async function getSavedPractitionerIds(
+  userId: string,
+): Promise<string[]> {
+  const rows = await db
+    .select({ practitionerId: savedPractitioners.practitionerId })
+    .from(savedPractitioners)
+    .where(eq(savedPractitioners.userId, userId));
+
+  return rows.map((row) => row.practitionerId);
+}
+
 export async function isPractitionerSaved(
   userId: string,
   practitionerId: string,

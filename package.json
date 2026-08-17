@@ -11,7 +11,7 @@
     "db:migrate": "drizzle-kit migrate",
     "db:push": "drizzle-kit push",
     "db:up": "drizzle-kit up",
-    "db:seed": "tsx src/db/seed.ts",
+    "db:seed": "tsx server/db/seed.ts",
     "db:reset": "tsx server/db/reset.ts",
     "typecheck": "tsc --noEmit",
     "test": "vitest run --passWithNoTests"
@@ -21,19 +21,13 @@
     "@heroicons/react": "^2.2.0",
     "@neondatabase/serverless": "^1.1.0",
     "better-auth": "^1.6.9",
-    "build": "^0.1.4",
     "dotenv": "^17.4.2",
     "drizzle-orm": "^0.45.2",
-    "lint": "^1.2.2",
     "next": "^16.2.6",
-    "pnpm": "^11.2.2",
     "react": "19.2.4",
     "react-dom": "19.2.4",
-    "resend": "^6.12.3",
-    "run": "^1.5.0",
-    "test": "^3.3.0",
-    "type-check": "^0.4.0",
-    "zod": "^4.4.3"
+    "zod": "^4.4.3",
+    "zustand": "^5.0.14"
   },
   "pnpm": {
     "onlyBuiltDependencies": [

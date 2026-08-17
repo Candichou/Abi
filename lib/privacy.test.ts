@@ -19,7 +19,16 @@ const basePractitioner: PractitionerWithDetails = {
 };
 
 const baseFull: PractitionerFull = {
-  ...basePractitioner,
+  id: "practitioner-1",
+  firstName: "Alix",
+  lastName: "Dupont",
+  specialty: "Gynécologie",
+  city: "Lyon",
+  price: null,
+  convention: null,
+  officialTags: [],
+  communityTags: [],
+  approvedAssos: [],
   address: "12 rue des Lilas, 69001 Lyon",
   phone: "0600000000",
   createdAt: new Date(),

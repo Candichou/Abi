@@ -1,11 +1,16 @@
 "use client";
 
-import { BookmarkIcon } from "@heroicons/react/24/outline";
-import { BookmarkIcon as BookmarkSolidIcon } from "@heroicons/react/24/solid";
 import { useState } from "react";
 import Link from "next/link";
 import type { PractitionerWithDetails } from "@/server/queries/practitioners";
 import { AuthGateModal } from "@/components/common/AuthGateModal";
+import { BookmarkButton } from "@/components/practitioners/BookmarkButton";
+import {
+  MapPinIcon,
+  CurrencyEuroIcon,
+  StarIcon,
+  HandThumbUpIcon,
+} from "@heroicons/react/24/solid";
 
 const TAG_CATEGORY_STYLES: Record<string, string> = {
   pathologie: "bg-teal/20 text-forest border border-teal/40",
@@ -43,13 +48,14 @@ export function PractitionerCard({
   onHover,
   isHighlighted,
   isLoggedIn = false,
+  isSaved = false,
 }: {
   practitioner: PractitionerWithDetails;
   onHover?: (id: string | null) => void;
   isHighlighted?: boolean;
   isLoggedIn?: boolean;
+  isSaved?: boolean;
 }) {
-  const [saved, setSaved] = useState(false);
   const [showAuthModal, setShowAuthModal] = useState(false);
   const {
     firstName,
@@ -101,28 +107,34 @@ export function PractitionerCard({
               {firstName} {lastName}
             </h2>
             <p className="text-forest/70 text-sm">{specialty}</p>
-            <p className="text-forest/50 text-xs mt-0.5">📍 {city}</p>
+            <div className="flex items-center gap-1 text-forest/70 text-xs mt-0.5">
+              <MapPinIcon className="w-3.5 h-3.5" />
+              <span>{city}</span>
+            </div>
             {price && (
-              <p className="text-forest/60 text-xs mt-0.5">
-                💶 {parseFloat(price).toFixed(0)}€/séance
+              <div className="flex items-center gap-1 text-forest/70 text-xs mt-0.5">
+                <CurrencyEuroIcon className="w-3.5 h-3.5" />
+                <span>{parseFloat(price).toFixed(0)}€/séance</span>
                 {convention && (
-                  <span className="ml-1 text-forest/40">
+                  <span className="text-forest/70">
                     · {CONVENTION_LABELS[convention]}
                   </span>
                 )}
-              </p>
+              </div>
             )}
           </div>
         </div>
 
         {/* Badge validé par asso */}
         {approvedAssos.length > 0 && (
-          <div className="bg-peach/30 border border-peach rounded-xl px-4 py-2.5 mb-4">
-            <p className="text-forest text-sm font-body">
-              <span className="text-yellow font-bold mr-1">✦</span>
-              Validé par :{" "}
-              <span className="font-semibold">
-                {approvedAssos.map((asso) => asso.name).join(", ")}
+          <div className="bg-teal/20 border border-teal/40 rounded-xl px-4 py-2.5 mb-4">
+            <p className="text-forest text-sm font-body flex items-center gap-1">
+              <StarIcon className="w-4 h-4 text-yellow" aria-hidden="true" />
+              <span>
+                Validé.e par :{" "}
+                <span className="font-semibold">
+                  {approvedAssos.map((asso) => asso.name).join(", ")}
+                </span>
               </span>
             </p>
           </div>
@@ -136,7 +148,7 @@ export function PractitionerCard({
                 key={category}
                 className="flex flex-wrap items-center gap-1.5"
               >
-                <span className="text-xs text-forest/40 font-body w-20 shrink-0 capitalize">
+                <span className="text-xs text-forest/70 font-body w-20 shrink-0 capitalize">
                   {TAG_CATEGORY_LABELS[category] ?? category}
                 </span>
                 <div className="flex flex-wrap gap-1.5">
@@ -160,16 +172,17 @@ export function PractitionerCard({
         {/* Tags communauté */}
         {communityTags.length > 0 && (
           <div className="flex flex-wrap items-center gap-1.5 mb-3">
-            <span className="text-xs text-forest/40 font-body w-20 shrink-0">
+            <span className="text-xs text-forest/70 font-body w-20 shrink-0">
               Communauté
             </span>
             <div className="flex flex-wrap gap-1.5">
               {communityTags.map((tag) => (
                 <span
                   key={tag.id}
-                  className="text-xs px-2.5 py-1 rounded-full bg-forest/5 text-forest/70 border border-forest/15 font-body"
+                  className="text-xs px-2.5 py-1 rounded-full bg-forest/5 text-forest/70 border border-forest/15 font-body flex items-center gap-1"
                 >
-                  👍 {tag.label} ×{tag.voteCount}
+                  <HandThumbUpIcon className="w-3 h-3" aria-hidden="true" />
+                  <span>{tag.label} ×{tag.voteCount}</span>
                 </span>
               ))}
             </div>
@@ -178,22 +191,14 @@ export function PractitionerCard({
 
         {/* Actions */}
         <div className="flex items-center justify-between pt-3 border-t border-forest/10 mt-3">
-          <button
-            onClick={() => setSaved((save) => !save)}
-            className="flex items-center gap-1.5 text-sm text-forest/60 hover:text-forest transition-colors"
-            aria-label={
-              saved ? "Retirer des favoris" : "Sauvegarder ce praticien"
-            }
-          >
-            {saved ? (
-              <BookmarkSolidIcon className="w-4 h-4 text-forest" />
-            ) : (
-              <BookmarkIcon className="w-4 h-4" />
-            )}
-            <span className="font-body text-xs">
-              {saved ? "Sauvegardé" : "Sauvegarder"}
-            </span>
-          </button>
+          {isLoggedIn ? (
+            <BookmarkButton
+              practitionerId={practitioner.id}
+              initialSaved={isSaved}
+            />
+          ) : (
+            <span />
+          )}
           {isLoggedIn ? (
             <Link
               href={`/practitioners/${practitioner.id}`}

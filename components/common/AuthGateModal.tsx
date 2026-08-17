@@ -2,8 +2,11 @@
 
 import Link from "next/link";
 import { LockClosedIcon, XMarkIcon } from "@heroicons/react/24/outline";
+import { useModalA11y } from "@/lib/hooks/useModalA11y";
 
 export function AuthGateModal({ onClose }: { onClose: () => void }) {
+  const containerRef = useModalA11y(onClose);
+
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
       <div
@@ -12,10 +15,16 @@ export function AuthGateModal({ onClose }: { onClose: () => void }) {
         aria-hidden="true"
       />
 
-      <div className="relative bg-cream rounded-3xl shadow-2xl max-w-sm w-full p-8 z-10">
+      <div
+        ref={containerRef}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="auth-gate-title"
+        className="relative bg-cream rounded-3xl shadow-2xl max-w-sm w-full p-8 z-10"
+      >
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 text-forest/40 hover:text-forest transition-colors"
+          className="absolute top-4 right-4 text-forest/70 hover:text-forest transition-colors"
           aria-label="Fermer"
         >
           <XMarkIcon className="w-5 h-5" />
@@ -27,8 +36,11 @@ export function AuthGateModal({ onClose }: { onClose: () => void }) {
           </div>
 
           <div>
-            <h2 className="font-heading font-bold text-forest text-xl mb-2">
-              Profil réservé aux membres
+            <h2
+              id="auth-gate-title"
+              className="font-heading font-bold text-forest text-xl mb-2"
+            >
+              Profil réservé.e aux membres
             </h2>
             <p className="text-forest/70 text-sm font-body leading-relaxed">
               Pour accéder à l&apos;identité et aux coordonnées des praticiens,
@@ -51,7 +63,7 @@ export function AuthGateModal({ onClose }: { onClose: () => void }) {
             </Link>
           </div>
 
-          <p className="text-xs text-forest/40 font-body">
+          <p className="text-xs text-forest/70 font-body">
             C&apos;est gratuit et sans engagement
           </p>
         </div>

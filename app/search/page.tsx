@@ -9,19 +9,30 @@ import Link from "next/link";
 import { auth } from "@/lib/auth/config";
 import { headers } from "next/headers";
 import { maskPractitioner } from "@/lib/privacy";
+import { getSavedPractitionerIds } from "@/server/queries/savedPractitioners";
 
 export default async function SearchPage({
   searchParams,
 }: {
-  searchParams: Promise<{ specialty?: string; city?: string }>;
+  searchParams: Promise<{ specialty?: string; city?: string; page?: string }>;
 }) {
-  const { specialty, city } = await searchParams;
-  const [results, { specialties, cities }, session] = await Promise.all([
+  const { specialty, city, page: pageStr } = await searchParams;
+  const page = Math.max(1, parseInt(pageStr || "1"));
+  const ITEMS_PER_PAGE = 10;
+
+  const [allResults, { specialties, cities }, session] = await Promise.all([
     searchPractitioners(specialty, city),
     getSearchSuggestions(),
     auth.api.getSession({ headers: await headers() }),
   ]);
   const isLoggedIn = !!session;
+  const savedIds = isLoggedIn
+    ? new Set(await getSavedPractitionerIds(session.user.id))
+    : new Set<string>();
+
+  const totalPages = Math.ceil(allResults.length / ITEMS_PER_PAGE);
+  const startIdx = (page - 1) * ITEMS_PER_PAGE;
+  const results = allResults.slice(startIdx, startIdx + ITEMS_PER_PAGE);
 
   const maskedResults = results.map((practitioner) =>
     maskPractitioner(practitioner, isLoggedIn),
@@ -67,39 +78,65 @@ export default async function SearchPage({
         <div className="flex items-center justify-between mb-5">
           <div>
             <p className="font-heading font-bold text-forest text-lg">
-              {results.length > 0
-                ? `${results.length} praticien${results.length > 1 ? "s" : ""} trouvé${results.length > 1 ? "s" : ""}`
-                : "Aucun praticien trouvé"}
+              {allResults.length > 0
+                ? `${allResults.length} praticien${allResults.length > 1 ? "s" : ""} trouvé${allResults.length > 1 ? ".e.s" : ".e"}`
+                : "Aucun praticien trouvé.e"}
             </p>
             {hasFilters && (
-              <p className="text-forest/50 text-xs mt-0.5">
+              <p className="text-forest/70 text-xs mt-0.5">
                 {[specialty, city].filter(Boolean).join(" · ")}
               </p>
             )}
           </div>
-          {hasFilters && (
-            <Link
-              href="/search"
-              className="text-xs text-forest/50 hover:text-forest underline underline-offset-2"
-            >
-              Effacer les filtres
-            </Link>
-          )}
         </div>
 
         {/* Liste des cards */}
-        {results.length > 0 ? (
-          <div className="space-y-4 pb-8">
-            {maskedResults.map((practitioner) => (
-              <PractitionerCard
-                key={practitioner.id}
-                practitioner={practitioner}
-                isLoggedIn={isLoggedIn}
-              />
-            ))}
-          </div>
+        {allResults.length > 0 ? (
+          <>
+            <div className="space-y-4 pb-8">
+              {maskedResults.map((practitioner) => (
+                <PractitionerCard
+                  key={practitioner.id}
+                  practitioner={practitioner}
+                  isLoggedIn={isLoggedIn}
+                  isSaved={savedIds.has(practitioner.id)}
+                />
+              ))}
+            </div>
+
+            {/* Pagination */}
+            {totalPages > 1 && (
+              <div className="flex items-center justify-between py-6 border-t border-forest/10">
+                <Link
+                  href={`/search?specialty=${specialty || ""}&city=${city || ""}&page=${page - 1}`}
+                  className={`px-4 py-2 rounded-full text-sm font-heading font-bold ${
+                    page === 1
+                      ? "opacity-50 cursor-not-allowed"
+                      : "bg-lavender text-forest hover:bg-lavender/80"
+                  }`}
+                  aria-disabled={page === 1}
+                >
+                  ← Précédent
+                </Link>
+                <span className="text-sm text-forest/70 font-body">
+                  Page {page}/{totalPages}
+                </span>
+                <Link
+                  href={`/search?specialty=${specialty || ""}&city=${city || ""}&page=${page + 1}`}
+                  className={`px-4 py-2 rounded-full text-sm font-heading font-bold ${
+                    page === totalPages
+                      ? "opacity-50 cursor-not-allowed"
+                      : "bg-lavender text-forest hover:bg-lavender/80"
+                  }`}
+                  aria-disabled={page === totalPages}
+                >
+                  Suivant →
+                </Link>
+              </div>
+            )}
+          </>
         ) : (
-          <div className="text-center py-20 text-forest/50">
+          <div className="text-center py-20 text-forest/70">
             <p className="text-4xl mb-4">🔍</p>
             <p className="font-heading font-semibold text-forest mb-1">
               Aucun résultat

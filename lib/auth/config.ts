@@ -3,11 +3,8 @@ import { drizzleAdapter } from "@better-auth/drizzle-adapter";
 import { db } from "@/server/db/index";
 import { nextCookies } from "better-auth/next-js";
 import { admin } from "better-auth/plugins";
-import { Resend } from "resend";
 import * as schema from "@/server/db/schema/auth";
 import { NextRequest } from "next/server";
-
-const resend = new Resend(process.env.RESEND_API_KEY);
 
 export const auth = betterAuth({
   database: drizzleAdapter(db, {
@@ -15,29 +12,30 @@ export const auth = betterAuth({
     schema, //import le schema auth db
     usePlural: true, // indication à betterAtuh que mes tables sont au pluriel
   }),
-  emailAndPassword: { enabled: true, requireEmailVerification: false }, // TODO: passer à true avant demo day
-  emailVerification: {
-    sendOnSignUp: true,
-    autoSignInAfterVerification: true,
-    sendVerificationEmail: async ({ user, url }) => {
-      await resend.emails.send({
-        from: "onboarding@resend.dev",
-        to: user.email,
-        subject: "Vérification de votre email",
-        html: `<p>Bonjour,</p><a href="${url}">Vérifier mon email</a>`, // TODO: faire un mail de vérification plus UX
-      });
-    },
-  },
+  emailAndPassword: { enabled: true },
   pages: {
     signIn: "/signin",
     signUp: "/signup",
-    /*  verifyEmail: "/auth/verify", */ //todo: se décider si on garde resend pour demoday
     afterSignIn: "/dashboard",
     afterSignUp: "/dashboard",
   },
   session: {
     expiresIn: 60 * 60 * 24,
     updateAge: 60 * 60,
+  },
+  rateLimit: {
+    // better-auth désactive le rate limit par défaut en dev (actif seulement si NODE_ENV=production),
+    // car le stockage en mémoire ne survit pas au hot-reload. On force enabled: true pour pouvoir
+    // tester/démontrer la protection en local sans attendre un déploiement.
+    enabled: true,
+    window: 60, // fenêtre par défaut (routes hors règles spécifiques ci-dessous)
+    max: 5, // limite par défaut (routes hors règles spécifiques ci-dessous)
+    // Sur /sign-in, better-auth applique nativement une règle plus stricte (3 tentatives / 10s)
+    // qui écraserait silencieusement les valeurs ci-dessus. On la déclare explicitement ici pour
+    // que la politique anti-bruteforce du login soit documentée dans le code, pas implicite dans le framework.
+    customRules: {
+      "/sign-in/*": { window: 10, max: 3 },
+    },
   },
   plugins: [admin(), nextCookies()], //permet de sauvegarder les cookies better-auth dans l'appli next
 });

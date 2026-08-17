@@ -43,7 +43,11 @@ export default function SignInForm() {
     });
 
     if (error) {
-      setServerError("Compte ou mot de passe incorrectes");
+      if (error.status === 429) {
+        setServerError("Trop de tentatives. Veuillez réessayer dans une minute.");
+      } else {
+        setServerError("Adresse e-mail ou mot de passe incorrect.");
+      }
       setIsLoading(false);
       return;
     }
@@ -86,11 +90,12 @@ export default function SignInForm() {
           id="email"
           type="email"
           autoComplete="email"
+          required
           placeholder="vous@exemple.fr"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           aria-describedby={errors.email ? "email-error" : undefined}
-          className="w-full rounded-full px-4 py-3 bg-cream border border-forest/20 font-body text-sm text-forest placeholder:text-forest/40 focus:outline-none focus-visible:ring-2 focus-visible:ring-forest"
+          className="w-full rounded-full px-4 py-3 bg-cream border border-forest/20 font-body text-sm text-forest placeholder:text-forest/70 focus:outline-none focus-visible:ring-2 focus-visible:ring-forest"
         />
         {errors.email && (
           <p
@@ -116,11 +121,12 @@ export default function SignInForm() {
             id="password"
             type={showPassword ? "text" : "password"}
             autoComplete="current-password"
+            required
             placeholder="••••••••••••"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             aria-describedby={errors.password ? "password-error" : undefined}
-            className="w-full rounded-full px-4 py-3 pr-12 bg-cream border border-forest/20 font-body text-sm text-forest placeholder:text-forest/40 focus:outline-none focus-visible:ring-2 focus-visible:ring-forest"
+            className="w-full rounded-full px-4 py-3 pr-14 bg-cream border border-forest/20 font-body text-sm text-forest placeholder:text-forest/70 focus:outline-none focus-visible:ring-2 focus-visible:ring-forest"
           />
           <button
             type="button"
@@ -130,15 +136,15 @@ export default function SignInForm() {
                 ? "Masquer le mot de passe"
                 : "Afficher le mot de passe"
             }
-            className="absolute right-3 top-1/2 -translate-y-1/2 p-1 focus:outline-none focus-visible:ring-2 focus-visible:ring-forest rounded-full"
+            className="absolute right-1 top-1/2 -translate-y-1/2 min-h-11 min-w-11 flex items-center justify-center focus:outline-none focus-visible:ring-2 focus-visible:ring-forest rounded-full"
           >
             {showPassword ? (
               <EyeSlashIcon
-                className="w-5 h-5 text-forest/50"
+                className="w-5 h-5 text-forest/70"
                 aria-hidden="true"
               />
             ) : (
-              <EyeIcon className="w-5 h-5 text-forest/50" aria-hidden="true" />
+              <EyeIcon className="w-5 h-5 text-forest/70" aria-hidden="true" />
             )}
           </button>
         </div>
@@ -167,7 +173,7 @@ export default function SignInForm() {
       </div>
 
       {/* Footer éthique */}
-      {/*      <p className="text-center font-body text-xs text-forest/50 mt-2">
+      {/*      <p className="text-center font-body text-xs text-forest/70 mt-2">
         Sans traceur · sans CAPTCHA visuel · données minimales · hébergement UE
       </p> */}
     </form>

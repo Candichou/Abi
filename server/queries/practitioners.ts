@@ -7,7 +7,7 @@ import {
   associations,
   tagVotes,
 } from "@/server/db/schema/app";
-import { eq, and, ilike, sql, inArray } from "drizzle-orm";
+import { eq, and, or, ilike, sql, inArray } from "drizzle-orm";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -168,7 +168,7 @@ export async function getSearchSuggestions(): Promise<{
   specialties: string[];
   cities: string[];
 }> {
-  const [specialtyRows, cityRows] = await Promise.all([
+  const [specialtyRows, cityRows, postalCodeRows] = await Promise.all([
     db
       .selectDistinct({ specialty: practitioners.specialty })
       .from(practitioners)
@@ -187,11 +187,24 @@ export async function getSearchSuggestions(): Promise<{
           eq(practitioners.isVisible, true),
         ),
       ),
+    db
+      .selectDistinct({ postalCode: practitioners.postalCode })
+      .from(practitioners)
+      .where(
+        and(
+          eq(practitioners.status, "validated"),
+          eq(practitioners.isVisible, true),
+        ),
+      ),
   ]);
+
+  const postalCodes = postalCodeRows
+    .map((r) => r.postalCode)
+    .filter((code): code is string => code !== null);
 
   return {
     specialties: specialtyRows.map((r) => r.specialty).sort(),
-    cities: cityRows.map((r) => r.city).sort(),
+    cities: [...cityRows.map((r) => r.city), ...postalCodes].sort(),
   };
 }
 
@@ -205,8 +218,16 @@ export async function searchPractitioners(
   ] as ReturnType<typeof eq>[];
 
   if (specialty)
-    conditions.push(ilike(practitioners.specialty, `%${specialty}%`));
-  if (city) conditions.push(ilike(practitioners.city, `%${city}%`));
+    conditions.push(
+      sql`unaccent(${practitioners.specialty}) ILIKE unaccent(${`%${specialty}%`})`,
+    );
+  if (city)
+    conditions.push(
+      or(
+        sql`unaccent(${practitioners.city}) ILIKE unaccent(${`%${city}%`})`,
+        ilike(practitioners.postalCode, `%${city}%`),
+      )!,
+    );
 
   const practitionerList = await db
     .select()

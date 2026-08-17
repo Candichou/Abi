@@ -4,8 +4,7 @@ import { UserCircleIcon, UserGroupIcon } from "@heroicons/react/24/solid";
 
 import { useState } from "react";
 import Button from "@/components/common/Button";
-
-type Role = "patient" | "association";
+import type { Role } from "@/lib/validations/role";
 
 interface SignUpRoleSelectorProps {
   onNext: (role: Role) => void;
@@ -44,6 +43,8 @@ export function SignUpRoleSelector({ onNext }: SignUpRoleSelectorProps) {
           icon={<UserGroupIcon className="w-6 h-6" aria-hidden="true" />}
           title="Association"
           description="Je contribue à enrichir la base de données"
+          disabled
+          disabledReason="Bientôt disponible"
         />
       </div>
       <Button onClick={handleContinue} disabled={!selected}>
@@ -60,6 +61,8 @@ interface RoleCardProps {
   icon: React.ReactNode;
   title: string;
   description: string;
+  disabled?: boolean;
+  disabledReason?: string;
 }
 
 function RoleCard({
@@ -69,32 +72,58 @@ function RoleCard({
   icon,
   title,
   description,
+  disabled = false,
+  disabledReason,
 }: RoleCardProps) {
   const isSelected = selected === role;
 
   return (
     <button
       type="button"
-      onClick={() => onChange(role)}
+      onClick={() => {
+        if (!disabled) onChange(role);
+      }}
       aria-pressed={isSelected}
+      aria-disabled={disabled}
+      disabled={disabled}
+      tabIndex={disabled ? -1 : 0}
       className={`
         flex items-center gap-4 w-full text-left
         rounded-2xl border-2 p-4 min-h-11
         transition-colors duration-150
         focus:outline-none focus:ring-2 focus:ring-forest focus:ring-offset-2
         ${
-          isSelected
-            ? "border-forest bg-white"
-            : "border-forest/20 bg-white hover:border-forest/50"
+          disabled
+            ? "border-forest/10 bg-forest/5 cursor-not-allowed"
+            : isSelected
+              ? "border-forest bg-white"
+              : "border-forest/20 bg-white hover:border-forest/50"
         }
       `}
     >
-      <span className="text-forest shrink-0">{icon}</span>
-      <span className="flex flex-col">
-        <span className="font-heading font-bold text-[16px] text-forest">
-          {title}
+      <span className={`shrink-0 ${disabled ? "text-forest/70" : "text-forest"}`}>
+        {icon}
+      </span>
+      <span className="flex flex-col gap-1">
+        <span className="flex items-center gap-2">
+          <span
+            className={`font-heading font-bold text-[16px] ${
+              disabled ? "text-forest/70" : "text-forest"
+            }`}
+          >
+            {title}
+          </span>
+          {disabled && disabledReason && (
+            <span className="font-body text-[11px] font-bold uppercase tracking-wide text-forest/70 bg-forest/10 rounded-full px-2 py-0.5">
+              {disabledReason}
+            </span>
+          )}
         </span>
-        <span className="font-body text-[14px] text-forest/70">
+        <span
+          className={`font-body text-[14px] ${
+            disabled ? "text-forest/70" : "text-forest/70"
+          }`}
+        >
           {description}
         </span>
       </span>

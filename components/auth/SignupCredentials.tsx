@@ -2,6 +2,7 @@
 
 import { credentialsSchema } from "@/lib/validations/auth";
 import { formatZodErrors } from "@/lib/validations/utils";
+import { checkPasswordStrength } from "@/lib/validations/passwordStrength";
 import { authClient } from "@/lib/auth/client";
 import { setUserRole } from "@/server/actions/auth";
 import { EyeIcon, EyeSlashIcon } from "@heroicons/react/24/solid";
@@ -9,11 +10,12 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Button from "@/components/common/Button";
 import Link from "next/link";
+import { PasswordCheck } from "./PasswordCheck";
+import type { Role } from "@/lib/validations/role";
 
 interface SignupCredentialsProps {
-  role: "patient" | "association";
+  role: Role;
   onBack: () => void;
-  disabled: (isLoading: boolean) => void;
 }
 
 export default function SignupCredentials({
@@ -56,7 +58,12 @@ export default function SignupCredentials({
     });
 
     if (error) {
-      setServerError("Une erreur est survenue. Vérifie tes informations.");
+      setServerError(
+        error.code === "USER_ALREADY_EXISTS_USE_ANOTHER_EMAIL" ||
+          error.code === "USER_ALREADY_EXISTS"
+          ? "Impossible de créer le compte avec ces informations. Si vous avez déjà un compte, vous pouvez vous connecter."
+          : "Une erreur est survenue. Vérifie tes informations.",
+      );
       setIsLoading(false);
       return;
     }
@@ -76,7 +83,7 @@ export default function SignupCredentials({
       }}
     >
       {/* Indicateur d'étape */}
-      {/*    <p className="font-body text-sm text-forest/60">étape 1 sur 2</p> */}
+      {/*    <p className="font-body text-sm text-forest/70">étape 1 sur 2</p> */}
       {/*  //todo: quand la deuxième étape sera prête */}
 
       {/* En-tête */}
@@ -89,11 +96,18 @@ export default function SignupCredentials({
         </p>
       </div>
 
-      {/* Erreur serveur */}
-      {serverError && (
-        <p role="alert" className="text-sm text-red-600 font-body">
-          {serverError}
-        </p>
+      {/* Afficher TOUTES les erreurs */}
+      {(serverError || Object.keys(errors).length > 0) && (
+        <div role="alert" className="bg-red-50 border border-red-200 rounded-xl p-4 mb-4">
+          {serverError && (
+            <p className="text-sm text-red-600 font-body mb-2">{serverError}</p>
+          )}
+          {Object.values(errors).map((error, idx) => (
+            <p key={idx} className="text-sm text-red-600 font-body">
+              • {error}
+            </p>
+          ))}
+        </div>
       )}
 
       {/* Pseudonyme */}
@@ -104,18 +118,19 @@ export default function SignupCredentials({
         >
           Pseudonyme <span aria-hidden="true">*</span>
         </label>
-        <p className="font-body text-sm text-forest/60">
+        <p className="font-body text-sm text-forest/70">
           Aucun nom réel requis. Affiché publiquement.
         </p>
         <input
           id="pseudonyme"
           type="text"
           autoComplete="username"
+          required
           placeholder="ex. colibri432"
           value={name}
           onChange={(e) => setName(e.target.value)}
           aria-describedby={errors.name ? "pseudonyme-error" : undefined}
-          className="w-full rounded-full px-4 py-3 bg-cream border border-forest/20 font-body text-sm text-forest placeholder:text-forest/40 focus:outline-none focus-visible:ring-2 focus-visible:ring-forest"
+          className="w-full rounded-full px-4 py-3 bg-cream border border-forest/20 font-body text-sm text-forest placeholder:text-forest/70 focus:outline-none focus-visible:ring-2 focus-visible:ring-forest"
         />
         {errors.name && (
           <p
@@ -136,18 +151,19 @@ export default function SignupCredentials({
         >
           Adresse e-mail <span aria-hidden="true">*</span>
         </label>
-        <p className="font-body text-sm text-forest/60">
+        <p className="font-body text-sm text-forest/70">
           Pour la connexion uniquement. Non visible des autres utilisateurs.
         </p>
         <input
           id="email"
           type="email"
           autoComplete="email"
+          required
           placeholder="vous@exemple.fr"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           aria-describedby={errors.email ? "email-error" : undefined}
-          className="w-full rounded-full px-4 py-3 bg-cream border border-forest/20 font-body text-sm text-forest placeholder:text-forest/40 focus:outline-none focus-visible:ring-2 focus-visible:ring-forest"
+          className="w-full rounded-full px-4 py-3 bg-cream border border-forest/20 font-body text-sm text-forest placeholder:text-forest/70 focus:outline-none focus-visible:ring-2 focus-visible:ring-forest"
         />
         {errors.email && (
           <p
@@ -168,7 +184,7 @@ export default function SignupCredentials({
         >
           Mot de passe <span aria-hidden="true">*</span>
         </label>
-        <p className="font-body text-sm text-forest/60">
+        <p className="font-body text-sm text-forest/70">
           12 caractères minimum, majuscule + chiffre + symbole.
         </p>
         <div className="relative">
@@ -176,11 +192,12 @@ export default function SignupCredentials({
             id="password"
             type={showPassword ? "text" : "password"}
             autoComplete="new-password"
+            required
             placeholder="••••••••••••"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             aria-describedby={errors.password ? "password-error" : undefined}
-            className="w-full rounded-full px-4 py-3 pr-12 bg-cream border border-forest/20 font-body text-sm text-forest placeholder:text-forest/40 focus:outline-none focus-visible:ring-2 focus-visible:ring-forest"
+            className="w-full rounded-full px-4 py-3 pr-14 bg-cream border border-forest/20 font-body text-sm text-forest placeholder:text-forest/70 focus:outline-none focus-visible:ring-2 focus-visible:ring-forest"
           />
           <button
             type="button"
@@ -190,15 +207,15 @@ export default function SignupCredentials({
                 ? "Masquer le mot de passe"
                 : "Afficher le mot de passe"
             }
-            className="absolute right-3 top-1/2 -translate-y-1/2 p-1 focus:outline-none focus-visible:ring-2 focus-visible:ring-forest rounded-full"
+            className="absolute right-1 top-1/2 -translate-y-1/2 min-h-11 min-w-11 flex items-center justify-center focus:outline-none focus-visible:ring-2 focus-visible:ring-forest rounded-full"
           >
             {showPassword ? (
               <EyeSlashIcon
-                className="w-5 h-5 text-forest/50"
+                className="w-5 h-5 text-forest/70"
                 aria-hidden="true"
               />
             ) : (
-              <EyeIcon className="w-5 h-5 text-forest/50" aria-hidden="true" />
+              <EyeIcon className="w-5 h-5 text-forest/70" aria-hidden="true" />
             )}
           </button>
         </div>
@@ -211,11 +228,38 @@ export default function SignupCredentials({
             {errors.password}
           </p>
         )}
+
+        {/* Validation checklist */}
+        {password && (
+          <div className="mt-3 space-y-2">
+            <PasswordCheck
+              met={checkPasswordStrength(password).minLength}
+              label="12 caractères minimum"
+            />
+            <PasswordCheck
+              met={checkPasswordStrength(password).hasUpperCase}
+              label="Une majuscule"
+            />
+            <PasswordCheck
+              met={checkPasswordStrength(password).hasDigit}
+              label="Un chiffre"
+            />
+            <PasswordCheck
+              met={checkPasswordStrength(password).hasSymbol}
+              label="Un symbole"
+            />
+          </div>
+        )}
       </div>
 
       {/* Actions */}
       <div className="flex justify-between gap-3 mt-2">
-        <Button type="button" variant="ghost" onClick={onBack}>
+        <Button
+          type="button"
+          variant="ghost"
+          onClick={onBack}
+          disabled={isLoading}
+        >
           Retour
         </Button>
         <Button type="submit" disabled={isLoading}>
@@ -223,10 +267,10 @@ export default function SignupCredentials({
         </Button>
       </div>
       <span>
-        Déjà un compte ? <Link href="/signin">se connecter</Link>
+        Déjà un compte ? <Link href="/signin">Se connecter</Link>
       </span>
       {/* Footer éthique */}
-      {/*     <p className="text-center font-body text-xs text-forest/50 mt-2">
+      {/*     <p className="text-center font-body text-xs text-forest/70 mt-2">
         Sans traceur · sans CAPTCHA visuel · données minimales · hébergement UE
       </p> */}
     </form>

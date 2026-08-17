@@ -53,6 +53,10 @@ export const reportReasonEnum = pgEnum("report_reason", [
 ]);
 
 // ─── Associations ─────────────────────────────────────────────────────────────
+// V2 assumée : une association peut valider un praticien (confiance patient) et
+// suivre les praticiens qu'elle connaît dans son propre dashboard. Pas encore
+// écrite en dehors du seed — le parcours d'inscription "association" ne crée pas
+// encore de ligne ici, c'est un chantier distinct de la validation du schéma.
 
 export const associations = pgTable("associations", {
   id: uuid("id").primaryKey().defaultRandom(),
@@ -79,14 +83,19 @@ export const practitioners = pgTable("practitioners", {
   firstName: varchar("first_name", { length: 255 }).notNull(),
   specialty: varchar("specialty", { length: 255 }).notNull(),
   city: varchar("city", { length: 255 }).notNull(),
+  postalCode: varchar("postal_code", { length: 10 }),
   address: text("address"), // masqué pour non-connectés
   phone: varchar("phone", { length: 20 }), // masqué pour non-connectés
   price: decimal("price", { precision: 10, scale: 2 }),
   convention: conventionEnum("convention"),
   status: practitionerStatusEnum("status").default("pending").notNull(),
   isVisible: boolean("is_visible").default(false).notNull(),
-  proposedBy: text("proposed_by").references(() => users.id),
-  validatedBy: text("validated_by").references(() => users.id),
+  proposedBy: text("proposed_by").references(() => users.id, {
+    onDelete: "set null",
+  }),
+  validatedBy: text("validated_by").references(() => users.id, {
+    onDelete: "set null",
+  }),
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });
@@ -109,6 +118,8 @@ export const practitionerTags = pgTable("practitioner_tags", {
     .references(() => tags.id, { onDelete: "cascade" }),
 });
 
+// V2 assumée : vote d'un patient pour mettre en avant un tag sur un praticien.
+// Le classement des tags affichés aujourd'hui vient du seed, pas encore de votes réels.
 export const tagVotes = pgTable(
   "tag_votes",
   {
@@ -133,6 +144,8 @@ export const tagVotes = pgTable(
 );
 
 // ─── Practitioner ↔ Association ───────────────────────────────────────────────
+// V2 assumée : lien praticien-association, alimente le dashboard association
+// (praticiens qu'elle connaît/soutient) et la validation de confiance patient.
 
 export const practitionerAssociations = pgTable("practitioner_associations", {
   practitionerId: uuid("practitioner_id")
@@ -145,19 +158,9 @@ export const practitionerAssociations = pgTable("practitioner_associations", {
     .default("pending")
     .notNull(),
   validatedAt: timestamp("validated_at"),
-  validatedBy: text("validated_by").references(() => users.id),
-});
-
-// ─── Contributions ────────────────────────────────────────────────────────────
-
-export const contributions = pgTable("contributions", {
-  id: uuid("id").primaryKey().defaultRandom(),
-  userId: text("user_id")
-    .notNull()
-    .references(() => users.id, { onDelete: "cascade" }),
-  practitionerId: uuid("practitioner_id").references(() => practitioners.id),
-  status: contributionStatusEnum("status").default("pending").notNull(),
-  createdAt: timestamp("created_at").defaultNow().notNull(),
+  validatedBy: text("validated_by").references(() => users.id, {
+    onDelete: "set null",
+  }),
 });
 
 // ─── Saved practitioners (patients uniquement) ────────────────────────────────
@@ -183,6 +186,10 @@ export const savedPractitioners = pgTable(
 );
 
 // ─── Reports ──────────────────────────────────────────────────────────────────
+// V2 assumée : signalement d'une fiche praticien/association erronée ou d'un
+// problème éthique. Toute action liée à un signalement passera par une
+// modération humaine, jamais d'automatisation (masquage auto, blacklist),
+// pour éviter le risque légal (diffamation, responsabilité de plateforme).
 
 export const reports = pgTable("reports", {
   id: uuid("id").primaryKey().defaultRandom(),
@@ -198,6 +205,10 @@ export const reports = pgTable("reports", {
 });
 
 // ─── Consent ──────────────────────────────────────────────────────────────────
+// V2 assumée (RGPD) : demande de consentement envoyée à un praticien avant
+// publication de sa fiche (practitioners.isVisible). En MVP ce process est
+// manuel (email envoyé par l'admin) ; ces tables modélisent l'automatisation
+// future (lien à usage unique, traçabilité IP/version CGU).
 
 export const practitionerConsentRequests = pgTable(
   "practitioner_consent_requests",
@@ -207,9 +218,9 @@ export const practitionerConsentRequests = pgTable(
       .notNull()
       .references(() => practitioners.id, { onDelete: "cascade" }),
     sentAt: timestamp("sent_at").defaultNow().notNull(),
-    sentBy: text("sent_by")
-      .notNull()
-      .references(() => users.id),
+    sentBy: text("sent_by").references(() => users.id, {
+      onDelete: "set null",
+    }),
     status: consentRequestStatusEnum("status").default("pending").notNull(),
   },
 );
