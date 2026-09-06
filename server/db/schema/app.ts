@@ -109,14 +109,23 @@ export const tags = pgTable("tags", {
   category: varchar("category", { length: 100 }).notNull(),
 });
 
-export const practitionerTags = pgTable("practitioner_tags", {
-  practitionerId: uuid("practitioner_id")
-    .notNull()
-    .references(() => practitioners.id, { onDelete: "cascade" }),
-  tagId: uuid("tag_id")
-    .notNull()
-    .references(() => tags.id, { onDelete: "cascade" }),
-});
+export const practitionerTags = pgTable(
+  "practitioner_tags",
+  {
+    practitionerId: uuid("practitioner_id")
+      .notNull()
+      .references(() => practitioners.id, { onDelete: "cascade" }),
+    tagId: uuid("tag_id")
+      .notNull()
+      .references(() => tags.id, { onDelete: "cascade" }),
+  },
+  (table) => [
+    uniqueIndex("unique_practitioner_tag").on(
+      table.practitionerId,
+      table.tagId,
+    ),
+  ],
+);
 
 // V2 assumée : vote d'un patient pour mettre en avant un tag sur un praticien.
 // Le classement des tags affichés aujourd'hui vient du seed, pas encore de votes réels.
@@ -147,21 +156,30 @@ export const tagVotes = pgTable(
 // V2 assumée : lien praticien-association, alimente le dashboard association
 // (praticiens qu'elle connaît/soutient) et la validation de confiance patient.
 
-export const practitionerAssociations = pgTable("practitioner_associations", {
-  practitionerId: uuid("practitioner_id")
-    .notNull()
-    .references(() => practitioners.id, { onDelete: "cascade" }),
-  associationId: uuid("association_id")
-    .notNull()
-    .references(() => associations.id, { onDelete: "cascade" }),
-  validationStatus: contributionStatusEnum("validation_status")
-    .default("pending")
-    .notNull(),
-  validatedAt: timestamp("validated_at"),
-  validatedBy: text("validated_by").references(() => users.id, {
-    onDelete: "set null",
-  }),
-});
+export const practitionerAssociations = pgTable(
+  "practitioner_associations",
+  {
+    practitionerId: uuid("practitioner_id")
+      .notNull()
+      .references(() => practitioners.id, { onDelete: "cascade" }),
+    associationId: uuid("association_id")
+      .notNull()
+      .references(() => associations.id, { onDelete: "cascade" }),
+    validationStatus: contributionStatusEnum("validation_status")
+      .default("pending")
+      .notNull(),
+    validatedAt: timestamp("validated_at"),
+    validatedBy: text("validated_by").references(() => users.id, {
+      onDelete: "set null",
+    }),
+  },
+  (table) => [
+    uniqueIndex("unique_practitioner_association").on(
+      table.practitionerId,
+      table.associationId,
+    ),
+  ],
+);
 
 // ─── Saved practitioners (patients uniquement) ────────────────────────────────
 

@@ -1,0 +1,2 @@
+CREATE UNIQUE INDEX "unique_practitioner_association" ON "practitioner_associations" USING btree ("practitioner_id","association_id");--> statement-breakpoint
+CREATE UNIQUE INDEX "unique_practitioner_tag" ON "practitioner_tags" USING btree ("practitioner_id","tag_id");
