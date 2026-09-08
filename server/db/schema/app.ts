@@ -58,22 +58,26 @@ export const reportReasonEnum = pgEnum("report_reason", [
 // écrite en dehors du seed — le parcours d'inscription "association" ne crée pas
 // encore de ligne ici, c'est un chantier distinct de la validation du schéma.
 
-export const associations = pgTable("associations", {
-  id: uuid("id").primaryKey().defaultRandom(),
-  userId: text("user_id")
-    .notNull()
-    .references(() => users.id, { onDelete: "cascade" }),
-  name: text("name").notNull(),
-  contactFirstName: varchar("contact_first_name", { length: 255 }),
-  contactLastName: varchar("contact_last_name", { length: 255 }),
-  website: varchar("website", { length: 255 }),
-  address: text("address"),
-  phone: varchar("phone", { length: 20 }),
-  description: text("description"),
-  status: associationStatusEnum("status").default("pending").notNull(),
-  verifiedAt: timestamp("verified_at"),
-  createdAt: timestamp("created_at").defaultNow().notNull(),
-});
+export const associations = pgTable(
+  "associations",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    userId: text("user_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    name: text("name").notNull(),
+    contactFirstName: varchar("contact_first_name", { length: 255 }),
+    contactLastName: varchar("contact_last_name", { length: 255 }),
+    website: varchar("website", { length: 255 }),
+    address: text("address"),
+    phone: varchar("phone", { length: 20 }),
+    description: text("description"),
+    status: associationStatusEnum("status").default("pending").notNull(),
+    verifiedAt: timestamp("verified_at"),
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+  },
+  (table) => [uniqueIndex("unique_association_user").on(table.userId)],
+);
 
 // ─── Practitioners ────────────────────────────────────────────────────────────
 
