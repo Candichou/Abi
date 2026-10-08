@@ -43,3 +43,9 @@ CLAUDE.md
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# local database dumps
+*.dump
+*.sql.gz
+backup*.sql
+dump*.sql

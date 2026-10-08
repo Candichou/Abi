@@ -1,0 +1,1 @@
+CREATE UNIQUE INDEX "unique_association_user" ON "associations" USING btree ("user_id");

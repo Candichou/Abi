@@ -1,19 +1,14 @@
 "use client";
 
-import { authClient } from "@/lib/auth/client";
+import { signOut } from "@/lib/auth/client";
 import { useRouter } from "next/navigation";
 
 export function Logout() {
   const router = useRouter();
 
   const handleLogout = async () => {
-    await authClient.signOut({
-      fetchOptions: {
-        onSuccess: () => {
-          router.push("/");
-        },
-      },
-    });
+    const { error } = await signOut();
+    if (!error) router.push("/");
   };
 
   return (

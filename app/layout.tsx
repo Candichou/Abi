@@ -9,11 +9,13 @@ const raleway = Raleway({
   subsets: ["latin"],
   display: "swap",
   variable: "--font-heading",
+  weight: ["700"],
 });
 const openSans = Open_Sans({
   subsets: ["latin"],
   display: "swap",
   variable: "--font-body",
+  weight: ["400", "600", "700"],
 });
 
 export const metadata: Metadata = {

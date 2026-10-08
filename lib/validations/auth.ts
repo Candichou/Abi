@@ -1,5 +1,10 @@
 import { z } from "zod";
 
+// Zod 4 teste `new Function("")` à la création du premier z.object() pour activer son mode JIT.
+// Sous une CSP sans 'unsafe-eval', ce test est rattrapé mais quand même signalé dans l'inspecteur
+// (« blocks the use of eval »). Nos schémas de formulaires sont minuscules : on coupe le JIT.
+z.config({ jitless: true });
+
 export const credentialsSchema = z.object({
   name: z.string().min(1, "Pseudonyme requis"),
   email: z.email("Email invalide"),
