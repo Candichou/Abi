@@ -35,6 +35,11 @@ export const auth = betterAuth({
     // que la politique anti-bruteforce du login soit documentée dans le code, pas implicite dans le framework.
     customRules: {
       "/sign-in/*": { window: 10, max: 3 },
+      // /get-session est appelé automatiquement par le client (montage du Header, retour sur
+      // l'onglet, après chaque connexion/déconnexion). Avec la limite par défaut de 5/min il finissait
+      // en 429, et better-auth garde alors l'ancienne session affichée : pseudo toujours visible
+      // après la déconnexion. Route en lecture seule : on la limite largement, pas à 5.
+      "/get-session": { window: 60, max: 60 },
     },
   },
   plugins: [admin(), nextCookies()], //permet de sauvegarder les cookies better-auth dans l'appli next
