@@ -1,5 +1,8 @@
 import { z } from "zod";
 
+// Pas de JIT (donc pas de `new Function`) : voir lib/validations/auth.ts.
+z.config({ jitless: true });
+
 export const updatePseudoSchema = z.object({
   name: z
     .string()
