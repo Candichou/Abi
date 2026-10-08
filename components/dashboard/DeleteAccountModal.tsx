@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { authClient } from "@/lib/auth/client";
+import { signOut } from "@/lib/auth/client";
 import { useRouter } from "next/navigation";
 import { deleteAccount } from "@/server/actions/auth";
 import { useModalA11y } from "@/lib/hooks/useModalA11y";
@@ -17,7 +17,7 @@ export function DeleteAccountModal({ onClose }: { onClose: () => void }) {
     setError(null);
     try {
       await deleteAccount();
-      await authClient.signOut();
+      await signOut();
       router.push("/");
     } catch (err) {
       setError(

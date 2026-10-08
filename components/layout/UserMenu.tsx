@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
-import { authClient } from "@/lib/auth/client";
+import { signOut } from "@/lib/auth/client";
 import { useRouter } from "next/navigation";
 
 interface UserMenuProps {
@@ -34,7 +34,7 @@ export function UserMenu({ userName }: UserMenuProps) {
 
   const handleLogout = async () => {
     setOpen(false);
-    await authClient.signOut();
+    await signOut();
     router.push("/");
     router.refresh();
   };
