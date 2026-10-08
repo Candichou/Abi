@@ -1,278 +1,236 @@
-Abi — Application Bienveillante et Inclusive
+# Abi — Application Bienveillante et Inclusive
 
-Annuaire de spécialistes de santé bienveillants, inclusifs et éthiques, recommandés et badgés de confiance par des associations de patients et les patients eux-même.
+Annuaire de professionnels de santé bienveillants, inclusifs et éthiques, recommandés par des associations de patients et par les patients eux-mêmes.
 
-Statut : en développement actif — Demo Day prévu le 2 juin 2026 · Soutenance RNCP6 mi-août 2026
+![Next.js](https://img.shields.io/badge/Next.js-16-black?logo=nextdotjs)
+![TypeScript](https://img.shields.io/badge/TypeScript-strict-3178c6?logo=typescript&logoColor=white)
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-Neon-4169e1?logo=postgresql&logoColor=white)
+![Tests](https://img.shields.io/badge/tests-Vitest-6e9f18?logo=vitest&logoColor=white)
 
-🎯 Le problème
-Trouver un professionnel de santé compétent ne suffit pas pour les personnes en situation de vulnérabilité (maladies chroniques, handicap, publics LGBTQIA+, personnes racisées, femmes…). Il n'existe pas d'annuaire structuré autour de critères éthiques validés par des associations de terrain.
-Abi comble ce vide : les praticiens sont référencés et recommandés par des associations partenaires sur des critères transparents (consentement éclairé, inclusivité, accessibilité), puis publiés après validation de l'administrateur.
+**🔗 Démo en ligne : [abi-care.vercel.app](https://abi-care.vercel.app/)**
 
-✨ Fonctionnalités
-MVP (en cours)
+> **Statut** : MVP en développement actif. Périmètre V1 = parcours **Patient** uniquement (voir [Périmètre](#périmètre)).
 
-Page d'accueil avec recherche par spécialité et localisation
-Schémas de base de données (Drizzle ORM)
-Authentification multi-rôles (BetterAuth) — routes signin/signup
-UI des formulaires d'inscription (en cours)
-Fiches praticiens avec floutage partiel pour non-connectés
-Workflow de contribution : patient propose → validation par l'administrateur → publication
-Seed de démonstration (praticiens, tags, utilisateurs fictifs)
+![Page d'accueil d'Abi : recherche par spécialité et localisation](assets/readme/home.png)
 
-**Scope V1 : parcours Patient uniquement.** Le sélecteur de rôle à l'inscription
-affiche toujours l'option Association (elle fait partie du pitch produit — « praticiens
-validés par des associations de patients »), mais elle est désactivée (grisée, badge
-« Bientôt disponible », non sélectionnable) et refusée côté serveur si on tente de
-contourner l'UI. Raison : construire ce parcours en entier (formulaire de profil
-association, workflow de validation `pending/active/suspended`, interface de modération)
-est un chantier à part entière, disproportionné pour le temps restant avant la
-soutenance. L'architecture est prête (tables `associations` et
-`practitionerAssociations` dans `server/db/schema/app.ts`) pour une implémentation V2.
+## Sommaire
 
-Post-MVP (V2)
+- [Contexte](#contexte)
+- [Aperçu](#aperçu)
+- [Périmètre](#périmètre)
+- [Stack](#stack)
+- [Démarrage rapide](#démarrage-rapide)
+- [Scripts](#scripts)
+- [Architecture](#architecture)
+- [Modèle de données](#modèle-de-données)
+- [Conventions](#conventions)
+- [Sécurité et conformité](#sécurité-et-conformité)
+- [Tests et CI](#tests-et-ci)
+- [Roadmap](#roadmap)
 
-Parcours d'inscription Association complet (formulaire de profil, validation par un administrateur)
-Tableau de bord association (modération, validation)
-Interface d'administration
-Cartographie des praticiens
-Système d'avis patients
-Vérification d'email à l'inscription
+## Contexte
 
-**Note technique V2 — vérification email** : la vérification d'email à l'inscription
-a été retirée du scope V1 (composant `app/(auth)/signup/verify/`, config
-`emailVerification` et dépendance `resend` supprimés). Raison : Resend nécessite une
-clé API et un domaine vérifié non présentables en l'état devant le jury en démo. Pour
-V2, prévoir soit Resend en production, soit Mailpit en local pour tester le flux sans
-dépendre d'un service externe.
+Trouver un professionnel de santé compétent ne suffit pas pour les personnes en situation de vulnérabilité (maladies chroniques, handicap, personnes LGBTQIA+, personnes racisées, femmes…). Il n'existe pas d'annuaire structuré autour de critères éthiques validés par des acteurs de terrain.
 
-**Note technique V2 — rôle admin (BetterAuth)** : le plugin `admin()` de BetterAuth (`lib/auth/config.ts`) réutilise la colonne `role` de la table `users` pour distinguer les administrateurs (valeur par défaut `"admin"`), la même colonne que celle utilisée par l'app pour `"patient"`/`"association"` (`lib/validations/role.ts`). Le nom du champ n'est pas configurable côté plugin, mais il est protégé en écriture côté formulaire public (`input: false` dans le schéma du plugin — un utilisateur ne peut pas se l'auto-attribuer via l'inscription). Avant de créer le premier compte admin, prévoir :
-- Ajouter le cas `role === "admin"` dans le routing (`app/dashboard/page.tsx` ou une future page `/admin`), qui aujourd'hui tomberait silencieusement sur `redirect("/")`
+Abi référence des praticiens sur des critères transparents (consentement éclairé, inclusivité, accessibilité). Chaque fiche est proposée, puis publiée **uniquement après validation d'un administrateur**.
 
-🛠️ Stack technique:
+Projet réalisé en autonomie dans le cadre du Titre Professionnel Concepteur Développeur d'Applications (RNCP niveau 6).
 
-Framework: Next.js 16 => (App Router)SSR natif, routing file-based,
-Langage: TypeScript => Typage strict, maintenabilité.
-Base de données: PostgreSQL (Neon) => Relationnel, serverless-compatible
-ORM: Drizzle => Type-safe, léger, migrations versionnées
-Auth: BetterAuth => Multi-rôles natif, sessions sécurisées
-Styling: Tailwind CSSv4 => Mobile-first, tokens CSS personnalisés
-Déploiement: Vercel => CI/CD intégré, preview par PR
-Tests: Vitest => Unit + intégration
-CI/CD: GitHub Actions => Lint, tests, déploiement automatisé
-État partagé client: Zustand => Store léger pour l'état partagé entre composants (ex. praticiens sauvegardés)
+## Aperçu
 
-📐 Convention — types métier
+Résultats de recherche : chaque fiche affiche la spécialité, la ville, le tarif et le secteur, l'association qui a validé le praticien, et ses tags regroupés par catégorie (pathologie, inclusivité, pratique). Les noms sont floutés pour les visiteurs non connectés.
 
-Une donnée qui rentre → Zod. Une donnée qui sort → type simple.
+![Résultats de recherche avec fiches praticiens, validation par une association et tags](assets/readme/search-results.png)
 
-- Ce qu'un utilisateur tape dans un formulaire (avant de rentrer en base) : Zod (`z.infer`), parce qu'il faut vérifier que c'est valide. Exemple : `Role` dans `lib/validations/role.ts`.
-- Ce qui revient d'une requête à la base de données (après jointures/agrégations) : un simple `type`, parce que c'est déjà garanti correct par la requête — rien à valider, juste à nommer sa forme pour TypeScript. Exemples : `PractitionerFull`, `SavedPractitioner` dans `server/queries/`.
+## Périmètre
 
-🏗️ Architecture
+| | Fonctionnalité | État |
+|---|---|---|
+| ✅ | Recherche par spécialité et localisation (insensible aux accents) | V1 |
+| ✅ | Fiches praticiens, données partiellement masquées pour les non-connectés | V1 |
+| ✅ | Inscription / connexion, sessions, rate limiting | V1 |
+| ✅ | Dashboard patient : praticiens sauvegardés, édition du profil, suppression du compte | V1 |
+| ✅ | Seed de démonstration (praticiens, tags, associations fictives) | V1 |
+| 🕓 | Parcours Association complet (profil, modération, recommandation) | V2 |
+| 🕓 | Interface d'administration | V2 |
+| 🕓 | Avis patients et votes sur les tags | V2 |
+| 🕓 | Vérification d'email à l'inscription | V2 |
+| 🕓 | Cartographie des praticiens | V2 |
 
-Le projet suit une architecture en couches stricte (BC02) : chaque couche a une responsabilité unique et ne dépend jamais d'une couche au-dessus d'elle.
+**Décisions de périmètre assumées**
 
-```
-app/                          ← Couche présentation — routes Next.js
-├── api/auth/[...all]/        # BetterAuth handlers
-├── dashboard/                # Dashboard selon le rôle (patient / asso)
-├── practitioners/[id]/       # Fiche praticien détaillée
-├── search/                   # Résultats de recherche
-├── (auth)/                   # Route group — regroupe signin/signup sans changer les URLs (/signin, /signup)
-│   ├── signin/
-│   └── signup/
+- **Rôle Association** : visible dans le sélecteur d'inscription (il fait partie de la proposition de valeur) mais désactivé côté UI **et refusé côté serveur**. Le parcours complet (profil, validation `pending/active/suspended`, modération) est un chantier à part entière, livré après la V1. Le schéma est déjà prêt (`associations`, `practitionerAssociations`).
+- **Vérification d'email** : reportée en V2 (dépendance `resend` retirée). Elle nécessite une clé API et un domaine vérifié. Prévu : Resend en production, Mailpit en local.
+- **Rôle `admin`** : le plugin `admin()` de BetterAuth réutilise la colonne `users.role`. Elle est protégée en écriture côté inscription publique (`input: false`). Avant de créer le premier compte admin, ajouter le cas `role === "admin"` dans le routing du dashboard, qui redirige aujourd'hui silencieusement vers `/`.
 
-components/                   ← Couche présentation — composants React
-├── layout/                   # Header, HeaderAuth, UserMenu
-├── home/                     # Hero (page d'accueil)
-├── practitioners/            # PractitionerCard, SearchCombobox
-├── auth/                     # SignInForm, SignUpRoleSelector, SignupCredentials
-├── dashboard/
-│   ├── patient/              # PatientView
-│   └── association/          # AssociationView
-└── common/                   # Button, AuthGateModal (réutilisables partout)
+## Stack
 
-store/                        ← État client partagé entre composants
-└── savedPractitionersStore.ts # Praticiens sauvegardés (Zustand) — voir section dédiée ci-dessous
+| Couche | Choix | Pourquoi |
+|---|---|---|
+| Framework | Next.js 16 (App Router), React 19 | SSR natif, Server Actions, routing par fichiers |
+| Langage | TypeScript | Typage strict |
+| Base de données | PostgreSQL (Neon) | Relationnel, compatible serverless |
+| ORM | Drizzle | Type-safe, léger, migrations versionnées |
+| Auth | BetterAuth | Sessions sécurisées, plugin admin, rate limiting intégré |
+| Validation | Zod 4 | Validation à l'exécution + source unique des types |
+| État client | Zustand | Partage d'état entre composants sans lien parent-enfant |
+| Style | Tailwind CSS 4 | Mobile-first, tokens CSS |
+| Tests | Vitest | Unitaires et intégration |
+| CI/CD | GitHub Actions, Vercel | Validation de PR, preview par PR |
 
-lib/                          ← Couche configuration & validation
-├── auth/
-│   ├── config.ts             # Configuration BetterAuth (server-only)
-│   └── client.ts             # authClient (navigateur)
-├── privacy.ts                 # Masquage des données praticien pour les non-connectés
-└── validations/               # Schémas Zod — source unique de vérité pour la validation ET le typage
-    ├── auth.ts                # credentialsSchema, signinSchema
-    ├── role.ts                # roleSchema + type Role ("patient" | "association"), réutilisé partout
-    ├── savedPractitioners.ts  # savedPractitionerSchema
-    └── utils.ts                # formatZodErrors (formatte les erreurs Zod pour l'UI)
+## Démarrage rapide
 
-server/                       ← Couche accès aux données (server-only)
-├── db/
-│   ├── index.ts              # Connexion Drizzle → Neon
-│   └── schema/
-│       ├── app.ts            # Tables métier (practitioners, tags, associations…)
-│       └── auth.ts           # Tables BetterAuth (users, sessions…)
-├── auth/
-│   └── getCurrentUser.ts     # Seul point qui parle à BetterAuth + next/headers pour la session
-├── queries/
-│   ├── practitioners.ts      # Requêtes DB : search, detail, suggestions
-│   ├── savedPractitioners.ts # Requêtes DB : praticiens sauvegardés par un patient
-│   └── users.ts              # Requêtes DB : mise à jour du rôle utilisateur
-└── actions/
-    ├── auth.ts                # Server Action : setUserRole
-    ├── savePractitioner.ts    # Server Action : sauvegarder un praticien
-    └── unsavePractitioner.ts  # Server Action : retirer un praticien sauvegardé
+**Prérequis** : Node.js 20+, [pnpm](https://pnpm.io) 10+, une base PostgreSQL [Neon](https://neon.tech) (gratuite suffit).
+
+```bash
+git clone https://github.com/Candichou/Abi.git
+cd Abi
+pnpm install
 ```
 
-Règle de dépendance :
-- `components/` ne sait pas que la base de données existe
-- `server/queries/` ne sait pas que des composants React existent
-- `lib/` contient uniquement de la config et de la validation, sans accès DB direct
-- `server/actions/` ne connaît jamais BetterAuth ni `next/headers` directement : chaque Server Action appelle `server/auth/getCurrentUser.ts`, seul point du projet couplé au provider d'authentification. Si BetterAuth est remplacé un jour, seul ce fichier change — les actions restent intactes.
-- Les valeurs métier à choix limité (ex. le rôle utilisateur) sont définies une seule fois comme schéma Zod dans `lib/validations/`, jamais retapées en type TS local dans plusieurs fichiers (voir section Zod ci-dessous).
+Créer un fichier `.env` à la racine :
 
-## 🗄️ Base de données
+```dotenv
+# Base de données (chaîne de connexion Neon)
+DATABASE_URL=postgresql://user:password@host/dbname?sslmode=require
 
-Schéma défini avec Drizzle ORM dans `server/db/schema/` (`app.ts` : tables métier · `auth.ts` : tables BetterAuth), migrations versionnées dans `drizzle/`.
+# Auth
+BETTER_AUTH_SECRET=             # openssl rand -base64 32
+BETTER_AUTH_URL=http://localhost:3000
+NEXT_PUBLIC_APP_URL=http://localhost:3000
 
-**Tables actives (MVP)**
+# Seed uniquement : ids d'utilisateurs existants rattachés aux données de démo
+ASSO_USER_ID=
+ADMIN_ID=
+```
+
+Initialiser la base puis lancer l'application :
+
+```bash
+pnpm db:migrate   # applique les migrations versionnées de drizzle/
+pnpm db:seed      # données de démonstration
+pnpm dev          # http://localhost:3000
+```
+
+> `ASSO_USER_ID` et `ADMIN_ID` doivent référencer des lignes existantes de `users` : créez deux comptes via `/signup` avant de lancer le seed, puis copiez leurs ids.
+
+> La recherche utilise l'extension PostgreSQL `unaccent`, activée par la migration `0006`. Sur Neon, aucune action manuelle n'est nécessaire.
+
+## Scripts
+
+| Commande | Rôle |
+|---|---|
+| `pnpm dev` | Serveur de développement |
+| `pnpm build` / `pnpm start` | Build et serveur de production |
+| `pnpm lint` | ESLint |
+| `pnpm typecheck` | `tsc --noEmit` |
+| `pnpm test` | Vitest (exécution unique) |
+| `pnpm db:generate` | Génère une migration depuis le schéma Drizzle |
+| `pnpm db:migrate` | Applique les migrations |
+| `pnpm db:push` | Synchronise le schéma sans migration (dev jetable uniquement) |
+| `pnpm db:seed` | Insère les données de démonstration |
+| `pnpm db:reset` | Vide les tables métier (praticiens, tags, associations) |
+
+## Architecture
+
+Architecture en couches. Chaque couche a une responsabilité et ne dépend jamais d'une couche située au-dessus.
+
+```
+app/             Routes Next.js (App Router)
+components/      Composants React (aucun accès DB)
+store/           État client partagé (Zustand)
+lib/             Config, validation Zod, utilitaires purs (aucun accès DB)
+server/
+├── db/          Connexion Drizzle → Neon, schémas, seed
+├── auth/        getCurrentUser : seul point couplé à BetterAuth
+├── queries/     Lectures DB
+└── actions/     Server Actions (écritures, validées par Zod)
+proxy.ts         Protège /dashboard/* (redirige vers /signin sans session)
+drizzle/         Migrations SQL versionnées
+```
+
+**Règles de dépendance**
+
+- `components/` ignore l'existence de la base de données.
+- `server/queries/` ignore l'existence de React.
+- `lib/` ne contient que de la configuration et de la validation, sans accès DB.
+- Les Server Actions n'appellent jamais BetterAuth ni `next/headers` directement : elles passent par `server/auth/getCurrentUser.ts`. Changer de fournisseur d'auth ne modifie qu'un fichier.
+
+## Modèle de données
+
+Schémas dans `server/db/schema/` (`app.ts` : métier, `auth.ts` : BetterAuth).
+
+**Actives en V1**
 
 | Table | Rôle |
 |---|---|
-| `practitioners` | Fiche praticien — statut de modération (`pending/validated/rejected/suspended`), visibilité, praticien proposé/validé par (`proposedBy`/`validatedBy`, alimenté par seed en MVP) |
-| `tags`, `practitionerTags` | Tags catégorisés attachés aux praticiens (accessibilité, inclusivité…) — contenu curé en MVP |
-| `savedPractitioners` | Praticiens sauvegardés par un patient (lecture + écriture complètes) |
-| `users`, `sessions`, `accounts`, `verifications` | Auth (BetterAuth) |
+| `practitioners` | Fiche praticien, statut de modération (`pending/validated/rejected/suspended`), visibilité |
+| `tags`, `practitionerTags` | Tags catégorisés (pathologie, inclusivité, accessibilité…) |
+| `savedPractitioners` | Praticiens sauvegardés par un patient |
+| `users`, `sessions`, `accounts`, `verifications` | BetterAuth |
 
-**Tables modélisées, V2 assumée** — présentes dans le schéma pour documenter des fonctionnalités prévues mais volontairement non branchées avant la soutenance, pour ne pas livrer de parcours inachevé :
+**Modélisées, branchées en V2** : `associations`, `practitionerAssociations`, `tagVotes`, `reports`, `practitionerConsentRequests`, `consentLogs`. Présentes dans le schéma pour documenter l'évolution prévue, volontairement non exposées pour ne livrer aucun parcours inachevé.
 
-| Table | Fonctionnalité prévue |
+Les signalements (`reports`) seront traités par modération humaine uniquement, sans masquage ni blacklist automatique, pour limiter le risque juridique (diffamation, responsabilité de plateforme).
+
+## Conventions
+
+**Zod pour ce qui entre, type simple pour ce qui sort**
+
+- Une donnée qui entre (formulaire, argument de Server Action) est non fiable : elle est validée par un schéma Zod avant usage, et son type est déduit avec `z.infer`. Un seul endroit à modifier si une valeur change.
+
+  ```ts
+  // lib/validations/role.ts
+  export const roleSchema = z.enum(["patient", "association"]);
+  export type Role = z.infer<typeof roleSchema>;
+  ```
+
+- Une donnée qui sort d'une requête DB est déjà garantie par la requête : un simple `type` suffit (`PractitionerFull`, `SavedPractitioner` dans `server/queries/`).
+
+**Zustand uniquement si nécessaire** : un store n'est justifié que si deux composants sans lien parent-enfant lisent ou modifient la même donnée. Sinon, `useState`. Le store `savedPractitionersStore` n'est qu'un cache côté client, synchronisé par les Server Actions et réhydraté à chaque chargement. La source de vérité reste la base.
+
+**Point d'attention** : `users.role` est stocké en `text` (colonne gérée par BetterAuth). Zod garantit la cohérence côté application, pas contre une écriture SQL directe. Un `pgEnum` est prévu pour `practitioners.specialty`.
+
+## Sécurité et conformité
+
+| Sujet | Mesure |
 |---|---|
-| `associations`, `practitionerAssociations` | Une association recommande/badge un praticien qu'elle connaît (confiance patient) et suit ces praticiens dans son dashboard — la publication reste décidée par l'administrateur |
-| `tagVotes` | Vote patient sur les tags d'un praticien — classement par nombre de votes (le classement affiché en MVP vient du seed, pas encore de votes réels) |
-| `reports` | Signalement d'une fiche praticien/association erronée ou d'un problème éthique — modération humaine uniquement, jamais d'action automatique (masquage, blacklist), pour limiter le risque légal (diffamation, responsabilité de plateforme) |
-| `practitionerConsentRequests`, `consentLogs` | Demande de consentement RGPD envoyée au praticien avant publication de sa fiche (`practitioners.isVisible`) — process manuel (email) en MVP, ces tables modélisent l'automatisation future (lien à usage unique, traçabilité IP/version CGU) |
+| Données de santé (RGPD art. 9) | Collecte minimale (pseudonyme et email), consentement à l'inscription, suppression du compte depuis le dashboard |
+| Authentification | Sessions par cookie, durée de 24 h, renouvelées toutes les heures |
+| Force brute | Rate limiting BetterAuth : 3 tentatives / 10 s sur la connexion, 5 requêtes / min par défaut ailleurs |
+| Mots de passe | 12 caractères minimum, majuscule, chiffre et symbole, validés côté client et serveur |
+| Contrôle d'accès | `proxy.ts` sur `/dashboard/*`, validation Zod de toute entrée de Server Action, rôle Association refusé côté serveur |
+| Exposition des données | Champs sensibles des praticiens masqués pour les visiteurs non connectés (`lib/privacy.ts`) |
+| Hébergement | Neon et Vercel |
 
-## 🧩 Zod dans le projet
+## Tests et CI
 
-Zod (v4) a deux rôles dans Abi, qui se recoupent :
+```bash
+pnpm lint && pnpm typecheck && pnpm test
+```
 
-1. **Validation à l'exécution** — vérifier qu'une donnée reçue (formulaire, argument de Server Action) respecte bien les règles métier avant d'aller plus loin (ex. `credentialsSchema` impose 12 caractères minimum + majuscule + chiffre + symbole pour un mot de passe).
-2. **Source unique de vérité pour le typage TypeScript** — au lieu de définir un type à la main (`type Role = "patient" | "association"`) puis un schéma Zod séparé qui répète la même liste de valeurs, on ne définit le schéma qu'une fois et on en déduit le type avec `z.infer` :
+Tests Vitest sur la validation des mots de passe, le masquage des données (`lib/privacy.ts`), le client d'auth, les Server Actions et les requêtes de recherche et de sauvegarde.
 
-   ```ts
-   // lib/validations/role.ts
-   export const roleSchema = z.enum(["patient", "association"]);
-   export type Role = z.infer<typeof roleSchema>;
-   ```
+Le workflow [`pr.yml`](.github/workflows/pr.yml) exécute **lint → typecheck → build → tests** sur chaque Pull Request vers `main`. Il peut aussi être lancé à la main pour vérifier une branche sans ouvrir de PR :
 
-   Tout le reste du projet (`server/queries/users.ts`, `server/actions/auth.ts`, `SignUpRoleSelector.tsx`, `SignupCredentials.tsx`, `app/signup/page.tsx`) importe ce type `Role` au lieu d'en retaper un — un seul endroit à modifier si un rôle est ajouté un jour, et TypeScript signale partout où un cas manquerait d'être traité.
+```bash
+gh workflow run pr.yml --ref <branche>
+```
 
-Schémas actuels :
+**Secrets GitHub requis** (Settings → Secrets and variables → Actions) :
 
-| Schéma | Fichier | Utilisé par |
-|---|---|---|
-| `credentialsSchema`, `signinSchema` | `lib/validations/auth.ts` | Formulaires signin/signup (validation client + serveur) |
-| `roleSchema` | `lib/validations/role.ts` | `setUserRole`, `updateUserRole`, sélecteur de rôle à l'inscription |
-| `savedPractitionerSchema` | `lib/validations/savedPractitioners.ts` | `savePractitioner`, `unsavePractitioner` |
-
-**Règle** : toute donnée qui entre dans une Server Action (venant du client, donc non fiable) est validée par un schéma Zod avant d'être utilisée — jamais de confiance aveugle dans un type TS côté client, qui ne protège qu'à la compilation et pas à l'exécution.
-
-⚠️ Note DB : les valeurs comme `role` restent stockées en `text` libre côté PostgreSQL (colonne gérée par BetterAuth) — Zod garantit la cohérence côté application, mais n'empêche pas une valeur invalide d'être insérée par un autre chemin que le code TS (script, admin SQL direct). Un `pgEnum` Drizzle apporterait une garantie supplémentaire au niveau base si besoin.
-
-## 🗂️ Zustand — état client partagé
-
-**Le problème que ça résout** : plusieurs composants React ont besoin de connaître et de modifier la *même* information (ex. « ce praticien est-il dans mes favoris ? »), sans lien parent-enfant direct entre eux. Avec un simple `useState` local à chaque composant, chacun garde sa propre copie de l'info — si l'un la change, les autres ne le savent pas et affichent un état obsolète.
-
-**Ce qu'un store Zustand est** : un état global, accessible depuis n'importe quel composant client, qui existe en dehors de l'arbre React (pas besoin de le faire descendre par props ou remonter par callbacks). Un composant qui lit une valeur du store se re-render automatiquement quand elle change ailleurs.
-
-**Règle d'usage dans Abi** : un store Zustand n'est justifié que si une donnée est lue/modifiée par au moins deux composants sans relation parent-enfant directe. Sinon, un `useState` local reste la solution la plus simple — pas de store pour de l'état purement local (ouverture d'un menu, valeur d'un champ de formulaire, affichage d'une modale).
-
-Store actuel :
-
-| Store | Fichier | Contient | Utilisé par |
-|---|---|---|---|
-| `useSavedPractitionersStore` | `store/savedPractitionersStore.ts` | `savedIds: Set<string>` — les praticiens sauvegardés par l'utilisateur courant | `BookmarkButton` (lit/écrit à chaque clic sauvegarder/retirer), `SavedPractitionersList` (hydrate depuis les données serveur et affiche la liste filtrée) |
-
-Ainsi, retirer un favori depuis `BookmarkButton` met à jour `SavedPractitionersList` (et tout autre bouton du même praticien affiché ailleurs sur la page) sans callback manuel entre les deux.
-
-⚠️ Zustand gère l'état **côté client uniquement** — la source de vérité reste la base de données (`server/queries/savedPractitioners.ts`). Le store n'est qu'un cache synchronisé par les Server Actions (`savePractitioner`/`unsavePractitioner`) ; il est réhydraté à chaque chargement de page depuis les données serveur, jamais persisté entre sessions.
-
-🔐 Sécurité & conformité
-
-RGPD art. 9 : données de santé — collecte minimale (pseudonyme + email uniquement), consentement explicite recueilli à l'inscription, droit à la suppression exposé dans l'interface
-Hébergement UE : Neon (Frankfurt) + Vercel (Edge)
-Authentification : sessions httpOnly, CSRF protection, rate limiting (BetterAuth)
-Anti-bot : Cloudflare Turnstile (sans CAPTCHA visuel — accessible)
-Mots de passe : 12 caractères minimum, complexité imposée côté client (Zod) et serveur
-OWASP : validation entrées, pas d'exposition de données sensibles aux non-connectés (floutage praticiens)
-
-♿ Accessibilité
-Conformité RGAA (déclinaison française WCAG 2.1) — exigence explicite RNCP37873 :
-
-Landmarks HTML5 sémantiques (<header>, <main>, <nav>)
-Contrastes vérifiés AAA : #002F33 / #F9F8F1 → 13.56:1 · #F7D452 / #002F33 → 9.97:1
-aria-label sur tous les boutons icône · aria-hidden sur icônes décoratives
-Focus visible sur tous les éléments interactifs (RGAA 10.7)
-Touch targets ≥ 44×44px (WCAG 2.5.5)
-Pas de CAPTCHA visuel (Turnstile invisible)
-
-## ⚙️ CI/CD
-
-Le workflow `.github/workflows/pr.yml` valide le code avant merge : lint (ESLint), typecheck (`tsc --noEmit`), build (`next build`), tests (Vitest).
-
-**Déclenchement** :
-- Automatique à l'ouverture ou la mise à jour d'une Pull Request vers `main`
-- Manuel via `workflow_dispatch` — utile pour vérifier l'état d'une branche (ex. `develop`) sans ouvrir de PR :
-  - Interface GitHub : onglet **Actions** → "PR Validation" → bouton **Run workflow** → choisir la branche
-  - CLI : `gh workflow run pr.yml --ref <branche>`
-
-Il n'y a volontairement pas de déclenchement sur `push` direct (hors PR) pour éviter de multiplier les runs sur des commits intermédiaires — la CI manuelle (`workflow_dispatch`) couvre ce besoin ponctuel en cours de dev.
-
-**Secrets requis** (Settings → Secrets and variables → Actions du repo GitHub), mêmes clés que `.env` local sans les guillemets :
-
-| Secret | Rôle |
+| Secret | Pourquoi |
 |---|---|
-| `DATABASE_URL` | Connexion Neon — nécessaire car `server/db/index.ts` instancie le client au chargement du module, importé transitivement par la route `/api/auth/[...all]` que Next.js analyse au build |
-| `RESEND_API_KEY` | Instanciation du client Resend dans `lib/auth/config.ts` |
-| `BETTER_AUTH_SECRET` | Lu en interne par `betterAuth()` |
-| `BETTER_AUTH_URL` | Lu en interne par `betterAuth()` |
-| `NEXT_PUBLIC_APP_URL` | Utilisée par `authClient` dans `lib/auth/client.ts` |
+| `DATABASE_URL` | Le client Neon est instancié au chargement du module, importé par la route `/api/auth/[...all]` que Next.js analyse au build |
+| `BETTER_AUTH_SECRET`, `BETTER_AUTH_URL` | Lus par `betterAuth()` |
+| `NEXT_PUBLIC_APP_URL` | Lue par `authClient` |
 
-Ces valeurs ne déclenchent aucun appel réseau réel pendant le build (`neon()` et `betterAuth()` sont instanciés de façon paresseuse) — une valeur syntaxiquement correcte suffit, y compris `http://localhost:3000` pour les URLs.
+Le build n'effectue aucun appel réseau réel : des valeurs syntaxiquement valides suffisent (`http://localhost:3000` pour les URLs).
 
-🚀 Installation locale
-bash# Prérequis : Node.js 20+, compte Neon, compte BetterAuth
+## Roadmap
 
-git clone https://github.com/[ton-username]/abi
-cd abi
-pnpm install
-
-# Variables d'environnement
-
-cp .env.example .env.local
-
-# → Renseigner DATABASE_URL, BETTER_AUTH_SECRET, BETTER_AUTH_URL
-
-# Migrations
-
-pnpm drizzle-kit push
-
-# Démarrer
-
-pnpm run dev
-
-🗺️ Roadmap
-Semaine 1-2 (mai 2026) ✅ Setup, Home UI, Auth routes, Schemas Drizzle
-Semaine 3-4 (mai 2026) 🔄 Auth UI, seed, fiches praticiens (floutage)
-Semaine 5-6 (juin 2026) ⏳ Demo Day MVP — recherche fonctionnelle
-Semaine 7-12 (juin-août) ⏳ Tests, déploiement, documentation
-
-V2 (hors soutenance) Parcours d'inscription association complet, dashboard association, admin
-
-🎓 Contexte académique
-Projet de soutenance Titre Pro CDA RNCP6 — RNCP37873 couvrant les blocs :
-
-BC01 : interfaces utilisateur, composants métier, sécurité applicative
-BC02 : architecture multicouche, modélisation BDD, accès aux données
-BC03 : tests, déploiement, démarche DevOps
+- [x] Schémas Drizzle, authentification, recherche, fiches praticiens
+- [x] Dashboard patient (sauvegardes, profil, suppression de compte)
+- [x] Tests et CI
+- [x] Déploiement sur Vercel
+- [ ] **V2** : parcours Association, administration, avis patients, vérification d'email, cartographie
